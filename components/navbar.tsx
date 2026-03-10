@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Phone, MapPin, Menu, X, LogIn } from "lucide-react"
+import { Phone, Menu, X, LogIn } from "lucide-react"
 import Link from "next/link"
 import { useTranslations, useLocale } from "next-intl"
 import { useRouter, usePathname } from "next/navigation"
@@ -26,49 +26,14 @@ export function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-
-      {/* Top bar */}
-      <div className="bg-[#06141B] border-b border-[#253745]">
-        <div className="mx-auto max-w-7xl flex items-center justify-between px-4 py-2 text-sm">
-          <div className="flex items-center gap-1.5 text-[#9BABAB]">
-            <MapPin className="h-3.5 w-3.5 text-[#4A5C6A]" />
-            <span>Chisinau, Moldova</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-[#9BABAB]">
-            <Phone className="h-3.5 w-3.5 text-[#4A5C6A]" />
-            <a
-              href="tel:+37368123456"
-              className="hover:text-[#CCD0CF] transition-colors"
-            >
-              +373 68 123 456
-            </a>
-          </div>
-        </div>
-      </div>
-
-      {/* Main nav */}
       <div className="mx-auto max-w-6xl px-4 mt-3">
         <nav className="bg-[#11212D]/95 backdrop-blur-md rounded-full border border-[#253745] px-6 py-3 flex items-center justify-between">
 
-          {/* Logo */}
-          <Link href="#acasa" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-full bg-[#253745] border border-[#4A5C6A] flex items-center justify-center">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                className="h-5 w-5 text-[#9BABAB]"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
-                <polyline points="10 17 15 12 10 7" />
-                <line x1="15" y1="12" x2="3" y2="12" />
-              </svg>
-            </div>
-            <span className="font-mono text-lg font-bold text-[#CCD0CF] tracking-tight">
-              Inteligent Service
+          {/* Logo — doar text, fără icon */}
+          <Link href="#acasa" className="flex items-center">
+            <span className="font-mono text-lg font-bold tracking-tight">
+              <span className="text-[#CCD0CF]">Inteligent </span>
+              <span className="text-[#FF4B04]">Service</span>
             </span>
           </Link>
 
@@ -111,10 +76,10 @@ export function Navbar() {
               {langLabel}
             </button>
 
-            {/* CTA telefon */}
+            {/* CTA telefon — #FF4B04 */}
             <a
               href="tel:+37368123456"
-              className="flex items-center gap-2 bg-[#9BABAB] text-[#06141B] px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#CCD0CF] transition-colors duration-200"
+              className="flex items-center gap-2 bg-[#FF4B04] text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#FF4B04]/85 transition-colors duration-200"
             >
               <Phone className="h-4 w-4" />
               +373 68 123 456
@@ -185,10 +150,10 @@ export function Navbar() {
               {t("autentificare")}
             </a>
 
-            {/* CTA telefon mobil */}
+            {/* CTA telefon mobil — #FF4B04 */}
             <a
               href="tel:+37368123456"
-              className="flex items-center justify-center gap-2 bg-[#9BABAB] text-[#06141B] px-5 py-3 rounded-full text-sm font-semibold hover:bg-[#CCD0CF] transition-colors duration-200"
+              className="flex items-center justify-center gap-2 bg-[#FF4B04] text-white px-5 py-3 rounded-full text-sm font-semibold hover:bg-[#FF4B04]/85 transition-colors duration-200"
             >
               <Phone className="h-4 w-4" />
               +373 68 123 456
