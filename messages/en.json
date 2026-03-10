@@ -1,9 +1,19 @@
 {
   "nav": {
+    "acasa": "Home",
     "servicii": "Services",
     "tehnologii": "Technologies",
+    "produse": "Products",
+    "despre": "About Us",
     "echipa": "Team",
     "contacte": "Contacts",
-    "programeaza": "Book Now"
+    "contact": "Contact",
+    "programeaza": "Book Now",
+    "autentificare": "Sign In",
+    "despreNoi": "About Us",
+    "locatie": "Find Us",
+    "magazin": "Shop",
+    "inchide": "Close menu",
+    "deschide": "Open menu"
   }
 }

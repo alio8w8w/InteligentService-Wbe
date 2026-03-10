@@ -36,12 +36,10 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params
 
-  // Dacă locale nu e valid, aruncă 404
   if (!routing.locales.includes(locale as any)) {
     notFound()
   }
 
-  // Încarcă traducerile pentru acest locale
   const messages = await getMessages()
 
   return (

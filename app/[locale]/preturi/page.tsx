@@ -46,14 +46,20 @@ const plans = [
   },
 ]
 
-export default function PreturiPage() {
+export default async function PreturiPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+
   return (
     <div className="min-h-screen bg-[#06141B] text-[#CCD0CF]">
       <Navbar />
       <main className="pt-32 pb-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Link
-            href="/"
+            href={`/${locale}`}
             className="inline-flex items-center gap-2 px-3 py-2 text-sm text-[#4A5C6A] hover:text-[#9BABAB] rounded-xl transition-all duration-300 hover:bg-[#9BABAB]/5 mb-8"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -71,55 +77,31 @@ export default function PreturiPage() {
             Pachete si preturi
           </h1>
           <p className="mt-4 text-[#9BABAB] leading-relaxed max-w-2xl">
-            Preturi transparente, fara costuri ascunse. Contacteaza-ne pentru o evaluare gratuita a spatiului tau.
+            Preturi transparente, fara costuri ascunse.
           </p>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
             {plans.map((plan) => (
               <div
                 key={plan.name}
-                className={`group p-6 rounded-2xl border flex flex-col transition-all duration-300 hover:shadow-lg hover:shadow-[#06141B]/20 ${
+                className={`rounded-2xl border p-6 ${
                   plan.featured
-                    ? "border-[#FF4B04]/30 bg-[#FF4B04]/5 backdrop-blur-sm hover:border-[#FF4B04]/50"
-                    : "border-[#9BABAB]/10 bg-[#9BABAB]/5 backdrop-blur-sm hover:bg-[#9BABAB]/10 hover:border-[#9BABAB]/20"
+                    ? "border-[#FF4B04] bg-[#11212D]"
+                    : "border-[#253745] bg-[#11212D]"
                 }`}
               >
-                {plan.featured && (
-                  <span className="inline-flex self-start px-3 py-1 text-xs font-semibold rounded-full bg-[#FF4B04] text-white mb-4">
-                    Recomandat
-                  </span>
-                )}
-                <h3 className="text-xl font-bold text-[#CCD0CF] font-mono">{plan.name}</h3>
-                <p className="text-sm text-[#9BABAB] mt-2">{plan.description}</p>
-
-                <ul className="mt-6 flex flex-col gap-3 flex-1">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3">
-                      <Check className={`h-4 w-4 flex-shrink-0 ${plan.featured ? "text-[#FF4B04]" : "text-[#9BABAB]"}`} />
-                      <span className="text-sm text-[#CCD0CF]">{feature}</span>
+                <h2 className="text-lg font-bold text-[#CCD0CF]">{plan.name}</h2>
+                <p className="mt-1 text-sm text-[#9BABAB]">{plan.description}</p>
+                <ul className="mt-4 space-y-2">
+                  {plan.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 text-sm text-[#CCD0CF]">
+                      <Check className="h-4 w-4 text-[#FF4B04] flex-shrink-0" />
+                      {f}
                     </li>
                   ))}
                 </ul>
-
-                <Link
-                  href="/#contact"
-                  className={`mt-8 w-full inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] ${
-                    plan.featured
-                      ? "text-white bg-[#FF4B04]/90 border border-[#FF4B04]/30 hover:bg-[#FF4B04] hover:shadow-lg hover:shadow-[#FF4B04]/20"
-                      : "text-[#CCD0CF] border border-[#9BABAB]/15 bg-[#9BABAB]/5 hover:bg-[#9BABAB]/15 hover:border-[#9BABAB]/25"
-                  }`}
-                >
-                  Solicita Oferta
-                </Link>
               </div>
             ))}
-          </div>
-
-          <div className="mt-16 text-center">
-            <p className="text-sm text-[#4A5C6A]">
-              Preturile finale depind de configuratia sistemului si complexitatea instalarii.
-              Contacteaza-ne pentru o evaluare gratuita.
-            </p>
           </div>
         </div>
       </main>

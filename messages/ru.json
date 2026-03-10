@@ -1,9 +1,19 @@
 {
   "nav": {
+    "acasa": "Главная",
     "servicii": "Услуги",
     "tehnologii": "Технологии",
+    "produse": "Продукты",
+    "despre": "О нас",
     "echipa": "Команда",
     "contacte": "Контакты",
-    "programeaza": "Записаться"
+    "contact": "Контакт",
+    "programeaza": "Записаться",
+    "autentificare": "Войти",
+    "despreNoi": "О нас",
+    "locatie": "Где нас найти",
+    "magazin": "Магазин",
+    "inchide": "Закрыть меню",
+    "deschide": "Открыть меню"
   }
 }
