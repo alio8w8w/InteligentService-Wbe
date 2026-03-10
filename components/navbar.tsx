@@ -1,125 +1,148 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Link from "next/link"
-import { Menu, X, Phone } from "lucide-react"
+import { Menu, X } from "lucide-react"
+import Image from "next/image"
+import { useTranslations } from "next-intl"
+import { useRouter, usePathname } from "next/navigation"
+import { useLocale } from "next-intl"
+import BookingModal from "./booking-modal"
 
-const navLinks = [
-  { label: "Acasa", href: "/" },
-  { label: "Despre Noi", href: "#about" },
-  { label: "Servicii", href: "/servicii" },
-  { label: "Preturi", href: "/preturi" },
-  { label: "Contact", href: "#contact" },
-]
+const navKeys = ["servicii", "tehnologii", "echipa", "contacte"] as const
+const navHrefs = ["#servicii", "#tehnologii", "#echipa", "#contacte"]
 
-export function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [bookingOpen, setBookingOpen] = useState(false)
+  const pathname = usePathname()
+  const router = useRouter()
+  const t = useTranslations("nav")
+  const currentLocale = useLocale() // ← folosim hook-ul next-intl
+
+  const toggleLang = () => {
+    // Ciclăm prin cele 3 limbi: ro → ru → en → ro
+    const locales = ["ro", "ru", "en"]
+    const currentIndex = locales.indexOf(currentLocale)
+    const newLocale = locales[(currentIndex + 1) % locales.length]
+
+    // Înlocuim prefixul de locale în URL
+    const segments = pathname.split("/")
+    segments[1] = newLocale
+    router.push(segments.join("/") || "/")
+  }
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener("scroll", handleScroll, { passive: true })
+    const handleScroll = () => setScrolled(window.scrollY > 40)
+    window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  useEffect(() => {
+    if (bookingOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = ""
+    }
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [bookingOpen])
+
+  // Afișăm eticheta butonului în funcție de limba curentă
+  const langLabel = { ro: "RO", ru: "RU", en: "EN" }[currentLocale] ?? "RO"
+
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center px-4 pt-4"
-      role="navigation"
-      aria-label="Navigatie principala"
-    >
-      <div
-        className={`w-full max-w-5xl rounded-2xl border transition-all duration-500 ${
-          scrolled
-            ? "border-[#9BABAB]/15 bg-[#06141B]/60 shadow-lg shadow-[#06141B]/40"
-            : "border-[#9BABAB]/10 bg-[#06141B]/30"
-        } backdrop-blur-xl backdrop-saturate-150`}
+    <>
+      <BookingModal isOpen={bookingOpen} onClose={() => setBookingOpen(false)} />
+
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled ? "bg-[#1a1613]/90 backdrop-blur-md shadow-lg" : "bg-transparent"
+        }`}
       >
-        <div className="px-5 lg:px-6">
-          <div className="flex h-14 items-center justify-between">
-            {/* Logo - left aligned */}
-            <div className="flex-shrink-0">
-              <Link
-                href="/"
-                className="flex items-center gap-1 group"
-                aria-label="Inteligent Service - Pagina principala"
-              >
-                <span className="text-lg font-bold tracking-tight text-[#CCD0CF] font-mono transition-colors duration-300 group-hover:text-white">
-                  Inteligent
-                </span>
-                <span className="text-lg font-bold tracking-tight text-[#FF4B04] font-mono">
-                  Service
-                </span>
-              </Link>
+        <nav className="flex items-center justify-between px-4 py-3 lg:mx-auto lg:max-w-7xl lg:px-10 lg:py-4">
+          <a href="#" className="flex-shrink-0">
+            <div className="relative h-9 w-[100px] sm:h-11 sm:w-[140px] lg:h-14 lg:w-[200px]">
+              <Image
+                src="/images/LogoVB.png"
+                alt="Beauty Space by VB"
+                fill
+                sizes="(max-width: 640px) 100px, (max-width: 1024px) 140px, 200px"
+                className="object-contain object-left"
+                priority
+              />
             </div>
+          </a>
 
-            {/* Desktop nav links */}
-            <div className="hidden md:flex items-center gap-0.5">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="relative px-3.5 py-2 text-sm text-[#9BABAB] rounded-xl transition-all duration-300 hover:text-[#CCD0CF] hover:bg-[#9BABAB]/10 hover:backdrop-blur-sm"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            {/* CTA button desktop */}
-            <div className="hidden md:flex items-center">
+          <div className="hidden items-center gap-6 lg:flex">
+            {navKeys.map((key, i) => (
               <a
-                href="tel:+40700000000"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white bg-[#FF4B04]/90 border border-[#FF4B04]/30 transition-all duration-300 hover:bg-[#FF4B04] hover:shadow-lg hover:shadow-[#FF4B04]/20 hover:scale-[1.02] active:scale-[0.98]"
+                key={key}
+                href={navHrefs[i]}
+                className="font-[var(--font-raleway)] text-sm font-light tracking-wider text-[#f5f0eb]/80 transition-colors duration-300 hover:text-[#c9a96e]"
               >
-                <Phone className="h-3.5 w-3.5" />
-                <span>Suna Acum</span>
+                {t(key)}
               </a>
-            </div>
-
-            {/* Mobile menu button */}
+            ))}
             <button
-              className="md:hidden p-2 text-[#9BABAB] hover:text-[#CCD0CF] rounded-xl transition-all duration-300 hover:bg-[#9BABAB]/10"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-expanded={mobileMenuOpen}
-              aria-label={mobileMenuOpen ? "Inchide meniul" : "Deschide meniul"}
+              onClick={toggleLang}
+              className="rounded-full border border-[#c9a96e]/30 px-3 py-1 font-[var(--font-raleway)] text-xs font-light tracking-widest text-[#c9a96e] transition-all duration-300 hover:border-[#c9a96e] hover:bg-[#c9a96e]/10"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {langLabel}
+            </button>
+
+            <button
+              onClick={() => setBookingOpen(true)}
+              className="rounded-full bg-[#c9a96e] px-6 py-2.5 font-[var(--font-raleway)] text-sm font-medium tracking-wider text-[#1a1613] transition-all duration-300 hover:bg-[#d4b87e]"
+            >
+              {t("programeaza")}
             </button>
           </div>
-        </div>
 
-        {/* Mobile menu */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-400 ease-out ${
-            mobileMenuOpen ? "max-h-80 opacity-100" : "max-h-0 opacity-0"
-          }`}
-        >
-          <div className="px-5 pb-4 pt-1 border-t border-[#9BABAB]/10">
-            <div className="flex flex-col gap-0.5 mt-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  className="px-3 py-2.5 text-sm text-[#9BABAB] hover:text-[#CCD0CF] hover:bg-[#9BABAB]/10 rounded-xl transition-all duration-300"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="pt-2 mt-1 border-t border-[#9BABAB]/10">
+          <div className="flex items-center gap-2 lg:hidden">
+            <button
+              onClick={toggleLang}
+              className="rounded-full border border-[#c9a96e]/50 px-3 py-1 font-[var(--font-raleway)] text-xs font-light tracking-wider text-[#c9a96e]"
+            >
+              {langLabel}
+            </button>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="flex-shrink-0 p-1 text-[#f5f0eb]"
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
+        </nav>
+
+        {mobileOpen && (
+          <div className="absolute inset-x-0 top-full bg-[#1a1613]/97 backdrop-blur-lg lg:hidden">
+            <div className="flex flex-col items-center gap-5 px-6 py-8">
+              {navKeys.map((key, i) => (
                 <a
-                  href="tel:+40700000000"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-[#FF4B04]/90 transition-all duration-300 hover:bg-[#FF4B04]"
+                  key={key}
+                  href={navHrefs[i]}
+                  onClick={() => setMobileOpen(false)}
+                  className="font-[var(--font-raleway)] text-sm font-light tracking-widest text-[#f5f0eb]/80 uppercase transition-colors duration-300 hover:text-[#c9a96e]"
                 >
-                  <Phone className="h-3.5 w-3.5" />
-                  <span>Suna Acum</span>
+                  {t(key)}
                 </a>
-              </div>
+              ))}
+              <button
+                onClick={() => {
+                  setMobileOpen(false)
+                  setBookingOpen(true)
+                }}
+                className="mt-2 w-full max-w-[240px] rounded-full bg-[#c9a96e] py-3 text-center font-[var(--font-raleway)] text-sm font-medium tracking-wider text-[#1a1613] transition-all duration-300 hover:bg-[#d4b87e]"
+              >
+                {t("programeaza")}
+              </button>
             </div>
           </div>
-        </div>
-      </div>
-    </nav>
+        )}
+      </header>
+    </>
   )
 }
