@@ -15,5 +15,27 @@
     "magazin": "Magazin",
     "inchide": "Închide meniul",
     "deschide": "Deschide meniul"
+  },
+  "auth": {
+    "titlu_login": "Bun venit!",
+    "titlu_signup": "Creează cont",
+    "subtitlu_login": "Intră în contul tău pentru a continua",
+    "subtitlu_signup": "Completează datele pentru a te înregistra",
+    "tab_login": "Autentificare",
+    "tab_signup": "Înregistrare",
+    "google": "Continuă cu Google",
+    "facebook": "Continuă cu Facebook",
+    "sau": "sau cu email",
+    "nume": "Nume",
+    "prenume": "Prenume",
+    "telefon": "Număr de telefon",
+    "email": "Email",
+    "parola": "Parolă",
+    "btn_login": "Intră în cont",
+    "btn_signup": "Creează cont",
+    "incarcare": "Se încarcă...",
+    "verifica_email": "Verifică emailul pentru confirmare!",
+    "eroare_login": "Email sau parolă incorectă.",
+    "inapoi": "Înapoi la pagina principală"
   }
 }

@@ -15,5 +15,27 @@
     "magazin": "Shop",
     "inchide": "Close menu",
     "deschide": "Open menu"
+  },
+  "auth": {
+    "titlu_login": "Welcome back!",
+    "titlu_signup": "Create account",
+    "subtitlu_login": "Sign in to your account to continue",
+    "subtitlu_signup": "Fill in your details to register",
+    "tab_login": "Sign In",
+    "tab_signup": "Register",
+    "google": "Continue with Google",
+    "facebook": "Continue with Facebook",
+    "sau": "or with email",
+    "nume": "Last name",
+    "prenume": "First name",
+    "telefon": "Phone number",
+    "email": "Email",
+    "parola": "Password",
+    "btn_login": "Sign In",
+    "btn_signup": "Create account",
+    "incarcare": "Loading...",
+    "verifica_email": "Check your email for confirmation!",
+    "eroare_login": "Invalid email or password.",
+    "inapoi": "Back to home page"
   }
 }

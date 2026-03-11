@@ -15,5 +15,27 @@
     "magazin": "Магазин",
     "inchide": "Закрыть меню",
     "deschide": "Открыть меню"
+  },
+  "auth": {
+    "titlu_login": "Добро пожаловать!",
+    "titlu_signup": "Создать аккаунт",
+    "subtitlu_login": "Войдите в свой аккаунт чтобы продолжить",
+    "subtitlu_signup": "Заполните данные для регистрации",
+    "tab_login": "Войти",
+    "tab_signup": "Регистрация",
+    "google": "Продолжить с Google",
+    "facebook": "Продолжить с Facebook",
+    "sau": "или с email",
+    "nume": "Фамилия",
+    "prenume": "Имя",
+    "telefon": "Номер телефона",
+    "email": "Email",
+    "parola": "Пароль",
+    "btn_login": "Войти",
+    "btn_signup": "Создать аккаунт",
+    "incarcare": "Загрузка...",
+    "verifica_email": "Проверьте email для подтверждения!",
+    "eroare_login": "Неверный email или пароль.",
+    "inapoi": "Вернуться на главную"
   }
 }
