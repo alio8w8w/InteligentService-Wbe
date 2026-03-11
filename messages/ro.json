@@ -1,20 +1,11 @@
 {
   "nav": {
-    "acasa": "Acasă",
-    "servicii": "Servicii",
-    "tehnologii": "Tehnologii",
-    "produse": "Produse",
-    "despre": "Despre Noi",
-    "echipa": "Echipă",
-    "contacte": "Contacte",
-    "contact": "Contact",
-    "programeaza": "Programează",
-    "autentificare": "Autentificare",
-    "despreNoi": "Despre Noi",
-    "locatie": "Unde Ne Găsiți",
-    "magazin": "Magazin",
-    "inchide": "Închide meniul",
-    "deschide": "Deschide meniul"
+    "acasa": "Acasă", "servicii": "Servicii", "tehnologii": "Tehnologii",
+    "produse": "Produse", "despre": "Despre Noi", "echipa": "Echipă",
+    "contacte": "Contacte", "contact": "Contact", "programeaza": "Programează",
+    "autentificare": "Autentificare", "despreNoi": "Despre Noi",
+    "locatie": "Unde Ne Găsiți", "magazin": "Magazin",
+    "inchide": "Închide meniul", "deschide": "Deschide meniul"
   },
   "auth": {
     "titlu_login": "Bun venit!",
@@ -24,18 +15,23 @@
     "tab_login": "Autentificare",
     "tab_signup": "Înregistrare",
     "google": "Continuă cu Google",
-    "facebook": "Continuă cu Facebook",
     "sau": "sau cu email",
     "nume": "Nume",
     "prenume": "Prenume",
     "telefon": "Număr de telefon",
     "email": "Email",
     "parola": "Parolă",
+    "ai_uitat_parola": "Ai uitat parola?",
     "btn_login": "Intră în cont",
     "btn_signup": "Creează cont",
     "incarcare": "Se încarcă...",
-    "verifica_email": "Verifică emailul pentru confirmare!",
+    "verifica_email": "✅ Verifică emailul pentru confirmare!",
     "eroare_login": "Email sau parolă incorectă.",
-    "inapoi": "Înapoi la pagina principală"
+    "inapoi": "Înapoi la pagina principală",
+    "inapoi_login": "Înapoi la autentificare",
+    "recuperare_titlu": "Recuperare parolă",
+    "recuperare_subtitlu": "Îți trimitem un link de resetare pe email",
+    "trimite_link": "Trimite link de resetare",
+    "email_recuperare_trimis": "✅ Link de recuperare trimis! Verifică emailul."
   }
 }

@@ -1,20 +1,11 @@
 {
   "nav": {
-    "acasa": "Home",
-    "servicii": "Services",
-    "tehnologii": "Technologies",
-    "produse": "Products",
-    "despre": "About Us",
-    "echipa": "Team",
-    "contacte": "Contacts",
-    "contact": "Contact",
-    "programeaza": "Book Now",
-    "autentificare": "Sign In",
-    "despreNoi": "About Us",
-    "locatie": "Find Us",
-    "magazin": "Shop",
-    "inchide": "Close menu",
-    "deschide": "Open menu"
+    "acasa": "Home", "servicii": "Services", "tehnologii": "Technologies",
+    "produse": "Products", "despre": "About Us", "echipa": "Team",
+    "contacte": "Contacts", "contact": "Contact", "programeaza": "Book Now",
+    "autentificare": "Sign In", "despreNoi": "About Us",
+    "locatie": "Find Us", "magazin": "Shop",
+    "inchide": "Close menu", "deschide": "Open menu"
   },
   "auth": {
     "titlu_login": "Welcome back!",
@@ -24,18 +15,23 @@
     "tab_login": "Sign In",
     "tab_signup": "Register",
     "google": "Continue with Google",
-    "facebook": "Continue with Facebook",
     "sau": "or with email",
     "nume": "Last name",
     "prenume": "First name",
     "telefon": "Phone number",
     "email": "Email",
     "parola": "Password",
+    "ai_uitat_parola": "Forgot password?",
     "btn_login": "Sign In",
     "btn_signup": "Create account",
     "incarcare": "Loading...",
-    "verifica_email": "Check your email for confirmation!",
+    "verifica_email": "✅ Check your email for confirmation!",
     "eroare_login": "Invalid email or password.",
-    "inapoi": "Back to home page"
+    "inapoi": "Back to home page",
+    "inapoi_login": "Back to sign in",
+    "recuperare_titlu": "Password recovery",
+    "recuperare_subtitlu": "We'll send a reset link to your email",
+    "trimite_link": "Send reset link",
+    "email_recuperare_trimis": "✅ Recovery link sent! Check your email."
   }
 }

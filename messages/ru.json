@@ -1,20 +1,11 @@
 {
   "nav": {
-    "acasa": "Главная",
-    "servicii": "Услуги",
-    "tehnologii": "Технологии",
-    "produse": "Продукты",
-    "despre": "О нас",
-    "echipa": "Команда",
-    "contacte": "Контакты",
-    "contact": "Контакт",
-    "programeaza": "Записаться",
-    "autentificare": "Войти",
-    "despreNoi": "О нас",
-    "locatie": "Где нас найти",
-    "magazin": "Магазин",
-    "inchide": "Закрыть меню",
-    "deschide": "Открыть меню"
+    "acasa": "Главная", "servicii": "Услуги", "tehnologii": "Технологии",
+    "produse": "Продукты", "despre": "О нас", "echipa": "Команда",
+    "contacte": "Контакты", "contact": "Контакт", "programeaza": "Записаться",
+    "autentificare": "Войти", "despreNoi": "О нас",
+    "locatie": "Где нас найти", "magazin": "Магазин",
+    "inchide": "Закрыть меню", "deschide": "Открыть меню"
   },
   "auth": {
     "titlu_login": "Добро пожаловать!",
@@ -24,18 +15,23 @@
     "tab_login": "Войти",
     "tab_signup": "Регистрация",
     "google": "Продолжить с Google",
-    "facebook": "Продолжить с Facebook",
     "sau": "или с email",
     "nume": "Фамилия",
     "prenume": "Имя",
     "telefon": "Номер телефона",
     "email": "Email",
     "parola": "Пароль",
+    "ai_uitat_parola": "Забыли пароль?",
     "btn_login": "Войти",
     "btn_signup": "Создать аккаунт",
     "incarcare": "Загрузка...",
-    "verifica_email": "Проверьте email для подтверждения!",
+    "verifica_email": "✅ Проверьте email для подтверждения!",
     "eroare_login": "Неверный email или пароль.",
-    "inapoi": "Вернуться на главную"
+    "inapoi": "Вернуться на главную",
+    "inapoi_login": "Вернуться к входу",
+    "recuperare_titlu": "Восстановление пароля",
+    "recuperare_subtitlu": "Отправим ссылку для сброса на email",
+    "trimite_link": "Отправить ссылку",
+    "email_recuperare_trimis": "✅ Ссылка отправлена! Проверьте email."
   }
 }

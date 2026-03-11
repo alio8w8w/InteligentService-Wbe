@@ -4,10 +4,17 @@ import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import { useLocale, useTranslations } from "next-intl"
-import { Chrome, Facebook, Mail, Phone, User, Lock, Eye, EyeOff, LogIn } from "lucide-react"
+import { usePathname } from "next/navigation"
+import {
+  Chrome, Mail, Phone, User,
+  Lock, Eye, EyeOff, LogIn, ArrowLeft
+} from "lucide-react"
 import Link from "next/link"
 
+type View = "login" | "signup" | "forgot"
+
 export default function LoginPage() {
+  const [view, setView]         = useState<View>("login")
   const [tab, setTab]           = useState<"login" | "signup">("login")
   const [email, setEmail]       = useState("")
   const [password, setPassword] = useState("")
@@ -19,11 +26,23 @@ export default function LoginPage() {
   const [loading, setLoading]   = useState(false)
   const [success, setSuccess]   = useState("")
 
-  const supabase = createClient()
-  const router   = useRouter()
-  const locale   = useLocale()
-  const t        = useTranslations("auth")
+  const supabase  = createClient()
+  const router    = useRouter()
+  const locale    = useLocale()
+  const t         = useTranslations("auth")
+  const pathname  = usePathname()
 
+  // ── Schimbat limba ──────────────────────────────────────
+  const toggleLang = () => {
+    const locales = ["ro", "ru", "en"]
+    const idx = locales.indexOf(locale)
+    const newLocale = locales[(idx + 1) % locales.length]
+    const segments = pathname.split("/")
+    segments[1] = newLocale
+    router.push(segments.join("/") || `/${newLocale}`)
+  }
+
+  // ── Login / Signup cu email ─────────────────────────────
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -35,34 +54,144 @@ export default function LoginPage() {
         email,
         password,
         options: {
-          data: { given_name: nume, family_name: prenume, phone: telefon },
+          data: {
+            given_name: nume,
+            family_name: prenume,
+            phone: telefon,
+          },
           emailRedirectTo: `${location.origin}/${locale}/auth/callback`,
         },
       })
       if (error) setError(error.message)
       else setSuccess(t("verifica_email"))
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
       if (error) setError(t("eroare_login"))
       else router.push(`/${locale}/cont`)
     }
     setLoading(false)
   }
 
+  // ── Recuperare parolă ───────────────────────────────────
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+    setSuccess("")
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${location.origin}/${locale}/auth/reset-password`,
+    })
+
+    if (error) setError(error.message)
+    else setSuccess(t("email_recuperare_trimis"))
+
+    setLoading(false)
+  }
+
+  // ── Google OAuth ────────────────────────────────────────
   const handleGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: { redirectTo: `${location.origin}/${locale}/auth/callback` },
+      options: {
+        redirectTo: `${location.origin}/${locale}/auth/callback`,
+      },
     })
   }
 
-  const handleFacebook = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "facebook",
-      options: { redirectTo: `${location.origin}/${locale}/auth/callback` },
-    })
+  const langLabel = locale.toUpperCase()
+
+  // ══════════════════════════════════════════════════════
+  // VIEW: RECUPERARE PAROLĂ
+  // ══════════════════════════════════════════════════════
+  if (view === "forgot") {
+    return (
+      <div className="min-h-screen bg-[#06141B] flex items-center justify-center px-4 py-16">
+        <div className="w-full max-w-md">
+          <Link href={`/${locale}`} className="flex items-center justify-center mb-8">
+            <span className="font-mono text-2xl font-bold tracking-tight">
+              <span className="text-[#CCD0CF]">Inteligent </span>
+              <span className="text-[#FF4B04]">Service</span>
+            </span>
+          </Link>
+
+          <div className="rounded-2xl border border-[#253745] bg-[#11212D] p-8 shadow-2xl">
+            {/* Header + Limbă */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl font-bold text-[#CCD0CF]">
+                  {t("recuperare_titlu")}
+                </h1>
+                <p className="text-sm text-[#4A5C6A] mt-1">
+                  {t("recuperare_subtitlu")}
+                </p>
+              </div>
+              <button
+                onClick={toggleLang}
+                className="border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all"
+              >
+                {langLabel}
+              </button>
+            </div>
+
+            <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
+              <div>
+                <label className="text-xs uppercase tracking-wider text-[#4A5C6A] mb-1 block">
+                  {t("email")}
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A5C6A]" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="email@exemplu.com"
+                    className="w-full rounded-xl border border-[#253745] bg-[#06141B] pl-9 pr-3 py-2.5 text-sm text-[#CCD0CF] placeholder-[#4A5C6A] outline-none focus:border-[#9BABAB] transition-colors"
+                  />
+                </div>
+              </div>
+
+              {error && (
+                <p className="text-sm text-red-400 bg-red-400/10 rounded-xl px-4 py-2">
+                  {error}
+                </p>
+              )}
+              {success && (
+                <p className="text-sm text-green-400 bg-green-400/10 rounded-xl px-4 py-2">
+                  {success}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-[#FF4B04] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#FF4B04]/85 transition-colors disabled:opacity-50"
+              >
+                {loading ? t("incarcare") : t("trimite_link")}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setView("login"); setError(""); setSuccess("") }}
+                className="flex items-center justify-center gap-2 text-sm text-[#4A5C6A] hover:text-[#9BABAB] transition-colors"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                {t("inapoi_login")}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    )
   }
 
+  // ══════════════════════════════════════════════════════
+  // VIEW: LOGIN / SIGNUP
+  // ══════════════════════════════════════════════════════
   return (
     <div className="min-h-screen bg-[#06141B] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-md">
@@ -75,16 +204,26 @@ export default function LoginPage() {
           </span>
         </Link>
 
-        {/* Card */}
         <div className="rounded-2xl border border-[#253745] bg-[#11212D] p-8 shadow-2xl">
 
-          {/* Titlu */}
-          <h1 className="text-2xl font-bold text-[#CCD0CF] mb-1">
-            {tab === "login" ? t("titlu_login") : t("titlu_signup")}
-          </h1>
-          <p className="text-sm text-[#4A5C6A] mb-6">
-            {tab === "login" ? t("subtitlu_login") : t("subtitlu_signup")}
-          </p>
+          {/* Header + Buton Limbă */}
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-[#CCD0CF]">
+                {tab === "login" ? t("titlu_login") : t("titlu_signup")}
+              </h1>
+              <p className="text-sm text-[#4A5C6A] mt-1">
+                {tab === "login" ? t("subtitlu_login") : t("subtitlu_signup")}
+              </p>
+            </div>
+            {/* Buton schimbare limbă */}
+            <button
+              onClick={toggleLang}
+              className="border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all"
+            >
+              {langLabel}
+            </button>
+          </div>
 
           {/* Tabs */}
           <div className="flex rounded-xl border border-[#253745] p-1 mb-6">
@@ -103,21 +242,14 @@ export default function LoginPage() {
             ))}
           </div>
 
-          {/* Social buttons */}
-          <div className="flex flex-col gap-3 mb-6">
+          {/* Google ONLY */}
+          <div className="mb-6">
             <button
               onClick={handleGoogle}
               className="flex items-center justify-center gap-3 w-full rounded-xl border border-[#253745] bg-[#06141B]/60 py-3 text-sm text-[#9BABAB] hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
             >
               <Chrome className="h-4 w-4" />
               {t("google")}
-            </button>
-            <button
-              onClick={handleFacebook}
-              className="flex items-center justify-center gap-3 w-full rounded-xl border border-[#253745] bg-[#06141B]/60 py-3 text-sm text-[#9BABAB] hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
-            >
-              <Facebook className="h-4 w-4" />
-              {t("facebook")}
             </button>
           </div>
 
@@ -207,9 +339,20 @@ export default function LoginPage() {
 
             {/* Parolă */}
             <div>
-              <label className="text-xs uppercase tracking-wider text-[#4A5C6A] mb-1 block">
-                {t("parola")}
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs uppercase tracking-wider text-[#4A5C6A]">
+                  {t("parola")}
+                </label>
+                {tab === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => { setView("forgot"); setError(""); setSuccess("") }}
+                    className="text-xs text-[#4A5C6A] hover:text-[#9BABAB] transition-colors"
+                  >
+                    {t("ai_uitat_parola")}
+                  </button>
+                )}
+              </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A5C6A]" />
                 <input
@@ -247,11 +390,14 @@ export default function LoginPage() {
               className="w-full bg-[#FF4B04] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#FF4B04]/85 transition-colors disabled:opacity-50 mt-1 flex items-center justify-center gap-2"
             >
               <LogIn className="h-4 w-4" />
-              {loading ? t("incarcare") : tab === "login" ? t("btn_login") : t("btn_signup")}
+              {loading
+                ? t("incarcare")
+                : tab === "login"
+                ? t("btn_login")
+                : t("btn_signup")}
             </button>
           </form>
 
-          {/* Link înapoi */}
           <p className="mt-4 text-center text-sm text-[#4A5C6A]">
             <Link
               href={`/${locale}`}
