@@ -26,13 +26,13 @@ export default function LoginPage() {
   const [loading, setLoading]   = useState(false)
   const [success, setSuccess]   = useState("")
 
-  const supabase  = createClient()
-  const router    = useRouter()
-  const locale    = useLocale()
-  const t         = useTranslations("auth")
-  const pathname  = usePathname()
+  const supabase = createClient()
+  const router   = useRouter()
+  const locale   = useLocale()
+  const t        = useTranslations("auth")
+  const pathname = usePathname()
 
-  // ── Schimbat limba ──────────────────────────────────────
+  // ── Schimbă limba ───────────────────────────────────────
   const toggleLang = () => {
     const locales = ["ro", "ru", "en"]
     const idx = locales.indexOf(locale)
@@ -50,28 +50,57 @@ export default function LoginPage() {
     setSuccess("")
 
     if (tab === "signup") {
-      const { error } = await supabase.auth.signUp({
+      // ── ÎNREGISTRARE ──
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            given_name: nume,
+            given_name:  nume,
             family_name: prenume,
-            phone: telefon,
+            phone:       telefon,
           },
-          emailRedirectTo: `${location.origin}/${locale}/auth/callback`,
         },
       })
-      if (error) setError(error.message)
-      else setSuccess(t("verifica_email"))
+
+      if (error) {
+        setError(error.message)
+        setLoading(false)
+        return
+      }
+
+      if (data.user) {
+        // Salvează profilul în tabelul profiles
+        await supabase.from("profiles").upsert({
+          id:             data.user.id,
+          email:          email,
+          nume:           nume,
+          prenume:        prenume,
+          telefon:        telefon,
+          profil_complet: true,
+          updated_at:     new Date().toISOString(),
+        })
+
+        // Merge direct la /cont fără confirmare email
+        router.push(`/${locale}/cont`)
+      }
+
     } else {
+      // ── LOGIN ──
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
-      if (error) setError(t("eroare_login"))
-      else router.push(`/${locale}/cont`)
+
+      if (error) {
+        setError(t("eroare_login"))
+        setLoading(false)
+        return
+      }
+
+      router.push(`/${locale}/cont`)
     }
+
     setLoading(false)
   }
 
@@ -111,6 +140,7 @@ export default function LoginPage() {
     return (
       <div className="min-h-screen bg-[#06141B] flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-md">
+
           <Link href={`/${locale}`} className="flex items-center justify-center mb-8">
             <span className="font-mono text-2xl font-bold tracking-tight">
               <span className="text-[#CCD0CF]">Inteligent </span>
@@ -119,6 +149,7 @@ export default function LoginPage() {
           </Link>
 
           <div className="rounded-2xl border border-[#253745] bg-[#11212D] p-8 shadow-2xl">
+
             {/* Header + Limbă */}
             <div className="flex items-center justify-between mb-6">
               <div>
@@ -138,6 +169,7 @@ export default function LoginPage() {
             </div>
 
             <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
+
               <div>
                 <label className="text-xs uppercase tracking-wider text-[#4A5C6A] mb-1 block">
                   {t("email")}
@@ -182,6 +214,7 @@ export default function LoginPage() {
                 <ArrowLeft className="h-4 w-4" />
                 {t("inapoi_login")}
               </button>
+
             </form>
           </div>
         </div>
@@ -216,7 +249,6 @@ export default function LoginPage() {
                 {tab === "login" ? t("subtitlu_login") : t("subtitlu_signup")}
               </p>
             </div>
-            {/* Buton schimbare limbă */}
             <button
               onClick={toggleLang}
               className="border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all"
@@ -368,7 +400,9 @@ export default function LoginPage() {
                   onClick={() => setShowPass(!showPass)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A5C6A] hover:text-[#9BABAB]"
                 >
-                  {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPass
+                    ? <EyeOff className="h-4 w-4" />
+                    : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
@@ -396,6 +430,7 @@ export default function LoginPage() {
                 ? t("btn_login")
                 : t("btn_signup")}
             </button>
+
           </form>
 
           <p className="mt-4 text-center text-sm text-[#4A5C6A]">
@@ -406,6 +441,7 @@ export default function LoginPage() {
               ← {t("inapoi")}
             </Link>
           </p>
+
         </div>
       </div>
     </div>
