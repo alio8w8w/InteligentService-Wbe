@@ -2,34 +2,42 @@
 
 import { useState } from "react"
 import { createClient } from "@/lib/supabase/client"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useLocale, useTranslations } from "next-intl"
-import { usePathname } from "next/navigation"
 import {
-  Chrome, Mail, Phone, User,
-  Lock, Eye, EyeOff, LogIn, ArrowLeft
+  Mail,
+  Phone,
+  User,
+  Lock,
+  Eye,
+  EyeOff,
+  LogIn,
+  ArrowLeft,
 } from "lucide-react"
 import Link from "next/link"
 
-type View = "login" | "signup" | "forgot"
+type View = "auth" | "forgot"
+type Tab = "login" | "signup"
 
 export default function LoginPage() {
-  const [view, setView]         = useState<View>("login")
-  const [tab, setTab]           = useState<"login" | "signup">("login")
-  const [email, setEmail]       = useState("")
+  const [view, setView] = useState<View>("auth")
+  const [tab, setTab] = useState<Tab>("login")
+
+  const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [nume, setNume]         = useState("")
-  const [prenume, setPrenume]   = useState("")
-  const [telefon, setTelefon]   = useState("")
+  const [nume, setNume] = useState("")
+  const [prenume, setPrenume] = useState("")
+  const [telefon, setTelefon] = useState("")
+
   const [showPass, setShowPass] = useState(false)
-  const [error, setError]       = useState("")
-  const [loading, setLoading]   = useState(false)
-  const [success, setSuccess]   = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState("")
 
   const supabase = createClient()
-  const router   = useRouter()
-  const locale   = useLocale()
-  const t        = useTranslations("auth")
+  const router = useRouter()
+  const locale = useLocale()
+  const t = useTranslations("auth")
   const pathname = usePathname()
 
   // ── Schimbă limba ───────────────────────────────────────
@@ -42,105 +50,115 @@ export default function LoginPage() {
     router.push(segments.join("/") || `/${newLocale}`)
   }
 
-  // ── Login / Signup cu email ─────────────────────────────
+  const langLabel = locale.toUpperCase()
+
+  // ── Signup / Login cu email ─────────────────────────────
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError("")
     setSuccess("")
 
-    if (tab === "signup") {
-      // ── ÎNREGISTRARE ──
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            given_name:  nume,
-            family_name: prenume,
-            phone:       telefon,
+    try {
+      if (tab === "signup") {
+        // 1) Creează user
+        const { data, error } = await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            // metadata (Google nu mai există, dar poți păstra)
+            data: {
+              given_name: nume.trim(),
+              family_name: prenume.trim(),
+              phone: telefon.trim(),
+            },
           },
-        },
+        })
+
+        if (error) {
+          setError(error.message)
+          setLoading(false)
+          return
+        }
+
+        // 2) Dacă proiectul tău are Confirm email OFF, userul e logat imediat
+        // Dacă Confirm email ON, data.session va fi null până confirmă.
+        if (data.session) {
+          // user e logat, putem actualiza profilul (dacă ai RLS ok)
+          const userId = data.user?.id
+          if (userId) {
+            await supabase.from("profiles").update({
+              nume: nume.trim(),
+              prenume: prenume.trim(),
+              telefon: telefon.trim(),
+              profil_complet: Boolean(telefon.trim()),
+              updated_at: new Date().toISOString(),
+            }).eq("id", userId)
+          }
+
+          router.push(`/${locale}/cont`)
+          return
+        }
+
+        // Dacă nu există session, înseamnă confirm email ON
+        setSuccess(t("verifica_email"))
+        setLoading(false)
+        return
+      }
+
+      // LOGIN
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
       })
 
       if (error) {
+        // Mesaj mai clar pentru user
         setError(error.message)
         setLoading(false)
         return
       }
 
-      if (data.user) {
-        // Salvează profilul în tabelul profiles
-        await supabase.from("profiles").upsert({
-          id:             data.user.id,
-          email:          email,
-          nume:           nume,
-          prenume:        prenume,
-          telefon:        telefon,
-          profil_complet: true,
-          updated_at:     new Date().toISOString(),
-        })
-
-        // Merge direct la /cont fără confirmare email
+      if (data.session) {
         router.push(`/${locale}/cont`)
-      }
-
-    } else {
-      // ── LOGIN ──
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-
-      if (error) {
+      } else {
         setError(t("eroare_login"))
-        setLoading(false)
-        return
       }
-
-      router.push(`/${locale}/cont`)
+    } finally {
+      setLoading(false)
     }
-
-    setLoading(false)
   }
 
-  // ── Recuperare parolă ───────────────────────────────────
+  // ── Recuperare parolă (email) ───────────────────────────
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError("")
     setSuccess("")
 
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${location.origin}/${locale}/auth/reset-password`,
-    })
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${location.origin}/${locale}/auth/reset-password`,
+      })
 
-    if (error) setError(error.message)
-    else setSuccess(t("email_recuperare_trimis"))
+      if (error) {
+        setError(error.message)
+        return
+      }
 
-    setLoading(false)
+      setSuccess(t("email_recuperare_trimis"))
+    } finally {
+      setLoading(false)
+    }
   }
-
-  // ── Google OAuth ────────────────────────────────────────
-  const handleGoogle = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${location.origin}/${locale}/auth/callback`,
-      },
-    })
-  }
-
-  const langLabel = locale.toUpperCase()
 
   // ══════════════════════════════════════════════════════
-  // VIEW: RECUPERARE PAROLĂ
+  // VIEW: FORGOT PASSWORD
   // ══════════════════════════════════════════════════════
   if (view === "forgot") {
     return (
       <div className="min-h-screen bg-[#06141B] flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-md">
-
           <Link href={`/${locale}`} className="flex items-center justify-center mb-8">
             <span className="font-mono text-2xl font-bold tracking-tight">
               <span className="text-[#CCD0CF]">Inteligent </span>
@@ -149,8 +167,6 @@ export default function LoginPage() {
           </Link>
 
           <div className="rounded-2xl border border-[#253745] bg-[#11212D] p-8 shadow-2xl">
-
-            {/* Header + Limbă */}
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-2xl font-bold text-[#CCD0CF]">
@@ -160,6 +176,7 @@ export default function LoginPage() {
                   {t("recuperare_subtitlu")}
                 </p>
               </div>
+
               <button
                 onClick={toggleLang}
                 className="border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all"
@@ -169,7 +186,6 @@ export default function LoginPage() {
             </div>
 
             <form onSubmit={handleForgotPassword} className="flex flex-col gap-4">
-
               <div>
                 <label className="text-xs uppercase tracking-wider text-[#4A5C6A] mb-1 block">
                   {t("email")}
@@ -208,13 +224,16 @@ export default function LoginPage() {
 
               <button
                 type="button"
-                onClick={() => { setView("login"); setError(""); setSuccess("") }}
+                onClick={() => {
+                  setView("auth")
+                  setError("")
+                  setSuccess("")
+                }}
                 className="flex items-center justify-center gap-2 text-sm text-[#4A5C6A] hover:text-[#9BABAB] transition-colors"
               >
                 <ArrowLeft className="h-4 w-4" />
                 {t("inapoi_login")}
               </button>
-
             </form>
           </div>
         </div>
@@ -228,8 +247,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#06141B] flex items-center justify-center px-4 py-16">
       <div className="w-full max-w-md">
-
-        {/* Logo */}
         <Link href={`/${locale}`} className="flex items-center justify-center mb-8">
           <span className="font-mono text-2xl font-bold tracking-tight">
             <span className="text-[#CCD0CF]">Inteligent </span>
@@ -238,8 +255,6 @@ export default function LoginPage() {
         </Link>
 
         <div className="rounded-2xl border border-[#253745] bg-[#11212D] p-8 shadow-2xl">
-
-          {/* Header + Buton Limbă */}
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-[#CCD0CF]">
@@ -249,6 +264,7 @@ export default function LoginPage() {
                 {tab === "login" ? t("subtitlu_login") : t("subtitlu_signup")}
               </p>
             </div>
+
             <button
               onClick={toggleLang}
               className="border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all"
@@ -257,12 +273,15 @@ export default function LoginPage() {
             </button>
           </div>
 
-          {/* Tabs */}
           <div className="flex rounded-xl border border-[#253745] p-1 mb-6">
             {(["login", "signup"] as const).map((tabKey) => (
               <button
                 key={tabKey}
-                onClick={() => { setTab(tabKey); setError(""); setSuccess("") }}
+                onClick={() => {
+                  setTab(tabKey)
+                  setError("")
+                  setSuccess("")
+                }}
                 className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
                   tab === tabKey
                     ? "bg-[#253745] text-[#CCD0CF]"
@@ -274,27 +293,7 @@ export default function LoginPage() {
             ))}
           </div>
 
-          {/* Google ONLY */}
-          <div className="mb-6">
-            <button
-              onClick={handleGoogle}
-              className="flex items-center justify-center gap-3 w-full rounded-xl border border-[#253745] bg-[#06141B]/60 py-3 text-sm text-[#9BABAB] hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
-            >
-              <Chrome className="h-4 w-4" />
-              {t("google")}
-            </button>
-          </div>
-
-          {/* Separator */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-[#253745]" />
-            <span className="text-xs text-[#4A5C6A]">{t("sau")}</span>
-            <div className="flex-1 h-px bg-[#253745]" />
-          </div>
-
-          {/* Form */}
           <form onSubmit={handleEmailAuth} className="flex flex-col gap-4">
-
             {tab === "signup" && (
               <>
                 <div className="grid grid-cols-2 gap-3">
@@ -314,6 +313,7 @@ export default function LoginPage() {
                       />
                     </div>
                   </div>
+
                   <div>
                     <label className="text-xs uppercase tracking-wider text-[#4A5C6A] mb-1 block">
                       {t("prenume")}
@@ -351,7 +351,6 @@ export default function LoginPage() {
               </>
             )}
 
-            {/* Email */}
             <div>
               <label className="text-xs uppercase tracking-wider text-[#4A5C6A] mb-1 block">
                 {t("email")}
@@ -369,7 +368,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Parolă */}
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label className="text-xs uppercase tracking-wider text-[#4A5C6A]">
@@ -378,13 +376,18 @@ export default function LoginPage() {
                 {tab === "login" && (
                   <button
                     type="button"
-                    onClick={() => { setView("forgot"); setError(""); setSuccess("") }}
+                    onClick={() => {
+                      setView("forgot")
+                      setError("")
+                      setSuccess("")
+                    }}
                     className="text-xs text-[#4A5C6A] hover:text-[#9BABAB] transition-colors"
                   >
                     {t("ai_uitat_parola")}
                   </button>
                 )}
               </div>
+
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A5C6A]" />
                 <input
@@ -400,9 +403,7 @@ export default function LoginPage() {
                   onClick={() => setShowPass(!showPass)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A5C6A] hover:text-[#9BABAB]"
                 >
-                  {showPass
-                    ? <EyeOff className="h-4 w-4" />
-                    : <Eye className="h-4 w-4" />}
+                  {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
@@ -424,13 +425,8 @@ export default function LoginPage() {
               className="w-full bg-[#FF4B04] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#FF4B04]/85 transition-colors disabled:opacity-50 mt-1 flex items-center justify-center gap-2"
             >
               <LogIn className="h-4 w-4" />
-              {loading
-                ? t("incarcare")
-                : tab === "login"
-                ? t("btn_login")
-                : t("btn_signup")}
+              {loading ? t("incarcare") : tab === "login" ? t("btn_login") : t("btn_signup")}
             </button>
-
           </form>
 
           <p className="mt-4 text-center text-sm text-[#4A5C6A]">
@@ -441,7 +437,6 @@ export default function LoginPage() {
               ← {t("inapoi")}
             </Link>
           </p>
-
         </div>
       </div>
     </div>
