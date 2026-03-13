@@ -1,19 +1,8 @@
+"use client"
+
 import Link from "next/link"
 import { Phone, Mail, MapPin, ArrowUpRight } from "lucide-react"
-
-const quickLinks = [
-  { label: "Acasa", href: "/" },
-  { label: "Despre Noi", href: "#about" },
-  { label: "Servicii", href: "/servicii" },
-  { label: "Contact", href: "#contact" },
-]
-
-const serviceLinks = [
-  { label: "Instalare Camere", href: "/servicii" },
-  { label: "Monitorizare Remota", href: "/servicii" },
-  { label: "Sisteme Wireless", href: "/servicii" },
-  { label: "Service si Intretinere", href: "/servicii" },
-]
+import { useLocale } from "next-intl"
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -40,6 +29,22 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 export function Footer() {
+  const locale = useLocale()
+
+  const quickLinks = [
+    { label: "Acasa", href: `/${locale}` },
+    { label: "Despre Noi", href: `/${locale}#about` },
+    { label: "Servicii", href: `/${locale}#services` },
+    { label: "Contact", href: `/${locale}#contact` },
+  ]
+
+  const serviceLinks = [
+    { label: "Instalare Camere", href: `/${locale}#services` },
+    { label: "Monitorizare Remota", href: `/${locale}#services` },
+    { label: "Sisteme Wireless", href: `/${locale}#services` },
+    { label: "Service si Intretinere", href: `/${locale}#services` },
+  ]
+
   return (
     <footer className="relative border-t border-[#9BABAB]/10 bg-[#11212D]" role="contentinfo">
       {/* Smooth top transition */}

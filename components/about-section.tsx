@@ -3,12 +3,10 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { CheckCircle, ArrowRight } from "lucide-react"
-import Link from "next/link"
-import { useLocale, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 
 export function AboutSection() {
   const t = useTranslations("about")
-  const locale = useLocale()
   const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   const images = [
@@ -25,6 +23,11 @@ export function AboutSection() {
     t("advantages.3"),
     t("advantages.4"),
   ]
+
+  const handleServicesClick = () => {
+    const section = document.getElementById("services")
+    section?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -68,13 +71,14 @@ export function AboutSection() {
               ))}
             </ul>
 
-            <Link
-              href={`/${locale}/servicii`}
+            <button
+              type="button"
+              onClick={handleServicesClick}
               className="inline-flex items-center gap-2 mt-8 px-5 py-2.5 rounded-xl text-sm font-medium text-white bg-[#FF4B04] border border-[#FF4B04]/30 transition-all duration-300 hover:bg-[#FF4B04]/85 hover:scale-[1.02] active:scale-[0.98]"
             >
               {t("allServices")}
               <ArrowRight className="h-4 w-4" />
-            </Link>
+            </button>
           </div>
 
           {/* Right - Image */}

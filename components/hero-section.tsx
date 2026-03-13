@@ -1,14 +1,12 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
 import { useEffect, useState } from "react"
 import { ArrowRight, Camera, Shield, Clock } from "lucide-react"
-import { useLocale, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 
 export function HeroSection() {
   const t = useTranslations("hero")
-  const locale = useLocale()
   const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   const bgImages = [
@@ -43,6 +41,11 @@ export function HeroSection() {
 
     return () => window.clearInterval(intervalId)
   }, [bgImages.length])
+
+  const handleServicesClick = () => {
+    const section = document.getElementById("services")
+    section?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
 
   const handleContactClick = () => {
     const section = document.getElementById("contact")
@@ -89,13 +92,14 @@ export function HeroSection() {
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
-            <Link
-              href={`/${locale}/servicii`}
+            <button
+              type="button"
+              onClick={handleServicesClick}
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-base font-medium text-white bg-[#FF4B04]/90 border border-[#FF4B04]/30 transition-all duration-300 hover:bg-[#FF4B04] hover:shadow-lg hover:shadow-[#FF4B04]/20 hover:scale-[1.02] active:scale-[0.98]"
             >
               {t("ctaServices")}
               <ArrowRight className="h-4 w-4" />
-            </Link>
+            </button>
             <button
               type="button"
               onClick={handleContactClick}
