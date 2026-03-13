@@ -18,9 +18,9 @@ export default async function HomePage({
       <Navbar />
       <main>
         <HeroSection />
-        <ServicesSection locale={locale} />
-        <RecommendedProductsSection locale={locale} />
         <AboutSection />
+        <ServicesSection />
+        <RecommendedProductsSection locale={locale} />
         <ContactSection />
       </main>
       <Footer />

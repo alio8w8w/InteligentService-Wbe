@@ -50,7 +50,9 @@ export function Navbar() {
 
   const navigateToSection = (sectionId: string) => {
     if (pathname === homePath) {
-      const section = document.getElementById(sectionId)
+      const section =
+        document.getElementById(sectionId) ||
+        (sectionId === "services" ? document.getElementById("servicii") : null)
       section?.scrollIntoView({ behavior: "smooth", block: "start" })
       return
     }
@@ -97,7 +99,9 @@ export function Navbar() {
     }
 
     const timer = window.setTimeout(() => {
-      const section = document.getElementById(pendingSection)
+      const section =
+        document.getElementById(pendingSection) ||
+        (pendingSection === "services" ? document.getElementById("servicii") : null)
       if (section) {
         section.scrollIntoView({ behavior: "smooth", block: "start" })
       }

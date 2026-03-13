@@ -122,20 +122,7 @@ export function HeroSection() {
           ))}
         </div>
 
-        <div className="mt-7 flex items-center gap-2" aria-hidden="true">
-          {bgImages.map((imageSrc, index) => (
-            <span
-              key={imageSrc}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                index === activeImageIndex ? "w-8 bg-[#FF4B04]" : "w-3 bg-[#9BABAB]/50"
-              }`}
-            />
-          ))}
-        </div>
       </div>
-
-      {/* Smooth transition gradient to next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-[#11212D] pointer-events-none" />
     </section>
   )
 }

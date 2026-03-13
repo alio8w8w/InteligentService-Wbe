@@ -60,5 +60,69 @@
         "description": "Raspuns in cel mai scurt timp posibil"
       }
     }
+  },
+  "about": {
+    "badge": "Despre Noi",
+    "title": "Experienta si dedicare in securitate video",
+    "description": "Inteligent Service este partenerul tau de incredere in instalarea si deservirea camerelor de supraveghere. Lucram atat cu gospodarii individuale cat si cu companii, oferind solutii personalizate de securitate video adaptate fiecarui spatiu si nevoie.",
+    "allServices": "Toate Serviciile",
+    "imageAlt": "Centru profesional de monitorizare video",
+    "advantages": [
+      "Personal calificat si certificat",
+      "Echipamente de ultima generatie",
+      "Preturi transparente, fara costuri ascunse",
+      "Garantie pentru toate lucrarile efectuate",
+      "Suport tehnic si post-instalare"
+    ],
+    "services": {
+      "installation": {
+        "title": "Instalare CCTV",
+        "description": "Montaj camere IP si analogice pentru interior si exterior."
+      },
+      "remote": {
+        "title": "Monitorizare Remota",
+        "description": "Acces la camere de pe telefon sau computer, oricand."
+      },
+      "wireless": {
+        "title": "Sisteme Wireless",
+        "description": "Camere fara fir pentru spatii unde cablarea nu este posibila."
+      },
+      "maintenance": {
+        "title": "Service si Intretinere",
+        "description": "Mentenanta preventiva si reparatii pentru sisteme existente."
+      }
+    },
+    "guarantee": {
+      "title": "100% Lucrari Garantate",
+      "description": "Calitate verificata la fiecare proiect"
+    }
+  },
+  "servicesSection": {
+    "badge": "Servicii",
+    "title": "Serviciile noastre principale",
+    "description": "Ne concentram pe servicii profesionale de instalare, monitorizare si mentenanta pentru sisteme de supraveghere. Alege serviciul potrivit si contacteaza-ne direct.",
+    "contactButton": "Contacteaza-ne",
+    "items": {
+      "installation": {
+        "title": "Instalare CCTV",
+        "text": "Montaj camere IP si analogice pentru interior si exterior, configurare completa si testare pe loc.",
+        "imageAlt": "Instalare camere CCTV"
+      },
+      "remote": {
+        "title": "Monitorizare Remota",
+        "text": "Acces la camere de pe telefon sau computer, notificari instant si asistenta pentru configurare.",
+        "imageAlt": "Monitorizare remota pentru camere"
+      },
+      "wireless": {
+        "title": "Sisteme Wireless",
+        "text": "Implementari rapide pentru spatii unde cablarea este limitata, cu semnal optimizat.",
+        "imageAlt": "Sisteme wireless de supraveghere"
+      },
+      "maintenance": {
+        "title": "Service si Intretinere",
+        "text": "Mentenanta preventiva, curatare echipamente, update-uri si reparatii pentru sisteme existente.",
+        "imageAlt": "Service si intretinere camere"
+      }
+    }
   }
 }

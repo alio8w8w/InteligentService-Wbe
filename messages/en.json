@@ -59,5 +59,69 @@
         "description": "Response in the shortest possible time"
       }
     }
+  },
+  "about": {
+    "badge": "About Us",
+    "title": "Experience and dedication in video security",
+    "description": "Inteligent Service is your trusted partner for installing and maintaining surveillance cameras. We work with both households and companies, delivering tailored video security solutions for each space and need.",
+    "allServices": "All Services",
+    "imageAlt": "Professional video monitoring center",
+    "advantages": [
+      "Qualified and certified staff",
+      "Latest-generation equipment",
+      "Transparent prices with no hidden costs",
+      "Warranty for all completed work",
+      "Technical and post-installation support"
+    ],
+    "services": {
+      "installation": {
+        "title": "CCTV Installation",
+        "description": "IP and analog camera installation for indoor and outdoor spaces."
+      },
+      "remote": {
+        "title": "Remote Monitoring",
+        "description": "Access cameras from your phone or computer anytime."
+      },
+      "wireless": {
+        "title": "Wireless Systems",
+        "description": "Wireless cameras for spaces where cabling is limited."
+      },
+      "maintenance": {
+        "title": "Service and Maintenance",
+        "description": "Preventive maintenance and repairs for existing systems."
+      }
+    },
+    "guarantee": {
+      "title": "100% Guaranteed Work",
+      "description": "Quality checked on every project"
+    }
+  },
+  "servicesSection": {
+    "badge": "Services",
+    "title": "Our Core Services",
+    "description": "We focus on professional installation, monitoring and maintenance for surveillance systems. Pick the right service and contact us directly.",
+    "contactButton": "Contact Us",
+    "items": {
+      "installation": {
+        "title": "CCTV Installation",
+        "text": "IP and analog camera setup for indoor and outdoor spaces, with full configuration and on-site testing.",
+        "imageAlt": "CCTV installation service"
+      },
+      "remote": {
+        "title": "Remote Monitoring",
+        "text": "Access cameras from your phone or computer, receive instant alerts and get setup assistance.",
+        "imageAlt": "Remote camera monitoring"
+      },
+      "wireless": {
+        "title": "Wireless Systems",
+        "text": "Fast implementation for spaces with limited cabling, with optimized signal coverage.",
+        "imageAlt": "Wireless surveillance systems"
+      },
+      "maintenance": {
+        "title": "Service and Maintenance",
+        "text": "Preventive maintenance, equipment cleaning, updates and repairs for existing systems.",
+        "imageAlt": "Camera service and maintenance"
+      }
+    }
   }
 }
