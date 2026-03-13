@@ -66,9 +66,9 @@ export async function GET(request: NextRequest) {
 
     // Eroare la exchange → înapoi la login cu eroare
     return NextResponse.redirect(
-      `${origin}/${locale}/auth/login?error=auth_callback_error`
+      `${origin}/${locale}/login?error=auth_callback_error`
     )
   }
 
-  return NextResponse.redirect(`${origin}/${locale}/auth/login`)
+  return NextResponse.redirect(`${origin}/${locale}/login`)
 }

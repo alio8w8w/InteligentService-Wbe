@@ -20,6 +20,8 @@
     "prenume": "First name",
     "telefon": "Phone number",
     "email": "Email",
+    "email_invalid": "Invalid email format.",
+    "invalid_login_credentials": "Incorrect email or password.",
     "parola": "Password",
     "ai_uitat_parola": "Forgot password?",
     "btn_login": "Sign In",

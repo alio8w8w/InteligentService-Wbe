@@ -17,6 +17,10 @@ function normalizeMdPhone(raw: string) {
   return { ok: true, e164: `+373${digits}`, national: digits }
 }
 
+  function isValidEmail(value: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+  }
+
 export default function AuthCard() {
   const [view, setView] = useState<View>("auth")
   const [tab, setTab] = useState<Tab>("login")
@@ -63,7 +67,7 @@ export default function AuthCard() {
     setSuccess("")
 
     const cleanEmail = email.trim().toLowerCase()
-    if (!cleanEmail.includes("@") || !cleanEmail.includes(".")) {
+      if (!isValidEmail(cleanEmail)) {
       setError(t("email_invalid"))
       setLoading(false)
       return
@@ -81,6 +85,7 @@ export default function AuthCard() {
           email: cleanEmail,
           password,
           options: {
+              emailRedirectTo: `${location.origin}/${locale}/auth/callback?next=${encodeURIComponent(returnTo)}`,
             data: {
               given_name: nume.trim(),
               family_name: prenume.trim(),
@@ -187,6 +192,7 @@ export default function AuthCard() {
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A5C6A]" />
                   <input
                     type="email"
+                      autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -273,6 +279,7 @@ export default function AuthCard() {
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A5C6A]" />
                       <input
                         type="text"
+                          autoComplete="family-name"
                         value={nume}
                         onChange={(e) => setNume(e.target.value)}
                         required
@@ -287,6 +294,7 @@ export default function AuthCard() {
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A5C6A]" />
                       <input
                         type="text"
+                          autoComplete="given-name"
                         value={prenume}
                         onChange={(e) => setPrenume(e.target.value)}
                         required
@@ -327,6 +335,7 @@ export default function AuthCard() {
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A5C6A]" />
                 <input
                   type="email"
+                    autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -353,6 +362,8 @@ export default function AuthCard() {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#4A5C6A]" />
                 <input
                   type={showPass ? "text" : "password"}
+                    autoComplete={tab === "login" ? "current-password" : "new-password"}
+                    minLength={6}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required

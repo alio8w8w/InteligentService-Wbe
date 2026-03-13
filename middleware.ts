@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
   const isProtectedAccountRoute = isLocaleRoute && pathname.startsWith(`/${locale}/cont`)
 
   if (isProtectedAccountRoute && !user) {
-    const loginUrl = new URL(`/${locale}/auth/login`, request.url)
+    const loginUrl = new URL(`/${locale}/login`, request.url)
     const returnTo = `${pathname}${request.nextUrl.search}`
     loginUrl.searchParams.set("returnTo", returnTo)
 

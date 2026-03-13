@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation"
+import { Navbar } from "@/components/navbar"
 import AuthCard from "@/components/auth/AuthCard"
 import { createClient } from "@/lib/supabase/server"
 
@@ -22,5 +23,12 @@ export default async function LoginPage({
     redirect(safeReturnTo)
   }
 
-  return <AuthCard />
+  return (
+    <div className="min-h-screen bg-[#06141B] text-[#CCD0CF]">
+      <Navbar />
+      <main className="pt-20">
+        <AuthCard />
+      </main>
+    </div>
+  )
 }

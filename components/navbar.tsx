@@ -1,10 +1,10 @@
 "use client"
 
-import { type MouseEvent, useEffect, useMemo, useState } from "react"
+import { type MouseEvent, useEffect, useState } from "react"
 import { Phone, Menu, X, LogIn } from "lucide-react"
 import Link from "next/link"
 import { useTranslations, useLocale } from "next-intl"
-import { useRouter, usePathname, useSearchParams } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -14,7 +14,6 @@ export function Navbar() {
   const currentLocale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const homePath = `/${currentLocale}`
 
   const toggleLang = () => {
@@ -27,19 +26,7 @@ export function Navbar() {
   }
 
   const langLabel = (currentLocale ?? "ro").toUpperCase()
-  const returnTo = useMemo(() => {
-    const currentPath = pathname || homePath
-    const currentSearch = searchParams.toString()
-    const fullPath = currentSearch ? `${currentPath}?${currentSearch}` : currentPath
-
-    if (fullPath.startsWith(`/${currentLocale}/auth`)) {
-      return `/${currentLocale}/cont`
-    }
-
-    return fullPath
-  }, [currentLocale, homePath, pathname, searchParams])
-
-  const loginHref = `/${currentLocale}/auth/login?returnTo=${encodeURIComponent(returnTo)}`
+  const loginHref = `/${currentLocale}/login`
 
   const navLinks = [
     { key: "despre", sectionId: "about" },

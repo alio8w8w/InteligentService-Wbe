@@ -20,6 +20,8 @@
     "prenume": "Имя",
     "telefon": "Номер телефона",
     "email": "Email",
+    "email_invalid": "Неверный формат email.",
+    "invalid_login_credentials": "Неверный email или пароль.",
     "parola": "Пароль",
     "ai_uitat_parola": "Забыли пароль?",
     "btn_login": "Войти",

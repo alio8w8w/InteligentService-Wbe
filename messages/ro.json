@@ -16,6 +16,7 @@
     "tab_signin": "Sign in",
     "email": "Email",
     "email_invalid": "Email invalid. Verifică formatul.",
+    "invalid_login_credentials": "Email sau parola incorecte.",
     "parola": "Parolă",
     "nume": "Nume",
     "prenume": "Prenume",
