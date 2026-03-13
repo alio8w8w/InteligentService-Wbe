@@ -1,76 +1,108 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 import { ArrowRight, Camera, Shield, Clock } from "lucide-react"
-
-const features = [
-  {
-    icon: Camera,
-    title: "Instalare Camere",
-    description: "Montaj profesional pentru case si companii",
-  },
-  {
-    icon: Shield,
-    title: "Securitate 24/7",
-    description: "Monitorizare continua si asistenta tehnica",
-  },
-  {
-    icon: Clock,
-    title: "Interventie Rapida",
-    description: "Raspuns in cel mai scurt timp posibil",
-  },
-]
+import { useLocale, useTranslations } from "next-intl"
 
 export function HeroSection() {
+  const t = useTranslations("hero")
+  const locale = useLocale()
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
+
+  const bgImages = [
+    "/images/hero-cctv.jpg",
+    "/images/hero-service.jpg",
+    "/images/about-cctv.jpg",
+    "/images/about-workshop.jpg",
+  ]
+
+  const features = [
+    {
+      icon: Camera,
+      title: t("features.installation.title"),
+      description: t("features.installation.description"),
+    },
+    {
+      icon: Shield,
+      title: t("features.security.title"),
+      description: t("features.security.description"),
+    },
+    {
+      icon: Clock,
+      title: t("features.intervention.title"),
+      description: t("features.intervention.description"),
+    },
+  ]
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveImageIndex((prev) => (prev + 1) % bgImages.length)
+    }, 5000)
+
+    return () => window.clearInterval(intervalId)
+  }, [bgImages.length])
+
+  const handleContactClick = () => {
+    const section = document.getElementById("contact")
+    section?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+
   return (
     <section id="intro" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background image with deep overlays */}
       <div className="absolute inset-0">
-        <Image
-          src="/images/hero-cctv.jpg"
-          alt="Camera de supraveghere profesionala"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#06141B]/70 via-[#06141B]/50 to-[#06141B]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#06141B]/80 via-transparent to-[#06141B]/40" />
+        {bgImages.map((imageSrc, index) => (
+          <Image
+            key={imageSrc}
+            src={imageSrc}
+            alt={t("imageAlt")}
+            fill
+            className={`object-cover transition-opacity duration-1000 ${
+              index === activeImageIndex ? "opacity-100" : "opacity-0"
+            }`}
+            priority={index === 0}
+          />
+        ))}
+        <div className="absolute inset-0 bg-linear-to-b from-[#06141B]/70 via-[#06141B]/50 to-[#06141B]" />
+        <div className="absolute inset-0 bg-linear-to-r from-[#06141B]/80 via-transparent to-[#06141B]/40" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full pt-28 pb-20 md:pt-32 md:pb-28">
         <div className="max-w-2xl">
           {/* Small accent tag */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="h-[2px] w-10 bg-[#FF4B04]" />
+            <div className="h-0.5 w-10 bg-[#FF4B04]" />
             <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#FF4B04]">
-              Camere de Supraveghere
+              {t("badge")}
             </span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight text-balance font-mono">
-            Securitate{" "}
-            <span className="text-[#9BABAB]">inteligenta</span>{" "}
-            pentru casa si afacerea ta
+            {t("title.before")} <span className="text-[#9BABAB]">{t("title.highlight")}</span>{" "}
+            {t("title.after")}
           </h1>
 
           <p className="mt-6 text-base sm:text-lg text-[#9BABAB] leading-relaxed max-w-xl">
-            Instalam si deservim sisteme de supraveghere video pentru gospodarii
-            si companii. Solutii moderne, fiabile si adaptate nevoilor tale.
+            {t("description")}
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
             <Link
-              href="/servicii"
+              href={`/${locale}/servicii`}
               className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-base font-medium text-white bg-[#FF4B04]/90 border border-[#FF4B04]/30 transition-all duration-300 hover:bg-[#FF4B04] hover:shadow-lg hover:shadow-[#FF4B04]/20 hover:scale-[1.02] active:scale-[0.98]"
             >
-              Vezi Serviciile
+              {t("ctaServices")}
               <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link
-              href="#contact"
+            <button
+              type="button"
+              onClick={handleContactClick}
               className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-base font-medium text-[#CCD0CF] border border-[#9BABAB]/15 bg-[#9BABAB]/5 backdrop-blur-sm transition-all duration-300 hover:bg-[#9BABAB]/15 hover:border-[#9BABAB]/25 hover:scale-[1.02] active:scale-[0.98]"
             >
-              Contacteaza-ne
-            </Link>
+              {t("ctaContact")}
+            </button>
           </div>
         </div>
 
@@ -89,10 +121,21 @@ export function HeroSection() {
             </div>
           ))}
         </div>
+
+        <div className="mt-7 flex items-center gap-2" aria-hidden="true">
+          {bgImages.map((imageSrc, index) => (
+            <span
+              key={imageSrc}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                index === activeImageIndex ? "w-8 bg-[#FF4B04]" : "w-3 bg-[#9BABAB]/50"
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Smooth transition gradient to next section */}
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-[#11212D] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-[#11212D] pointer-events-none" />
     </section>
   )
 }

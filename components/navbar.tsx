@@ -1,17 +1,21 @@
 "use client"
 
-import { useState } from "react"
+import { type MouseEvent, useEffect, useMemo, useState } from "react"
 import { Phone, Menu, X, LogIn } from "lucide-react"
 import Link from "next/link"
 import { useTranslations, useLocale } from "next-intl"
-import { useRouter, usePathname } from "next/navigation"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isScrolling, setIsScrolling] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const t = useTranslations("nav")
   const currentLocale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const homePath = `/${currentLocale}`
 
   const toggleLang = () => {
     const locales = ["ro", "ru", "en"]
@@ -19,19 +23,115 @@ export function Navbar() {
     const newLocale = locales[(currentIndex + 1) % locales.length]
     const segments = pathname.split("/")
     segments[1] = newLocale
-    router.push(segments.join("/") || `/${newLocale}`)
+    router.push(segments.join("/") || `/${newLocale}`, { scroll: false })
   }
 
   const langLabel = (currentLocale ?? "ro").toUpperCase()
-  const loginHref = `/${currentLocale}/auth/login`
+  const returnTo = useMemo(() => {
+    const currentPath = pathname || homePath
+    const currentSearch = searchParams.toString()
+    const fullPath = currentSearch ? `${currentPath}?${currentSearch}` : currentPath
+
+    if (fullPath.startsWith(`/${currentLocale}/auth`)) {
+      return `/${currentLocale}/cont`
+    }
+
+    return fullPath
+  }, [currentLocale, homePath, pathname, searchParams])
+
+  const loginHref = `/${currentLocale}/auth/login?returnTo=${encodeURIComponent(returnTo)}`
+
+  const navLinks = [
+    { key: "despre", sectionId: "about" },
+    { key: "servicii", sectionId: "services" },
+    { key: "produse", sectionId: "products" },
+    { key: "contact", sectionId: "contact" },
+  ]
+
+  const navigateToSection = (sectionId: string) => {
+    if (pathname === homePath) {
+      const section = document.getElementById(sectionId)
+      section?.scrollIntoView({ behavior: "smooth", block: "start" })
+      return
+    }
+
+    sessionStorage.setItem("pendingHomeSection", sectionId)
+    router.push(homePath)
+  }
+
+  useEffect(() => {
+    let timeoutId: number | undefined
+
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+      setIsScrolling(true)
+
+      if (timeoutId) {
+        window.clearTimeout(timeoutId)
+      }
+
+      timeoutId = window.setTimeout(() => {
+        setIsScrolling(false)
+      }, 140)
+    }
+
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+
+    return () => {
+      if (timeoutId) {
+        window.clearTimeout(timeoutId)
+      }
+      window.removeEventListener("scroll", onScroll)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (pathname !== homePath) {
+      return
+    }
+
+    const pendingSection = sessionStorage.getItem("pendingHomeSection")
+    if (!pendingSection) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      const section = document.getElementById(pendingSection)
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+      sessionStorage.removeItem("pendingHomeSection")
+    }, 120)
+
+    return () => window.clearTimeout(timer)
+  }, [homePath, pathname])
+
+  const handleLogoClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== homePath) {
+      return
+    }
+
+    event.preventDefault()
+    window.scrollTo({ top: 0, behavior: "smooth" })
+    window.history.replaceState({}, "", homePath)
+  }
+
+  const navSurfaceClass = isScrolling
+    ? "bg-[#11212D]/55"
+    : isScrolled
+      ? "bg-[#11212D]/75"
+      : "bg-[#11212D]/95"
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <div className="mx-auto max-w-6xl px-4 mt-3">
-        <nav className="bg-[#11212D]/95 backdrop-blur-md rounded-full border border-[#253745] px-6 py-3 flex items-center justify-between">
+        <nav
+          className={`${navSurfaceClass} backdrop-blur-md rounded-full border border-[#253745] px-6 py-3 flex items-center justify-between transition-colors duration-300`}
+        >
 
           {/* Logo */}
-          <Link href={`/${currentLocale}`} className="flex items-center">
+          <Link href={homePath} onClick={handleLogoClick} className="flex items-center">
             <span className="font-mono text-lg font-bold tracking-tight">
               <span className="text-[#CCD0CF]">Inteligent </span>
               <span className="text-[#FF4B04]">Service</span>
@@ -40,24 +140,19 @@ export function Navbar() {
 
           {/* Desktop nav links */}
           <div className="hidden lg:flex items-center gap-1">
-            {[
-              { href: "#acasa",    key: "acasa"    },
-              { href: "#servicii", key: "servicii" },
-              { href: "#produse",  key: "produse"  },
-              { href: "#despre",   key: "despre"   },
-              { href: "#contact",  key: "contact"  },
-            ].map(({ href, key }) => (
-              <a
-                key={href}
-                href={href}
+            {navLinks.map(({ key, sectionId }) => (
+              <button
+                key={sectionId}
+                type="button"
+                onClick={() => navigateToSection(sectionId)}
                 className="px-4 py-2 text-sm text-[#9BABAB] hover:text-[#CCD0CF] hover:bg-[#253745] rounded-full transition-all duration-200"
               >
                 {t(key)}
-              </a>
+              </button>
             ))}
           </div>
 
-          {/* Desktop right: Auth + Lang + CTA */}
+          {/* Desktop right: Auth + Phone + Lang */}
           <div className="hidden lg:flex items-center gap-2">
 
             {/* Buton autentificare — cu locale corect */}
@@ -69,14 +164,6 @@ export function Navbar() {
               {t("autentificare")}
             </Link>
 
-            {/* Buton limbă */}
-            <button
-              onClick={toggleLang}
-              className="min-w-[44px] border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-3 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
-            >
-              {langLabel}
-            </button>
-
             {/* CTA telefon */}
             <a
               href="tel:+37368123456"
@@ -85,6 +172,14 @@ export function Navbar() {
               <Phone className="h-4 w-4" />
               +373 68 123 456
             </a>
+
+            {/* Buton limbă */}
+            <button
+              onClick={toggleLang}
+              className="min-w-11 border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-3 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
+            >
+              {langLabel}
+            </button>
           </div>
 
           {/* Mobile right: Lang + Auth icon + Burger */}
@@ -118,21 +213,18 @@ export function Navbar() {
         {/* Mobile dropdown */}
         {isOpen && (
           <div className="lg:hidden mt-2 bg-[#11212D]/97 backdrop-blur-md rounded-2xl border border-[#253745] p-4">
-            {[
-              { href: "#acasa",    key: "acasa"    },
-              { href: "#servicii", key: "servicii" },
-              { href: "#produse",  key: "produse"  },
-              { href: "#despre",   key: "despre"   },
-              { href: "#contact",  key: "contact"  },
-            ].map(({ href, key }) => (
-              <a
-                key={href}
-                href={href}
-                onClick={() => setIsOpen(false)}
+            {navLinks.map(({ key, sectionId }) => (
+              <button
+                key={sectionId}
+                type="button"
+                onClick={() => {
+                  setIsOpen(false)
+                  navigateToSection(sectionId)
+                }}
                 className="block px-4 py-3 text-[#9BABAB] hover:text-[#CCD0CF] hover:bg-[#253745] rounded-xl transition-all duration-200"
               >
                 {t(key)}
-              </a>
+              </button>
             ))}
 
             <div className="my-3 border-t border-[#253745]" />

@@ -32,16 +32,35 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh session — IMPORTANT pentru Google OAuth!
-  await supabase.auth.getUser()
+  // Refresh session si extrage user-ul curent.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   // Aplică i18n middleware
   const intlResponse = intlMiddleware(request)
 
-  // Copiază cookiurile Supabase în răspunsul intl
+  // Copiaza cookie-urile Supabase in raspunsul intl
   response.cookies.getAll().forEach(cookie => {
     intlResponse.cookies.set(cookie.name, cookie.value, cookie)
   })
+
+  const pathname = request.nextUrl.pathname
+  const locale = pathname.split("/")[1]
+  const isLocaleRoute = routing.locales.includes(locale as (typeof routing.locales)[number])
+  const isProtectedAccountRoute = isLocaleRoute && pathname.startsWith(`/${locale}/cont`)
+
+  if (isProtectedAccountRoute && !user) {
+    const loginUrl = new URL(`/${locale}/auth/login`, request.url)
+    const returnTo = `${pathname}${request.nextUrl.search}`
+    loginUrl.searchParams.set("returnTo", returnTo)
+
+    const redirectResponse = NextResponse.redirect(loginUrl)
+    response.cookies.getAll().forEach(cookie => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, cookie)
+    })
+    return redirectResponse
+  }
 
   return intlResponse
 }

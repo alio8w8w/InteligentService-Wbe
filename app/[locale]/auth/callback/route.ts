@@ -6,11 +6,14 @@ import type { NextRequest } from "next/server"
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get("code")
-  const next = searchParams.get("next") ?? "/"
+  const next = searchParams.get("next") || searchParams.get("returnTo")
 
   // Extrage locale din URL: /ro/auth/callback → "ro"
   const pathname = new URL(request.url).pathname
   const locale = pathname.split("/")[1] ?? "ro"
+
+  const safeReturnTo =
+    next && next.startsWith("/") ? next : `/${locale}/cont`
 
   if (code) {
     const cookieStore = await cookies()
@@ -52,12 +55,12 @@ export async function GET(request: NextRequest) {
         // Dacă nu are telefon → completează profilul
         if (!profile?.telefon) {
           return NextResponse.redirect(
-            `${origin}/${locale}/auth/completeaza-profil`
+            `${origin}/${locale}/cont/completeaza-profil`
           )
         }
 
-        // Profilul complet → mergi la cont
-        return NextResponse.redirect(`${origin}/${locale}/cont`)
+        // Profilul complet -> mergi la pagina unde utilizatorul a ramas.
+        return NextResponse.redirect(`${origin}${safeReturnTo}`)
       }
     }
 

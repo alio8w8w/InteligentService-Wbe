@@ -1,6 +1,6 @@
 {
   "nav": {
-    "acasa": "Acasă", "servicii": "Servicii", "tehnologii": "Tehnologii",
+    "servicii": "Servicii", "tehnologii": "Tehnologii",
     "produse": "Produse", "despre": "Despre Noi", "echipa": "Echipă",
     "contacte": "Contacte", "contact": "Contact", "programeaza": "Programează",
     "autentificare": "Autentificare", "despreNoi": "Despre Noi",
@@ -8,30 +8,57 @@
     "inchide": "Închide meniul", "deschide": "Deschide meniul"
   },
   "auth": {
-    "titlu_login": "Bun venit!",
-    "titlu_signup": "Creează cont",
-    "subtitlu_login": "Intră în contul tău pentru a continua",
-    "subtitlu_signup": "Completează datele pentru a te înregistra",
-    "tab_login": "Autentificare",
-    "tab_signup": "Înregistrare",
-    "google": "Continuă cu Google",
-    "sau": "sau cu email",
+    "titlu_login": "Autentificare",
+    "titlu_signup_signin": "Sign in (creare cont)",
+    "subtitlu_login": "Intră în contul tău",
+    "subtitlu_signup": "Completează datele pentru a crea cont",
+    "tab_login": "Log in",
+    "tab_signin": "Sign in",
+    "email": "Email",
+    "email_invalid": "Email invalid. Verifică formatul.",
+    "parola": "Parolă",
     "nume": "Nume",
     "prenume": "Prenume",
     "telefon": "Număr de telefon",
-    "email": "Email",
-    "parola": "Parolă",
-    "ai_uitat_parola": "Ai uitat parola?",
-    "btn_login": "Intră în cont",
-    "btn_signup": "Creează cont",
+    "telefon_hint_md": "Introdu 8 cifre (sau 0 + 8 cifre). Prefixul +373 este automat.",
+    "telefon_invalid_8": "Numărul trebuie să aibă exact 8 cifre (0 ini��ial este ignorat).",
+    "btn_login": "Log in",
+    "btn_signin": "Sign in",
     "incarcare": "Se încarcă...",
-    "verifica_email": "✅ Verifică emailul pentru confirmare!",
-    "eroare_login": "Email sau parolă incorectă.",
-    "inapoi": "Înapoi la pagina principală",
-    "inapoi_login": "Înapoi la autentificare",
+    "ai_uitat_parola": "Ai uitat parola?",
     "recuperare_titlu": "Recuperare parolă",
-    "recuperare_subtitlu": "Îți trimitem un link de resetare pe email",
-    "trimite_link": "Trimite link de resetare",
-    "email_recuperare_trimis": "✅ Link de recuperare trimis! Verifică emailul."
+    "recuperare_subtitlu_link": "Îți trimitem un link pe email pentru resetare",
+    "trimite_link": "Trimite email de resetare",
+    "email_recuperare_trimis": "Email trimis. Verifică inbox/spam.",
+    "verifica_email": "Verifică emailul pentru confirmare.",
+    "eroare_login": "Nu s-a putut face autentificarea.",
+    "inapoi_login": "Înapoi",
+    "inapoi": "Înapoi la pagina principală"
+  },
+  "hero": {
+    "imageAlt": "Camera de supraveghere profesionala",
+    "badge": "Camere de Supraveghere",
+    "title": {
+      "before": "Securitate",
+      "highlight": "inteligenta",
+      "after": "pentru casa si afacerea ta"
+    },
+    "description": "Instalam si deservim sisteme de supraveghere video pentru gospodarii si companii. Solutii moderne, fiabile si adaptate nevoilor tale.",
+    "ctaServices": "Vezi Serviciile",
+    "ctaContact": "Contacteaza-ne",
+    "features": {
+      "installation": {
+        "title": "Instalare Camere",
+        "description": "Montaj profesional pentru case si companii"
+      },
+      "security": {
+        "title": "Securitate 24/7",
+        "description": "Monitorizare continua si asistenta tehnica"
+      },
+      "intervention": {
+        "title": "Interventie Rapida",
+        "description": "Raspuns in cel mai scurt timp posibil"
+      }
+    }
   }
 }

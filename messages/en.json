@@ -1,6 +1,6 @@
 {
   "nav": {
-    "acasa": "Home", "servicii": "Services", "tehnologii": "Technologies",
+    "servicii": "Services", "tehnologii": "Technologies",
     "produse": "Products", "despre": "About Us", "echipa": "Team",
     "contacte": "Contacts", "contact": "Contact", "programeaza": "Book Now",
     "autentificare": "Sign In", "despreNoi": "About Us",
@@ -33,5 +33,31 @@
     "recuperare_subtitlu": "We'll send a reset link to your email",
     "trimite_link": "Send reset link",
     "email_recuperare_trimis": "✅ Recovery link sent! Check your email."
+  },
+  "hero": {
+    "imageAlt": "Professional surveillance camera",
+    "badge": "Surveillance Cameras",
+    "title": {
+      "before": "Smart",
+      "highlight": "security",
+      "after": "for your home and business"
+    },
+    "description": "We install and maintain video surveillance systems for households and companies. Modern, reliable solutions tailored to your needs.",
+    "ctaServices": "View Services",
+    "ctaContact": "Contact Us",
+    "features": {
+      "installation": {
+        "title": "Camera Installation",
+        "description": "Professional setup for homes and companies"
+      },
+      "security": {
+        "title": "24/7 Security",
+        "description": "Continuous monitoring and technical support"
+      },
+      "intervention": {
+        "title": "Fast Intervention",
+        "description": "Response in the shortest possible time"
+      }
+    }
   }
 }
