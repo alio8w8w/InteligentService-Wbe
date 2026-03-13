@@ -146,7 +146,6 @@ export function Navbar() {
           {/* Desktop right: Auth + Phone + Lang */}
           <div className="hidden lg:flex items-center gap-2">
 
-            {/* Buton autentificare — cu locale corect */}
             <Link
               href={loginHref}
               className="flex items-center gap-1.5 border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-4 py-2 rounded-full text-sm font-medium hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"

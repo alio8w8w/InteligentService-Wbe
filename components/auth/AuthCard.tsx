@@ -45,7 +45,7 @@ export default function AuthCard() {
 
   const returnTo = useMemo(() => {
     const v = searchParams.get("returnTo")
-    if (!v || !v.startsWith("/")) return `/${locale}`
+    if (!v || !v.startsWith("/")) return `/${locale}/cont/completeaza-profil`
     return v
   }, [searchParams, locale])
 
@@ -113,8 +113,6 @@ export default function AuthCard() {
               nume: nume.trim(),
               prenume: prenume.trim(),
               telefon: phone.e164,
-              profil_complet: true,
-              updated_at: new Date().toISOString(),
             })
             .eq("id", data.user.id)
         }

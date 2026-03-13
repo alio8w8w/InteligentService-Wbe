@@ -5,14 +5,18 @@
     "contacte": "Контакты", "contact": "Контакт", "programeaza": "Записаться",
     "autentificare": "Войти", "despreNoi": "О нас",
     "locatie": "Где нас найти", "magazin": "Магазин",
-    "inchide": "Закрыть меню", "deschide": "Открыть меню"
+    "inchide": "Закрыть меню", "deschide": "Открыть меню",
+    "contul_meu": "Мой аккаунт", "cosul_meu": "Моя корзина",
+    "setari": "Настройки", "iesi_din_cont": "Выйти"
   },
   "auth": {
     "titlu_login": "Добро пожаловать!",
+    "titlu_signup_signin": "Создать аккаунт",
     "titlu_signup": "Создать аккаунт",
     "subtitlu_login": "Войдите в свой аккаунт чтобы продолжить",
     "subtitlu_signup": "Заполните данные для регистрации",
     "tab_login": "Войти",
+    "tab_signin": "Регистрация",
     "tab_signup": "Регистрация",
     "google": "Продолжить с Google",
     "sau": "или с email",
@@ -25,6 +29,7 @@
     "parola": "Пароль",
     "ai_uitat_parola": "Забыли пароль?",
     "btn_login": "Войти",
+    "btn_signin": "Создать аккаунт",
     "btn_signup": "Создать аккаунт",
     "incarcare": "Загрузка...",
     "verifica_email": "✅ Проверьте email для подтверждения!",
@@ -32,6 +37,7 @@
     "inapoi": "Вернуться на главную",
     "inapoi_login": "Вернуться к входу",
     "recuperare_titlu": "Восстановление пароля",
+    "recuperare_subtitlu_link": "Отправим ссылку для сброса на email",
     "recuperare_subtitlu": "Отправим ссылку для сброса на email",
     "trimite_link": "Отправить ссылку",
     "email_recuperare_trimis": "✅ Ссылка отправлена! Проверьте email."

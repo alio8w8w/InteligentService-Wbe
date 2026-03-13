@@ -5,7 +5,9 @@
     "contacte": "Contacte", "contact": "Contact", "programeaza": "Programează",
     "autentificare": "Autentificare", "despreNoi": "Despre Noi",
     "locatie": "Unde Ne Găsiți", "magazin": "Magazin",
-    "inchide": "Închide meniul", "deschide": "Deschide meniul"
+    "inchide": "Închide meniul", "deschide": "Deschide meniul",
+    "contul_meu": "Contul Meu", "cosul_meu": "Coșul Meu",
+    "setari": "Setări", "iesi_din_cont": "Ieși din cont"
   },
   "auth": {
     "titlu_login": "Autentificare",

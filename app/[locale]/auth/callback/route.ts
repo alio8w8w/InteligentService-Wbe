@@ -42,15 +42,35 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
 
       if (user) {
-        // Verifică dacă profilul există
+        const metadata = user.user_metadata ?? {}
+
+        // La confirmarea email-ului, signUp nu mai are sesiune în client.
+        // De aceea upsert-ul profilului se face sigur aici, în callback.
+        const { error: upsertError } = await supabase.from("profiles").upsert(
+          {
+            id: user.id,
+            email: user.email ?? null,
+            nume: metadata.given_name ?? null,
+            prenume: metadata.family_name ?? null,
+            telefon: metadata.phone ?? null,
+          },
+          { onConflict: "id" }
+        )
+
+        if (upsertError) {
+          console.error("profiles upsert failed in auth callback", upsertError)
+        }
+
         const { data: profile } = await supabase
           .from("profiles")
-          .select("profil_complet, telefon")
+          .select("telefon")
           .eq("id", user.id)
-          .single()
+          .maybeSingle()
 
         // Dacă nu are telefon → completează profilul
         if (!profile?.telefon) {

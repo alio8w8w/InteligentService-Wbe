@@ -12,7 +12,7 @@ export default async function LoginPage({
 }) {
   const { locale } = await params
   const { returnTo } = await searchParams
-  const safeReturnTo = returnTo?.startsWith("/") ? returnTo : `/${locale}/cont`
+  const safeReturnTo = returnTo?.startsWith("/") ? returnTo : `/${locale}/cont/completeaza-profil`
 
   const supabase = await createClient()
   const {
