@@ -5,7 +5,6 @@ const quickLinks = [
   { label: "Acasa", href: "/" },
   { label: "Despre Noi", href: "#about" },
   { label: "Servicii", href: "/servicii" },
-  { label: "Preturi", href: "/preturi" },
   { label: "Contact", href: "#contact" },
 ]
 
@@ -44,7 +43,7 @@ export function Footer() {
   return (
     <footer className="relative border-t border-[#9BABAB]/10 bg-[#11212D]" role="contentinfo">
       {/* Smooth top transition */}
-      <div className="absolute -top-px left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#9BABAB]/20 to-transparent" />
+      <div className="absolute -top-px left-0 right-0 h-px bg-linear-to-r from-transparent via-[#9BABAB]/20 to-transparent" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Main footer content */}
@@ -143,19 +142,19 @@ export function Footer() {
             <ul className="flex flex-col gap-3">
               <li>
                 <a href="tel:+40700000000" className="flex items-center gap-3 text-sm text-[#4A5C6A] hover:text-[#9BABAB] transition-colors duration-300">
-                  <Phone className="h-4 w-4 text-[#9BABAB] flex-shrink-0" />
+                  <Phone className="h-4 w-4 text-[#9BABAB] shrink-0" />
                   +40 700 000 000
                 </a>
               </li>
               <li>
                 <a href="mailto:contact@inteligentservice.ro" className="flex items-center gap-3 text-sm text-[#4A5C6A] hover:text-[#9BABAB] transition-colors duration-300">
-                  <Mail className="h-4 w-4 text-[#9BABAB] flex-shrink-0" />
+                  <Mail className="h-4 w-4 text-[#9BABAB] shrink-0" />
                   contact@inteligentservice.ro
                 </a>
               </li>
               <li>
                 <div className="flex items-start gap-3 text-sm text-[#4A5C6A]">
-                  <MapPin className="h-4 w-4 text-[#9BABAB] flex-shrink-0 mt-0.5" />
+                  <MapPin className="h-4 w-4 text-[#9BABAB] shrink-0 mt-0.5" />
                   <span>Str. Exemplu Nr. 123,<br />Oras, Judet</span>
                 </div>
               </li>
