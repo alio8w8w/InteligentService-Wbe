@@ -108,6 +108,24 @@ export function Navbar() {
     window.history.replaceState({}, "", homePath)
   }
 
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    const isMobile = window.matchMedia("(max-width: 1023px)").matches
+    if (!isMobile) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [isOpen])
+
   const navSurfaceClass = isScrolling
     ? "bg-[#11212D]/55"
     : isScrolled
@@ -200,9 +218,18 @@ export function Navbar() {
           </div>
         </nav>
 
+        {isOpen && (
+          <button
+            type="button"
+            aria-label="Close menu"
+            onClick={() => setIsOpen(false)}
+            className="fixed inset-0 z-40 bg-[#06141B]/45 backdrop-blur-md lg:hidden"
+          />
+        )}
+
         {/* Mobile dropdown */}
         {isOpen && (
-          <div className="lg:hidden mt-2 bg-[#11212D]/97 backdrop-blur-md rounded-2xl border border-[#253745] p-4">
+          <div className="relative z-50 lg:hidden mt-2 bg-[#11212D]/97 backdrop-blur-md rounded-2xl border border-[#253745] p-4">
             {navLinks.map(({ key, sectionId }) => (
               <button
                 key={sectionId}
