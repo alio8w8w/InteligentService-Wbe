@@ -6,6 +6,15 @@ import Link from "next/link"
 import { useTranslations, useLocale } from "next-intl"
 import { useRouter, usePathname } from "next/navigation"
 
+const LOCALES = ["ro", "ru", "en"] as const
+
+const NAV_LINKS = [
+  { key: "despre", sectionId: "about" },
+  { key: "servicii", sectionId: "services" },
+  { key: "produse", sectionId: "products" },
+  { key: "contact", sectionId: "contact" },
+] as const
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolling, setIsScrolling] = useState(false)
@@ -15,32 +24,30 @@ export function Navbar() {
   const router = useRouter()
   const pathname = usePathname()
   const homePath = `/${currentLocale}`
+  const langLabel = (currentLocale ?? "ro").toUpperCase()
+  const loginHref = `/${currentLocale}/login`
 
   const toggleLang = () => {
-    const locales = ["ro", "ru", "en"]
-    const currentIndex = locales.indexOf(currentLocale)
-    const newLocale = locales[(currentIndex + 1) % locales.length]
+    const currentIndex = LOCALES.indexOf(currentLocale as (typeof LOCALES)[number])
+    const newLocale = LOCALES[(currentIndex + 1) % LOCALES.length]
     const segments = pathname.split("/")
     segments[1] = newLocale
     router.push(segments.join("/") || `/${newLocale}`, { scroll: false })
   }
 
-  const langLabel = (currentLocale ?? "ro").toUpperCase()
-  const loginHref = `/${currentLocale}/login`
+  const closeMenu = () => setIsOpen(false)
 
-  const navLinks = [
-    { key: "despre", sectionId: "about" },
-    { key: "servicii", sectionId: "services" },
-    { key: "produse", sectionId: "products" },
-    { key: "contact", sectionId: "contact" },
-  ]
+  const getSectionElement = (sectionId: string) =>
+    document.getElementById(sectionId) || (sectionId === "services" ? document.getElementById("servicii") : null)
+
+  const scrollToSection = (sectionId: string) => {
+    const section = getSectionElement(sectionId)
+    section?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
 
   const navigateToSection = (sectionId: string) => {
     if (pathname === homePath) {
-      const section =
-        document.getElementById(sectionId) ||
-        (sectionId === "services" ? document.getElementById("servicii") : null)
-      section?.scrollIntoView({ behavior: "smooth", block: "start" })
+      scrollToSection(sectionId)
       return
     }
 
@@ -86,17 +93,16 @@ export function Navbar() {
     }
 
     const timer = window.setTimeout(() => {
-      const section =
-        document.getElementById(pendingSection) ||
-        (pendingSection === "services" ? document.getElementById("servicii") : null)
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth", block: "start" })
-      }
+      scrollToSection(pendingSection)
       sessionStorage.removeItem("pendingHomeSection")
     }, 120)
 
     return () => window.clearTimeout(timer)
   }, [homePath, pathname])
+
+  useEffect(() => {
+    closeMenu()
+  }, [pathname])
 
   const handleLogoClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (pathname !== homePath) {
@@ -118,11 +124,19 @@ export function Navbar() {
       return
     }
 
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeMenu()
+      }
+    }
+
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = "hidden"
+    window.addEventListener("keydown", handleKeyDown)
 
     return () => {
       document.body.style.overflow = previousOverflow
+      window.removeEventListener("keydown", handleKeyDown)
     }
   }, [isOpen])
 
@@ -149,7 +163,7 @@ export function Navbar() {
 
           {/* Desktop nav links */}
           <div className="hidden lg:flex items-center gap-1">
-            {navLinks.map(({ key, sectionId }) => (
+            {NAV_LINKS.map(({ key, sectionId }) => (
               <button
                 key={sectionId}
                 type="button"
@@ -222,7 +236,7 @@ export function Navbar() {
           <button
             type="button"
             aria-label="Close menu"
-            onClick={() => setIsOpen(false)}
+            onClick={closeMenu}
             className="fixed inset-0 z-40 bg-[#06141B]/45 backdrop-blur-md lg:hidden"
           />
         )}
@@ -230,12 +244,12 @@ export function Navbar() {
         {/* Mobile dropdown */}
         {isOpen && (
           <div className="relative z-50 lg:hidden mt-2 bg-[#11212D]/97 backdrop-blur-md rounded-2xl border border-[#253745] p-4">
-            {navLinks.map(({ key, sectionId }) => (
+            {NAV_LINKS.map(({ key, sectionId }) => (
               <button
                 key={sectionId}
                 type="button"
                 onClick={() => {
-                  setIsOpen(false)
+                  closeMenu()
                   navigateToSection(sectionId)
                 }}
                 className="block px-4 py-3 text-[#9BABAB] hover:text-[#CCD0CF] hover:bg-[#253745] rounded-xl transition-all duration-200"
@@ -248,7 +262,7 @@ export function Navbar() {
 
             <Link
               href={loginHref}
-              onClick={() => setIsOpen(false)}
+              onClick={closeMenu}
               className="flex items-center justify-center gap-2 border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-5 py-3 rounded-full text-sm font-medium mb-2 hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
             >
               <LogIn className="h-4 w-4" />
