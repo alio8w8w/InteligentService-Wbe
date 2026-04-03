@@ -7,14 +7,33 @@ import { routing } from "./i18n/routing"
 const intlMiddleware = createIntlMiddleware(routing)
 
 export async function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  const locale = pathname.split("/")[1]
+  const isLocaleRoute = routing.locales.includes(locale as (typeof routing.locales)[number])
+  const isProtectedAccountRoute = isLocaleRoute && pathname.startsWith(`/${locale}/cont`)
+
+  // Aplică mereu i18n; auth logic vine doar dacă Supabase este configurat corect.
+  const intlResponse = intlMiddleware(request)
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    if (isProtectedAccountRoute) {
+      const loginUrl = new URL(`/${locale || routing.defaultLocale}/login`, request.url)
+      return NextResponse.redirect(loginUrl)
+    }
+    return intlResponse
+  }
+
   const response = NextResponse.next({
     request: { headers: request.headers },
   })
 
   // Supabase SSR — refresh session la fiecare request
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         getAll() {
@@ -33,22 +52,25 @@ export async function middleware(request: NextRequest) {
   )
 
   // Refresh session si extrage user-ul curent.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Aplică i18n middleware
-  const intlResponse = intlMiddleware(request)
+  let user = null
+  try {
+    const {
+      data: { user: currentUser },
+    } = await supabase.auth.getUser()
+    user = currentUser
+  } catch (error) {
+    // Evită 500 în edge; rutele publice trebuie să rămână accesibile.
+    if (isProtectedAccountRoute) {
+      const loginUrl = new URL(`/${locale}/login`, request.url)
+      return NextResponse.redirect(loginUrl)
+    }
+    return intlResponse
+  }
 
   // Copiaza cookie-urile Supabase in raspunsul intl
   response.cookies.getAll().forEach(cookie => {
     intlResponse.cookies.set(cookie.name, cookie.value, cookie)
   })
-
-  const pathname = request.nextUrl.pathname
-  const locale = pathname.split("/")[1]
-  const isLocaleRoute = routing.locales.includes(locale as (typeof routing.locales)[number])
-  const isProtectedAccountRoute = isLocaleRoute && pathname.startsWith(`/${locale}/cont`)
 
   if (isProtectedAccountRoute && !user) {
     const loginUrl = new URL(`/${locale}/login`, request.url)
