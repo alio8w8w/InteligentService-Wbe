@@ -11,8 +11,8 @@ export function HeroSection() {
 
   const bgImages = [
     "/images/hero-cctv.jpg",
-    "/images/hero-service.jpg",
-    "/images/about-cctv.jpg",
+    "/images/hero-cctv2.jpg",
+    "/images/hero-cctv3.jpg",
     "/images/about-workshop.jpg",
   ]
 
