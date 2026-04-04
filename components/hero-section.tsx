@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import { useEffect, useState } from "react"
-import { ArrowRight, Camera, Shield, Clock } from "lucide-react"
+import { ArrowRight, Camera, Shield, MapPin } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 export function HeroSection() {
@@ -13,7 +13,6 @@ export function HeroSection() {
     "/images/hero-cctv.jpg",
     "/images/hero-cctv2.jpg",
     "/images/hero-cctv3.jpg",
-    "/images/about-workshop.jpg",
   ]
 
   const features = [
@@ -28,7 +27,7 @@ export function HeroSection() {
       description: t("features.security.description"),
     },
     {
-      icon: Clock,
+      icon: MapPin,
       title: t("features.intervention.title"),
       description: t("features.intervention.description"),
     },
