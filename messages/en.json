@@ -1,13 +1,9 @@
 {
   "nav": {
-    "servicii": "Services", "tehnologii": "Technologies",
-    "produse": "Products", "despre": "About Us", "echipa": "Team",
-    "contacte": "Contacts", "contact": "Contact", "programeaza": "Book Now",
-    "autentificare": "Sign In", "despreNoi": "About Us",
-    "locatie": "Find Us", "magazin": "Shop",
-    "inchide": "Close menu", "deschide": "Open menu",
-    "contul_meu": "My Account", "cosul_meu": "My Cart",
-    "setari": "Settings", "iesi_din_cont": "Sign out"
+    "produse": "Products",
+    "galerie": "Gallery",
+    "contact": "Contact",
+    "autentificare": "Login"
   },
   "auth": {
     "titlu_login": "Welcome back!",

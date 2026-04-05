@@ -1,13 +1,9 @@
 {
   "nav": {
-    "servicii": "Servicii", "tehnologii": "Tehnologii",
-    "produse": "Produse", "despre": "Despre Noi", "echipa": "Echipă",
-    "contacte": "Contacte", "contact": "Contact", "programeaza": "Programează",
-    "autentificare": "Autentificare", "despreNoi": "Despre Noi",
-    "locatie": "Unde Ne Găsiți", "magazin": "Magazin",
-    "inchide": "Închide meniul", "deschide": "Deschide meniul",
-    "contul_meu": "Contul Meu", "cosul_meu": "Coșul Meu",
-    "setari": "Setări", "iesi_din_cont": "Ieși din cont"
+    "produse": "Produse",
+    "galerie": "Galerie",
+    "contact": "Contacte",
+    "autentificare": "Autentificare"
   },
   "auth": {
     "titlu_login": "Autentificare",

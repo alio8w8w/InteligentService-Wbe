@@ -1,13 +1,9 @@
 {
   "nav": {
-    "servicii": "Услуги", "tehnologii": "Технологии",
-    "produse": "Продукты", "despre": "О нас", "echipa": "Команда",
-    "contacte": "Контакты", "contact": "Контакт", "programeaza": "Записаться",
-    "autentificare": "Войти", "despreNoi": "О нас",
-    "locatie": "Где нас найти", "magazin": "Магазин",
-    "inchide": "Закрыть меню", "deschide": "Открыть меню",
-    "contul_meu": "Мой аккаунт", "cosul_meu": "Моя корзина",
-    "setari": "Настройки", "iesi_din_cont": "Выйти"
+    "produse": "Продукты",
+    "galerie": "Галерея",
+    "contact": "Контакты",
+    "autentificare": "Авторизация"
   },
   "auth": {
     "titlu_login": "Добро пожаловать!",

@@ -1,23 +1,22 @@
 "use client"
 
 import { type MouseEvent, useEffect, useState } from "react"
-import { Phone, Menu, X, LogIn } from "lucide-react"
+import { Phone, Menu, X, User, ShoppingCart, Globe } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { useTranslations, useLocale } from "next-intl"
 import { useRouter, usePathname } from "next/navigation"
 
 const LOCALES = ["ro", "ru", "en"] as const
 
 const NAV_LINKS = [
-  { key: "despre", sectionId: "about" },
-  { key: "servicii", sectionId: "services" },
   { key: "produse", sectionId: "products" },
+  { key: "galerie", sectionId: "gallery" },
   { key: "contact", sectionId: "contact" },
 ] as const
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
-  const [isScrolling, setIsScrolling] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const t = useTranslations("nav")
   const currentLocale = useLocale()
@@ -35,246 +34,121 @@ export function Navbar() {
     router.push(segments.join("/") || `/${newLocale}`, { scroll: false })
   }
 
-  const closeMenu = () => setIsOpen(false)
-
-  const getSectionElement = (sectionId: string) =>
-    document.getElementById(sectionId) || (sectionId === "services" ? document.getElementById("servicii") : null)
-
   const scrollToSection = (sectionId: string) => {
-    const section = getSectionElement(sectionId)
+    const section = document.getElementById(sectionId)
     section?.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
   const navigateToSection = (sectionId: string) => {
     if (pathname === homePath) {
       scrollToSection(sectionId)
-      return
+    } else {
+      sessionStorage.setItem("pendingHomeSection", sectionId)
+      router.push(homePath)
     }
-
-    sessionStorage.setItem("pendingHomeSection", sectionId)
-    router.push(homePath)
   }
 
   useEffect(() => {
-    let timeoutId: number | undefined
-
-    const onScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-      setIsScrolling(true)
-
-      if (timeoutId) {
-        window.clearTimeout(timeoutId)
-      }
-
-      timeoutId = window.setTimeout(() => {
-        setIsScrolling(false)
-      }, 140)
-    }
-
-    onScroll()
-    window.addEventListener("scroll", onScroll, { passive: true })
-
-    return () => {
-      if (timeoutId) {
-        window.clearTimeout(timeoutId)
-      }
-      window.removeEventListener("scroll", onScroll)
-    }
+    const onScroll = () => setIsScrolled(window.scrollY > 20)
+    window.addEventListener("scroll", onScroll)
+    return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  useEffect(() => {
-    if (pathname !== homePath) {
-      return
-    }
-
-    const pendingSection = sessionStorage.getItem("pendingHomeSection")
-    if (!pendingSection) {
-      return
-    }
-
-    const timer = window.setTimeout(() => {
-      scrollToSection(pendingSection)
-      sessionStorage.removeItem("pendingHomeSection")
-    }, 120)
-
-    return () => window.clearTimeout(timer)
-  }, [homePath, pathname])
-
-  useEffect(() => {
-    closeMenu()
-  }, [pathname])
-
-  const handleLogoClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    if (pathname !== homePath) {
-      return
-    }
-
-    event.preventDefault()
-    window.scrollTo({ top: 0, behavior: "smooth" })
-    window.history.replaceState({}, "", homePath)
-  }
-
-  useEffect(() => {
-    if (!isOpen) {
-      return
-    }
-
-    const isMobile = window.matchMedia("(max-width: 1023px)").matches
-    if (!isMobile) {
-      return
-    }
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeMenu()
-      }
-    }
-
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = "hidden"
-    window.addEventListener("keydown", handleKeyDown)
-
-    return () => {
-      document.body.style.overflow = previousOverflow
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [isOpen])
-
-  const navSurfaceClass = isScrolling
-    ? "bg-[#11212D]/55"
-    : isScrolled
-      ? "bg-[#11212D]/75"
-      : "bg-[#11212D]/95"
-
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
-      <div className="mx-auto max-w-6xl px-4 mt-3">
-        <nav
-          className={`${navSurfaceClass} backdrop-blur-md rounded-full border border-[#253745] px-6 py-3 flex items-center justify-between transition-colors duration-300`}
-        >
-
-          {/* Logo */}
-          <Link href={homePath} onClick={handleLogoClick} className="flex items-center">
-            <span className="font-mono text-lg font-bold tracking-tight">
-              <span className="text-[#CCD0CF]">Inteligent </span>
-              <span className="text-[#FF4B04]">Service</span>
-            </span>
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "py-2" : "py-4"}`}>
+      <div className="mx-auto max-w-7xl px-4">
+        <nav className={`flex items-center justify-between px-6 py-2.5 rounded-full transition-all duration-300 
+          ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-lg border border-gray-100" : "bg-[#F5F2EC]/95 backdrop-blur-sm border border-[#0F2A4A]/5"}`}>
+          
+          {/* Logo - Acum este centrat vertical mai bine */}
+          <Link href={homePath} className="relative w-40 h-12 transition-transform hover:scale-105 flex items-center">
+            <Image 
+              src="/images/logo.png" 
+              alt="Inteligent Service Logo" 
+              fill 
+              className="object-contain"
+              priority
+            />
           </Link>
 
-          {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-1">
+          {/* Desktop Links - Mai mult spațiu și font mai rafinat */}
+          <div className="hidden lg:flex items-center gap-10">
             {NAV_LINKS.map(({ key, sectionId }) => (
               <button
                 key={sectionId}
-                type="button"
                 onClick={() => navigateToSection(sectionId)}
-                className="px-4 py-2 text-sm text-[#9BABAB] hover:text-[#CCD0CF] hover:bg-[#253745] rounded-full transition-all duration-200"
+                className="text-[#0F2A4A] font-semibold text-sm tracking-tight hover:text-[#F26A1B] transition-colors relative group"
               >
                 {t(key)}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F26A1B] transition-all group-hover:w-full"></span>
               </button>
             ))}
           </div>
 
-          {/* Desktop right: Auth + Phone + Lang */}
-          <div className="hidden lg:flex items-center gap-2">
-
-            <Link
-              href={loginHref}
-              className="flex items-center gap-1.5 border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-4 py-2 rounded-full text-sm font-medium hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
+          {/* Desktop Right Side - Grupat stilat */}
+          <div className="hidden lg:flex items-center gap-4">
+            
+            {/* Buton Telefon Stilizat (Noul Frame) */}
+            <a 
+              href="tel:+37368123456" 
+              className="flex items-center gap-2.5 bg-[#0F2A4A] text-[#F26A1B] px-5 py-2.5 rounded-full shadow-md hover:bg-[#0F2A4A]/90 transition-all group hover:-translate-y-0.5"
             >
-              <LogIn className="h-3.5 w-3.5" />
-              {t("autentificare")}
-            </Link>
-
-            {/* CTA telefon */}
-            <a
-              href="tel:+37368123456"
-              className="flex items-center gap-2 bg-[#FF4B04] text-white px-5 py-2 rounded-full text-sm font-semibold hover:bg-[#FF4B04]/85 transition-colors duration-200"
-            >
-              <Phone className="h-4 w-4" />
-              +373 68 123 456
+              <Phone className="h-4 w-4 stroke-[2px] group-hover:scale-110 transition-transform" />
+              <span className="text-sm font-bold tracking-tight">+373 68 123 456</span>
             </a>
 
-            {/* Buton limbă */}
-            <button
-              onClick={toggleLang}
-              className="min-w-11 border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-3 py-2 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
-            >
-              {langLabel}
-            </button>
+            {/* Separator Vertical Discret */}
+            <div className="h-8 w-px bg-[#0F2A4A]/10"></div>
+
+            {/* Grupul de Iconițe de Acțiune */}
+            <div className="flex items-center gap-3">
+              {/* Auth Icon - Cerc discret */}
+              <Link href={loginHref} className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all" title={t("autentificare")}>
+                <User className="h-5 w-5 stroke-[1.5px]" />
+              </Link>
+
+              {/* Cart Icon - Cerc discret */}
+              <button className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all relative">
+                <ShoppingCart className="h-5 w-5 stroke-[1.5px]" />
+                <span className="absolute -top-1 -right-1 bg-[#F26A1B] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
+              </button>
+              
+              {/* Language Switcher - Cerc discret */}
+              <button 
+                onClick={toggleLang}
+                className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all group"
+              >
+                 <Globe className="h-5 w-5 stroke-[1.5px] group-hover:rotate-12 transition-transform" />
+                 <span className="absolute -bottom-5 text-[10px] font-bold text-[#0F2A4A]/50 group-hover:text-[#F26A1B]">{langLabel}</span>
+              </button>
+            </div>
+
           </div>
 
-          {/* Mobile right: Lang + Auth icon + Burger */}
-          <div className="flex lg:hidden items-center gap-2">
-
-            <button
-              onClick={toggleLang}
-              className="border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-2.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
-            >
-              {langLabel}
-            </button>
-
-            <Link
-              href={loginHref}
-              className="flex items-center justify-center w-9 h-9 rounded-full border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
-              aria-label={t("autentificare")}
-            >
-              <LogIn className="h-4 w-4" />
-            </Link>
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-[#CCD0CF] p-2 rounded-full hover:bg-[#253745] transition-colors"
-              aria-label="Toggle menu"
-            >
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
-          </div>
+          {/* Mobile Menu Button */}
+          <button className="lg:hidden text-[#0F2A4A] p-2 rounded-full hover:bg-[#0F2A4A]/5" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </nav>
 
+        {/* Mobile Dropdown - Rafinat */}
         {isOpen && (
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={closeMenu}
-            className="fixed inset-0 z-40 bg-[#06141B]/45 backdrop-blur-md lg:hidden"
-          />
-        )}
-
-        {/* Mobile dropdown */}
-        {isOpen && (
-          <div className="relative z-50 lg:hidden mt-2 bg-[#11212D]/97 backdrop-blur-md rounded-2xl border border-[#253745] p-4">
+          <div className="lg:hidden mt-3 p-5 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-5 animate-fade-in-down">
             {NAV_LINKS.map(({ key, sectionId }) => (
-              <button
-                key={sectionId}
-                type="button"
-                onClick={() => {
-                  closeMenu()
-                  navigateToSection(sectionId)
-                }}
-                className="block px-4 py-3 text-[#9BABAB] hover:text-[#CCD0CF] hover:bg-[#253745] rounded-xl transition-all duration-200"
-              >
+              <button key={sectionId} onClick={() => { navigateToSection(sectionId); setIsOpen(false); }} className="text-left py-3 border-b border-gray-50 text-[#0F2A4A] font-semibold text-lg flex justify-between items-center hover:text-[#F26A1B]">
                 {t(key)}
+                <span className="text-[#F26A1B]">→</span>
               </button>
             ))}
-
-            <div className="my-3 border-t border-[#253745]" />
-
-            <Link
-              href={loginHref}
-              onClick={closeMenu}
-              className="flex items-center justify-center gap-2 border border-[#253745] bg-[#06141B]/60 text-[#9BABAB] px-5 py-3 rounded-full text-sm font-medium mb-2 hover:border-[#4A5C6A] hover:text-[#CCD0CF] transition-all duration-200"
-            >
-              <LogIn className="h-4 w-4" />
-              {t("autentificare")}
-            </Link>
-
-            <a
-              href="tel:+37368123456"
-              className="flex items-center justify-center gap-2 bg-[#FF4B04] text-white px-5 py-3 rounded-full text-sm font-semibold hover:bg-[#FF4B04]/85 transition-colors duration-200"
-            >
-              <Phone className="h-4 w-4" />
-              +373 68 123 456
+            
+            <div className="flex justify-center items-center gap-6 pt-4 border-t border-gray-100">
+               <Link href={loginHref} className="flex flex-col items-center gap-1 text-[#0F2A4A]"><User className="h-7 w-7 stroke-[1.5px]" /><span className="text-xs">{t("autentificare")}</span></Link>
+               <button className="flex flex-col items-center gap-1 text-[#0F2A4A] relative"><ShoppingCart className="h-7 w-7 stroke-[1.5px]" /><span className="text-xs">Coș</span><span className="absolute top-0 right-0 bg-[#F26A1B] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span></button>
+               <button onClick={toggleLang} className="flex flex-col items-center gap-1 text-[#0F2A4A]"><Globe className="h-7 w-7 stroke-[1.5px]" /><span className="text-xs font-bold">{langLabel}</span></button>
+            </div>
+            
+            <a href="tel:+37368123456" className="bg-[#0F2A4A] text-[#F26A1B] py-4 rounded-full flex justify-center items-center gap-3 shadow-lg active:scale-95 transition-all">
+              <Phone className="h-5 w-5 stroke-[2px]" /> <span className="font-bold text-lg">+373 68 123 456</span>
             </a>
           </div>
         )}
