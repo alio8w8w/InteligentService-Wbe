@@ -1,87 +1,83 @@
 "use client"
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import type { Brand } from '@/lib/types'
-import { brandInfo, products } from '@/lib/types'
-import { useTranslations } from 'next-intl' // <-- Importăm next-intl
+import { useTranslations, useLocale } from 'next-intl'
+
+// Definim strict doar cele 2 branduri pe care le folosești
+export type Brand = 'hikvision' | 'dahua'
 
 interface BrandCardProps {
   brand: Brand
+  productCount?: number // Am pus asta opțional. O vei popula mai târziu din Supabase.
 }
 
-const brandLogos: Record<Brand, React.ReactNode> = {
-  'dahua-imou': (
-    <svg viewBox="0 0 100 40" className="h-8 text-[#FF4B04]" fill="currentColor">
-      <text x="10" y="28" fontSize="18" fontWeight="bold">IMOU</text>
-    </svg>
-  ),
-  'uniview': (
-    <svg viewBox="0 0 100 40" className="h-8 text-blue-500" fill="currentColor">
-      <text x="5" y="28" fontSize="14" fontWeight="bold">UNIVIEW</text>
-    </svg>
-  ),
-  'hikvision': (
-    <svg viewBox="0 0 100 40" className="h-8 text-red-500" fill="currentColor">
-      <text x="5" y="28" fontSize="12" fontWeight="bold">HIKVISION</text>
-    </svg>
-  ),
-  'china': (
-    <svg viewBox="0 0 100 40" className="h-8 text-[#9BABAB]" fill="currentColor">
-      <text x="10" y="28" fontSize="14" fontWeight="bold">BUDGET</text>
-    </svg>
-  )
-}
-
-// Am adaptat intensitatea culorilor de brand pentru a se îmbina fin cu tema dark (#06141B)
-const brandColors: Record<Brand, string> = {
-  'dahua-imou': 'from-[#FF4B04]/10 to-transparent border-[#FF4B04]/20 hover:border-[#FF4B04]/40 hover:shadow-[#FF4B04]/10',
-  'uniview': 'from-blue-500/10 to-transparent border-blue-500/20 hover:border-blue-500/40 hover:shadow-blue-500/10',
-  'hikvision': 'from-red-500/10 to-transparent border-red-500/20 hover:border-red-500/40 hover:shadow-red-500/10',
-  'china': 'from-[#9BABAB]/10 to-transparent border-[#9BABAB]/20 hover:border-[#9BABAB]/40 hover:shadow-[#9BABAB]/10'
-}
-
-export function BrandCard({ brand }: BrandCardProps) {
-  const info = brandInfo[brand]
-  const productCount = products.filter(p => p.brand === brand).length
-  
-  // Inițializăm traducerile din fișierele locale JSON
+export function BrandCard({ brand, productCount = 0 }: BrandCardProps) {
   const t = useTranslations('brandCard')
+  const currentLocale = useLocale()
+
+  // Configurarea datelor statice pentru carduri
+  const brandData = {
+    hikvision: {
+      name: 'Hikvision',
+      logoUrl: '/images/hikvision-logo.png', // Asigură-te că ai imaginea în public/images/
+      href: `/${currentLocale}/branduri/hikvision`,
+      // Efect subtil de hover specific brandului
+      hoverTheme: 'hover:shadow-[#0F2A4A]/15 hover:border-[#0F2A4A]/20'
+    },
+    dahua: {
+      name: 'Dahua',
+      logoUrl: '/images/dahua-logo.png', // Asigură-te că ai imaginea în public/images/
+      href: `/${currentLocale}/branduri/dahua`,
+      hoverTheme: 'hover:shadow-[#F26A1B]/15 hover:border-[#F26A1B]/20'
+    }
+  }
+
+  const currentBrand = brandData[brand]
 
   return (
-    <Link href={`/branduri/${brand}`}>
-      {/* Containerul principal folosește efectul de sticlă (backdrop-blur) și paleta dark */}
-      <Card className={`overflow-hidden group transition-all duration-300 hover:-translate-y-2 bg-[#06141B]/80 bg-gradient-to-br ${brandColors[brand]} border backdrop-blur-md shadow-lg`}>
+    <Link href={currentBrand.href}>
+      {/* Design Premium Glassmorphism pe fundal luminos */}
+      <div className={`group overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_30px_-15px_rgba(15,42,74,0.08)] transition-all duration-400 hover:-translate-y-2 ${currentBrand.hoverTheme}`}>
         
-        <div className="aspect-[4/3] relative flex items-center justify-center p-6 border-b border-[#9BABAB]/10">
-          <div className="text-center">
-            <div className="mb-4 flex justify-center">{brandLogos[brand]}</div>
-            {/* Culoarea de titlu preluată din Hero (#CCD0CF) */}
-            <span className="text-2xl font-bold text-[#CCD0CF]">{info.name}</span>
+        {/* Zona pentru Logotipul Brandului */}
+        <div className="aspect-[16/9] relative flex items-center justify-center p-8 border-b border-[#0F2A4A]/5 bg-gradient-to-b from-transparent to-[#F5F2EC]/40">
+          <div className="relative w-full h-full transition-transform duration-500 group-hover:scale-105">
+            <Image 
+              src={currentBrand.logoUrl} 
+              alt={`Logotip ${currentBrand.name}`} 
+              fill 
+              className="object-contain" 
+            />
           </div>
         </div>
 
-        <CardContent className="p-5 bg-[#9BABAB]/5">
-          {/* Culoarea pentru descriere preluată din Hero (#9BABAB) */}
-          <p className="text-sm text-[#9BABAB] mb-4 line-clamp-2 leading-relaxed">
-            {info.description}
+        {/* Zona de Informații */}
+        <div className="p-6">
+          <h3 className="text-xl font-extrabold text-[#0F2A4A] mb-2">
+            {currentBrand.name}
+          </h3>
+          
+          {/* Descrierea se ia dinamic din fișierele de traducere (ex: hikvisionDesc) */}
+          <p className="text-sm text-[#7A8CA5] font-medium mb-6 line-clamp-2 leading-relaxed">
+            {t(`${brand}Desc`)}
           </p>
           
-          <div className="flex items-center justify-between">
-            {/* Subtext discret (#4A5C6A) */}
-            <span className="text-xs text-[#4A5C6A] font-medium">
-              {productCount} {t('products')}
+          <div className="flex items-center justify-between pt-4 border-t border-[#0F2A4A]/5">
+            {/* Afișăm numărul de produse sau un text generic dacă e 0 */}
+            <span className="text-xs font-bold text-[#7A8CA5] uppercase tracking-wider">
+              {productCount > 0 ? `${productCount} ${t('products')}` : t('explore')}
             </span>
-            {/* Butonul de "Vezi produse" preia culoarea de accent portocalie */}
-            <span className="text-sm text-[#FF4B04] flex items-center gap-1 group-hover:gap-2 transition-all font-medium">
+            
+            <span className="text-sm font-bold text-[#F26A1B] flex items-center gap-1 group-hover:gap-2 transition-all">
               {t('viewProducts')}
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 stroke-[2.5px]" />
             </span>
           </div>
-        </CardContent>
+        </div>
 
-      </Card>
+      </div>
     </Link>
   )
 }

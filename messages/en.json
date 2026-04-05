@@ -64,9 +64,11 @@
       }
     }
   },
-   "brands": {
-    "title": "Branduri",
-    "titleHighlight": "Partenere",
-    "description": "Lucrăm exclusiv cu producători de echipamente de top mondial pentru a vă oferi cea mai bună calitate."
+  "brandCard": {
+    "products": "products",
+    "explore": "Explore brand",
+    "viewProducts": "View products",
+    "hikvisionDesc": "Global leader in innovative video surveillance and comprehensive security solutions.",
+    "dahuaDesc": "Advanced technology and intelligent security systems tailored for any need."
   }
 }

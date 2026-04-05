@@ -48,20 +48,35 @@ export function Navbar() {
     }
   }
 
+  // Detectare scroll pentru stilizarea navbar-ului
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20)
     window.addEventListener("scroll", onScroll)
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
+  // Oprirea scroll-ului pe pagină când meniul mobil este deschis
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden"
+    } else {
+      document.body.style.overflow = "unset"
+    }
+    return () => {
+      document.body.style.overflow = "unset"
+    }
+  }, [isOpen])
+
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "py-2" : "py-4"}`}>
-      <div className="mx-auto max-w-7xl px-4">
-        <nav className={`flex items-center justify-between px-6 py-2.5 rounded-full transition-all duration-300 
-          ${isScrolled ? "bg-white/90 backdrop-blur-md shadow-lg border border-gray-100" : "bg-[#F5F2EC]/95 backdrop-blur-sm border border-[#0F2A4A]/5"}`}>
+      <div className="mx-auto max-w-7xl px-4 relative">
+        
+        {/* Container principal Navbar */}
+        <nav className={`relative z-50 flex items-center justify-between px-6 py-2.5 rounded-full transition-all duration-300 
+          ${isOpen ? "bg-white shadow-sm" : isScrolled ? "bg-white/90 backdrop-blur-md shadow-lg border border-gray-100" : "bg-[#F5F2EC]/95 backdrop-blur-sm border border-[#0F2A4A]/5"}`}>
           
-          {/* Logo - Acum este centrat vertical mai bine */}
-          <Link href={homePath} className="relative w-40 h-12 transition-transform hover:scale-105 flex items-center">
+          {/* Logo */}
+          <Link href={homePath} className="relative w-40 h-12 transition-transform hover:scale-105 flex items-center" onClick={() => setIsOpen(false)}>
             <Image 
               src="/images/logo.png" 
               alt="Inteligent Service Logo" 
@@ -71,7 +86,7 @@ export function Navbar() {
             />
           </Link>
 
-          {/* Desktop Links - Mai mult spațiu și font mai rafinat */}
+          {/* Desktop Links */}
           <div className="hidden lg:flex items-center gap-10">
             {NAV_LINKS.map(({ key, sectionId }) => (
               <button
@@ -85,10 +100,9 @@ export function Navbar() {
             ))}
           </div>
 
-          {/* Desktop Right Side - Grupat stilat */}
+          {/* Desktop Right Side */}
           <div className="hidden lg:flex items-center gap-4">
-            
-            {/* Buton Telefon Stilizat (Noul Frame) */}
+            {/* Buton Telefon */}
             <a 
               href="tel:+37368123456" 
               className="flex items-center gap-2.5 bg-[#0F2A4A] text-[#F26A1B] px-5 py-2.5 rounded-full shadow-md hover:bg-[#0F2A4A]/90 transition-all group hover:-translate-y-0.5"
@@ -97,43 +111,42 @@ export function Navbar() {
               <span className="text-sm font-bold tracking-tight">+373 68 123 456</span>
             </a>
 
-            {/* Separator Vertical Discret */}
             <div className="h-8 w-px bg-[#0F2A4A]/10"></div>
 
-            {/* Grupul de Iconițe de Acțiune */}
+            {/* Grupul de Iconițe */}
             <div className="flex items-center gap-3">
-              {/* Auth Icon - Cerc discret */}
               <Link href={loginHref} className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all" title={t("autentificare")}>
                 <User className="h-5 w-5 stroke-[1.5px]" />
               </Link>
-
-              {/* Cart Icon - Cerc discret */}
               <button className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all relative">
                 <ShoppingCart className="h-5 w-5 stroke-[1.5px]" />
                 <span className="absolute -top-1 -right-1 bg-[#F26A1B] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
               </button>
-              
-              {/* Language Switcher - Cerc discret */}
-              <button 
-                onClick={toggleLang}
-                className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all group"
-              >
+              <button onClick={toggleLang} className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all group">
                  <Globe className="h-5 w-5 stroke-[1.5px] group-hover:rotate-12 transition-transform" />
                  <span className="absolute -bottom-5 text-[10px] font-bold text-[#0F2A4A]/50 group-hover:text-[#F26A1B]">{langLabel}</span>
               </button>
             </div>
-
           </div>
 
           {/* Mobile Menu Button */}
-          <button className="lg:hidden text-[#0F2A4A] p-2 rounded-full hover:bg-[#0F2A4A]/5" onClick={() => setIsOpen(!isOpen)}>
+          <button className="lg:hidden text-[#0F2A4A] p-2 rounded-full hover:bg-[#0F2A4A]/5 relative z-50" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </nav>
 
-        {/* Mobile Dropdown - Rafinat */}
+        {/* --- OVERLAY BLUR PENTRU FUNDAL --- */}
         {isOpen && (
-          <div className="lg:hidden mt-3 p-5 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-5 animate-fade-in-down">
+          <div 
+            className="fixed inset-0 z-40 bg-[#F5F2EC]/80 backdrop-blur-md lg:hidden"
+            onClick={() => setIsOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Mobile Dropdown */}
+        {isOpen && (
+          <div className="absolute top-[80px] left-4 right-4 z-50 lg:hidden p-5 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-5 animate-fade-in-down">
             {NAV_LINKS.map(({ key, sectionId }) => (
               <button key={sectionId} onClick={() => { navigateToSection(sectionId); setIsOpen(false); }} className="text-left py-3 border-b border-gray-50 text-[#0F2A4A] font-semibold text-lg flex justify-between items-center hover:text-[#F26A1B]">
                 {t(key)}
@@ -142,9 +155,19 @@ export function Navbar() {
             ))}
             
             <div className="flex justify-center items-center gap-6 pt-4 border-t border-gray-100">
-               <Link href={loginHref} className="flex flex-col items-center gap-1 text-[#0F2A4A]"><User className="h-7 w-7 stroke-[1.5px]" /><span className="text-xs">{t("autentificare")}</span></Link>
-               <button className="flex flex-col items-center gap-1 text-[#0F2A4A] relative"><ShoppingCart className="h-7 w-7 stroke-[1.5px]" /><span className="text-xs">Coș</span><span className="absolute top-0 right-0 bg-[#F26A1B] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span></button>
-               <button onClick={toggleLang} className="flex flex-col items-center gap-1 text-[#0F2A4A]"><Globe className="h-7 w-7 stroke-[1.5px]" /><span className="text-xs font-bold">{langLabel}</span></button>
+               <Link href={loginHref} className="flex flex-col items-center gap-1 text-[#0F2A4A]" onClick={() => setIsOpen(false)}>
+                  <User className="h-7 w-7 stroke-[1.5px]" />
+                  <span className="text-xs">{t("autentificare")}</span>
+               </Link>
+               <button className="flex flex-col items-center gap-1 text-[#0F2A4A] relative">
+                  <ShoppingCart className="h-7 w-7 stroke-[1.5px]" />
+                  <span className="text-xs">Coș</span>
+                  <span className="absolute top-0 right-0 bg-[#F26A1B] text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">0</span>
+               </button>
+               <button onClick={() => { toggleLang(); setIsOpen(false); }} className="flex flex-col items-center gap-1 text-[#0F2A4A]">
+                  <Globe className="h-7 w-7 stroke-[1.5px]" />
+                  <span className="text-xs font-bold">{langLabel}</span>
+               </button>
             </div>
             
             <a href="tel:+37368123456" className="bg-[#0F2A4A] text-[#F26A1B] py-4 rounded-full flex justify-center items-center gap-3 shadow-lg active:scale-95 transition-all">
