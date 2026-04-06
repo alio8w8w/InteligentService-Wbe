@@ -23,38 +23,6 @@ export default function HomePage() {
         {/* Componenta de Branduri (extrasă) */}
         <BrandComp />
 
-        {/* Why Us Section */}
-        <section className="py-24 bg-white/60 border-y border-[#7A8CA5]/15 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-extrabold text-[#0F2A4A] mb-8 tracking-tight">
-                  {t('whyUs.title')} <span className="text-[#F26A1B]">{t('whyUs.titleHighlight')}</span>
-                </h2>
-                <ul className="space-y-4">
-                  {[1, 2, 3].map((item) => (
-                    <li key={item} className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-[#7A8CA5]/15 shadow-sm">
-                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-[#F26A1B]/10 flex items-center justify-center mt-0.5">
-                        <Check className="h-4 w-4 stroke-[3px] text-[#F26A1B]" />
-                      </div>
-                      <span className="text-[#0F2A4A] font-bold">{t(`whyUs.item${item}`)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="relative">
-                <div className="bg-[#0F2A4A] rounded-3xl p-12 text-center shadow-2xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#F26A1B]/10 rounded-full blur-2xl"></div>
-                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#7A8CA5]/20 rounded-full blur-2xl"></div>
-                  
-                  <div className="relative z-10 text-7xl md:text-8xl font-extrabold text-[#F26A1B] mb-4">500+</div>
-                  <div className="relative z-10 text-xl font-bold text-[#F5F2EC]">{t('whyUs.stat')}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* CTA Section */}
         <section className="py-20 bg-[#F5F2EC]">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
