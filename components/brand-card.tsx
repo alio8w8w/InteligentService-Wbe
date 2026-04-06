@@ -1,80 +1,61 @@
 "use client"
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { ArrowRight } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 
-// Definim strict doar cele 2 branduri pe care le folosești
+// Restrângem tipurile strict la cele 2 branduri pe care le folosești
 export type Brand = 'hikvision' | 'dahua'
 
 interface BrandCardProps {
   brand: Brand
-  productCount?: number // Am pus asta opțional. O vei popula mai târziu din Supabase.
+  productCount?: number // Numărul de produse (îl vei aduce din baza de date)
 }
 
 export function BrandCard({ brand, productCount = 0 }: BrandCardProps) {
+  // Inițializăm next-intl
   const t = useTranslations('brandCard')
-  const currentLocale = useLocale()
+  const locale = useLocale()
 
-  // Configurarea datelor statice pentru carduri
-  const brandData = {
-    hikvision: {
-      name: 'Hikvision',
-      logoUrl: '/images/hikvision-logo.png', // Asigură-te că ai imaginea în public/images/
-      href: `/${currentLocale}/branduri/hikvision`,
-      // Efect subtil de hover specific brandului
-      hoverTheme: 'hover:shadow-[#0F2A4A]/15 hover:border-[#0F2A4A]/20'
-    },
-    dahua: {
-      name: 'Dahua',
-      logoUrl: '/images/dahua-logo.png', // Asigură-te că ai imaginea în public/images/
-      href: `/${currentLocale}/branduri/dahua`,
-      hoverTheme: 'hover:shadow-[#F26A1B]/15 hover:border-[#F26A1B]/20'
-    }
+  // Numele formatate ale brandurilor
+  const brandNames = {
+    hikvision: 'Hikvision',
+    dahua: 'Dahua'
   }
 
-  const currentBrand = brandData[brand]
+  // Generăm ruta corectă folosind limba curentă (ex: /ro/branduri/hikvision)
+  const brandRoute = `/${locale}/branduri/${brand}`
 
   return (
-    <Link href={currentBrand.href}>
-      {/* Design Premium Glassmorphism pe fundal luminos */}
-      <div className={`group overflow-hidden rounded-3xl bg-white/70 backdrop-blur-xl border border-white/80 shadow-[0_10px_30px_-15px_rgba(15,42,74,0.08)] transition-all duration-400 hover:-translate-y-2 ${currentBrand.hoverTheme}`}>
+    <Link href={brandRoute} className="block h-full group">
+      {/* Container: Fundal alb/deschis cu bordură subtilă Slate Blue. 
+          La hover, se ridică ușor și primește un accent portocaliu fin pe bordură. */}
+      <div className="flex flex-col h-full p-6 rounded-2xl bg-white border border-[#7A8CA5]/20 shadow-sm transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-[#F26A1B]/40">
         
-        {/* Zona pentru Logotipul Brandului */}
-        <div className="aspect-[16/9] relative flex items-center justify-center p-8 border-b border-[#0F2A4A]/5 bg-gradient-to-b from-transparent to-[#F5F2EC]/40">
-          <div className="relative w-full h-full transition-transform duration-500 group-hover:scale-105">
-            <Image 
-              src={currentBrand.logoUrl} 
-              alt={`Logotip ${currentBrand.name}`} 
-              fill 
-              className="object-contain" 
-            />
-          </div>
+        {/* Titlu Brand - Navy Dark */}
+        <div className="mb-3">
+          <span className="text-xl font-extrabold text-[#0F2A4A] tracking-tight">
+            {brandNames[brand]}
+          </span>
         </div>
-
-        {/* Zona de Informații */}
-        <div className="p-6">
-          <h3 className="text-xl font-extrabold text-[#0F2A4A] mb-2">
-            {currentBrand.name}
-          </h3>
+        
+        {/* Descrierea - preluată automat din fișierele .json - Slate Blue */}
+        <p className="text-sm text-[#7A8CA5] mb-6 line-clamp-3 leading-relaxed flex-grow font-medium">
+          {t(`${brand}Desc`)}
+        </p>
+        
+        {/* Footer-ul cardului */}
+        <div className="flex items-center justify-between pt-4 border-t border-[#7A8CA5]/10 mt-auto">
+          {/* Număr produse - Slate Blue */}
+          <span className="text-xs text-[#7A8CA5] font-bold uppercase tracking-wider">
+            {productCount} {t('products')}
+          </span>
           
-          {/* Descrierea se ia dinamic din fișierele de traducere (ex: hikvisionDesc) */}
-          <p className="text-sm text-[#7A8CA5] font-medium mb-6 line-clamp-2 leading-relaxed">
-            {t(`${brand}Desc`)}
-          </p>
-          
-          <div className="flex items-center justify-between pt-4 border-t border-[#0F2A4A]/5">
-            {/* Afișăm numărul de produse sau un text generic dacă e 0 */}
-            <span className="text-xs font-bold text-[#7A8CA5] uppercase tracking-wider">
-              {productCount > 0 ? `${productCount} ${t('products')}` : t('explore')}
-            </span>
-            
-            <span className="text-sm font-bold text-[#F26A1B] flex items-center gap-1 group-hover:gap-2 transition-all">
-              {t('viewProducts')}
-              <ArrowRight className="h-4 w-4 stroke-[2.5px]" />
-            </span>
-          </div>
+          {/* Buton "Vezi produse" - Vibrant Orange */}
+          <span className="text-sm text-[#F26A1B] flex items-center gap-1 group-hover:gap-2 transition-all font-bold">
+            {t('viewProducts')}
+            <ArrowRight className="h-4 w-4 stroke-[2.5px]" />
+          </span>
         </div>
 
       </div>

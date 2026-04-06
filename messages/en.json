@@ -1,7 +1,9 @@
 {
   "nav": {
+    "branduri": "Brands",
     "produse": "Products",
     "galerie": "Gallery",
+    "led_ecrane": "LED Screens",
     "contact": "Contact",
     "autentificare": "Login"
   },
@@ -66,9 +68,17 @@
   },
   "brandCard": {
     "products": "products",
-    "explore": "Explore brand",
     "viewProducts": "View products",
     "hikvisionDesc": "Global leader in innovative video surveillance and comprehensive security solutions.",
     "dahuaDesc": "Advanced technology and intelligent security systems tailored for any need."
+  },
+  "brandsPage": {
+    "title": "Partner",
+    "titleHighlight": "Brands",
+    "description": "We work with world-class manufacturers to provide you with the highest quality and most reliable security solutions.",
+    "infoTitleBefore": "Why does the ",
+    "infoTitleHighlight": "brand matter?",
+    "infoDesc1": "Choosing a quality brand means long-term reliability, regular firmware updates, compatibility with the latest technologies, and professional technical support.",
+    "infoDesc2": "Investing in quality equipment pays off through durability and consistent performance. We offer free consultations to help you choose the right solution for your needs and budget."
   }
 }

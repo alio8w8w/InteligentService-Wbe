@@ -1,6 +1,6 @@
 "use client"
 
-import { type MouseEvent, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Phone, Menu, X, User, ShoppingCart, Globe } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -9,53 +9,45 @@ import { useRouter, usePathname } from "next/navigation"
 
 const LOCALES = ["ro", "ru", "en"] as const
 
+// Acum NAV_LINKS definește direct calea (route) în loc de sectionId
 const NAV_LINKS = [
-  { key: "produse", sectionId: "products" },
-  { key: "galerie", sectionId: "gallery" },
-  { key: "contact", sectionId: "contact" },
+  { key: "branduri", route: "/branduri" },
+  { key: "produse", route: "/produse" },
+  { key: "galerie", route: "/galerie" },
+  { key: "led_ecrane", route: "/led-ecrane" },
+  { key: "contact", route: "/contact" },
 ] as const
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  
   const t = useTranslations("nav")
   const currentLocale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
+  
   const homePath = `/${currentLocale}`
   const langLabel = (currentLocale ?? "ro").toUpperCase()
   const loginHref = `/${currentLocale}/login`
 
+  // Schimbarea limbii păstrând ruta curentă
   const toggleLang = () => {
     const currentIndex = LOCALES.indexOf(currentLocale as (typeof LOCALES)[number])
     const newLocale = LOCALES[(currentIndex + 1) % LOCALES.length]
     const segments = pathname.split("/")
-    segments[1] = newLocale
+    segments[1] = newLocale // Înlocuiește locale-ul curent (ex: din /ro/branduri în /ru/branduri)
     router.push(segments.join("/") || `/${newLocale}`, { scroll: false })
   }
 
-  const scrollToSection = (sectionId: string) => {
-    const section = document.getElementById(sectionId)
-    section?.scrollIntoView({ behavior: "smooth", block: "start" })
-  }
-
-  const navigateToSection = (sectionId: string) => {
-    if (pathname === homePath) {
-      scrollToSection(sectionId)
-    } else {
-      sessionStorage.setItem("pendingHomeSection", sectionId)
-      router.push(homePath)
-    }
-  }
-
-  // Detectare scroll pentru stilizarea navbar-ului
+  // Detectare scroll
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20)
     window.addEventListener("scroll", onScroll)
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  // Oprirea scroll-ului pe pagină când meniul mobil este deschis
+  // Oprire scroll pe mobil
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden"
@@ -86,23 +78,31 @@ export function Navbar() {
             />
           </Link>
 
-          {/* Desktop Links */}
-          <div className="hidden lg:flex items-center gap-10">
-            {NAV_LINKS.map(({ key, sectionId }) => (
-              <button
-                key={sectionId}
-                onClick={() => navigateToSection(sectionId)}
-                className="text-[#0F2A4A] font-semibold text-sm tracking-tight hover:text-[#F26A1B] transition-colors relative group"
-              >
-                {t(key)}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#F26A1B] transition-all group-hover:w-full"></span>
-              </button>
-            ))}
+          {/* Desktop Links - Acum folosesc <Link> pentru a naviga pe pagini */}
+          <div className="hidden lg:flex items-center gap-8 xl:gap-10">
+            {NAV_LINKS.map(({ key, route }) => {
+              const fullRoute = `/${currentLocale}${route}`;
+              // Verificăm dacă ruta curentă include link-ul pentru a-i da un stil activ
+              const isActive = pathname.startsWith(fullRoute);
+
+              return (
+                <Link
+                  key={key}
+                  href={fullRoute}
+                  className={`font-semibold text-sm tracking-tight transition-colors relative group
+                    ${isActive ? "text-[#F26A1B]" : "text-[#0F2A4A] hover:text-[#F26A1B]"}`}
+                >
+                  {t(key)}
+                  <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#F26A1B] transition-all 
+                    ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}>
+                  </span>
+                </Link>
+              )
+            })}
           </div>
 
           {/* Desktop Right Side */}
           <div className="hidden lg:flex items-center gap-4">
-            {/* Buton Telefon */}
             <a 
               href="tel:+37368123456" 
               className="flex items-center gap-2.5 bg-[#0F2A4A] text-[#F26A1B] px-5 py-2.5 rounded-full shadow-md hover:bg-[#0F2A4A]/90 transition-all group hover:-translate-y-0.5"
@@ -113,7 +113,6 @@ export function Navbar() {
 
             <div className="h-8 w-px bg-[#0F2A4A]/10"></div>
 
-            {/* Grupul de Iconițe */}
             <div className="flex items-center gap-3">
               <Link href={loginHref} className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all" title={t("autentificare")}>
                 <User className="h-5 w-5 stroke-[1.5px]" />
@@ -135,7 +134,7 @@ export function Navbar() {
           </button>
         </nav>
 
-        {/* --- OVERLAY BLUR PENTRU FUNDAL --- */}
+        {/* OVERLAY BLUR PENTRU FUNDAL */}
         {isOpen && (
           <div 
             className="fixed inset-0 z-40 bg-[#F5F2EC]/80 backdrop-blur-md lg:hidden"
@@ -147,12 +146,23 @@ export function Navbar() {
         {/* Mobile Dropdown */}
         {isOpen && (
           <div className="absolute top-[80px] left-4 right-4 z-50 lg:hidden p-5 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-5 animate-fade-in-down">
-            {NAV_LINKS.map(({ key, sectionId }) => (
-              <button key={sectionId} onClick={() => { navigateToSection(sectionId); setIsOpen(false); }} className="text-left py-3 border-b border-gray-50 text-[#0F2A4A] font-semibold text-lg flex justify-between items-center hover:text-[#F26A1B]">
-                {t(key)}
-                <span className="text-[#F26A1B]">→</span>
-              </button>
-            ))}
+            {NAV_LINKS.map(({ key, route }) => {
+              const fullRoute = `/${currentLocale}${route}`;
+              const isActive = pathname.startsWith(fullRoute);
+              
+              return (
+                <Link 
+                  key={key} 
+                  href={fullRoute}
+                  onClick={() => setIsOpen(false)} 
+                  className={`text-left py-3 border-b border-gray-50 font-semibold text-lg flex justify-between items-center hover:text-[#F26A1B]
+                    ${isActive ? "text-[#F26A1B]" : "text-[#0F2A4A]"}`}
+                >
+                  {t(key)}
+                  <span className="text-[#F26A1B]">→</span>
+                </Link>
+              )
+            })}
             
             <div className="flex justify-center items-center gap-6 pt-4 border-t border-gray-100">
                <Link href={loginHref} className="flex flex-col items-center gap-1 text-[#0F2A4A]" onClick={() => setIsOpen(false)}>

@@ -15,19 +15,23 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: "Inteligent Service - Servicii Profesionale",
+  title: "Inteligent Service - Soluții de Securitate",
   description:
-    "Inteligent Service ofera servicii profesionale de cea mai inalta calitate.",
+    "Inteligent Service oferă servicii profesionale de cea mai înaltă calitate în domeniul securității și instalării sistemelor de supraveghere.",
 }
 
 export const viewport: Viewport = {
-  themeColor: "#06141B",
+  // Am schimbat culoarea temei browserului (pe mobil) cu noul tău fundal bej
+  themeColor: "#F5F2EC", 
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ro">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased`}>
+      {/* Am adăugat bg-background și text-foreground pentru a ne asigura 
+        că folosește noile variabile de culori (#F5F2EC și #0F2A4A) definite în globals.css 
+      */}
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground min-h-screen`}>
         {children}
         <Analytics />
       </body>

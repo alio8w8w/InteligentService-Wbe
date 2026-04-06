@@ -1,7 +1,9 @@
 {
   "nav": {
+    "branduri": "Branduri",
     "produse": "Produse",
     "galerie": "Galerie",
+    "led_ecrane": "LED Ecrane",
     "contact": "Contacte",
     "autentificare": "Autentificare"
   },
@@ -62,9 +64,17 @@
   },
   "brandCard": {
     "products": "produse",
-    "explore": "Explorează brandul",
     "viewProducts": "Vezi produsele",
     "hikvisionDesc": "Lider global în soluții inovatoare de supraveghere video și sisteme de securitate.",
     "dahuaDesc": "Tehnologie avansată și sisteme inteligente de securitate adaptate pentru orice necesitate."
+  },
+  "brandsPage": {
+    "title": "Branduri",
+    "titleHighlight": "partenere",
+    "description": "Lucrăm cu producători de top mondial pentru a vă oferi soluții de securitate de cea mai înaltă calitate și fiabilitate.",
+    "infoTitleBefore": "De ce contează ",
+    "infoTitleHighlight": "brandul?",
+    "infoDesc1": "Alegerea unui brand de calitate înseamnă fiabilitate pe termen lung, actualizări de firmware regulate, compatibilitate cu cele mai noi tehnologii și suport tehnic profesionist.",
+    "infoDesc2": "Investiția într-un echipament de calitate se amortizează prin durabilitate și performanță constantă. Noi îți oferim consultanță gratuită pentru a alege soluția potrivită nevoilor și bugetului tău."
   }
 }
