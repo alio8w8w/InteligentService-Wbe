@@ -1,25 +1,13 @@
 "use client"
 
 import Link from 'next/link'
-import { Phone, Shield, Clock, MapPin, ArrowRight, Check } from 'lucide-react'
+import { Phone, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Navbar } from '@/components/navbar' // Corectat la Navbar
+import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { BrandCard, type Brand } from '@/components/brand-card'
 import { HeroSection } from '@/components/hero-section'
+import { BrandComp } from '@/components/brand-comp' // Importăm noul component
 import { useTranslations, useLocale } from 'next-intl'
-
-// Definim strict cele 2 branduri
-const brands: Brand[] = ['hikvision', 'dahua']
-
-// MOCK: Produse temporare până le aduci din Supabase
-// (Ajustează proprietățile în funcție de cum arată ProductCard-ul tău)
-const featuredProducts = [
-  { id: 1, name: 'Cameră IP 4MP', price: 1200, brand: 'hikvision', image: '/placeholder.jpg' },
-  { id: 2, name: 'Sistem Supraveghere', price: 4500, brand: 'dahua', image: '/placeholder.jpg' },
-  { id: 3, name: 'NVR 8 Canale', price: 850, brand: 'hikvision', image: '/placeholder.jpg' },
-  { id: 4, name: 'Cameră PTZ', price: 3200, brand: 'dahua', image: '/placeholder.jpg' },
-]
 
 export default function HomePage() {
   const t = useTranslations('homePage')
@@ -30,78 +18,13 @@ export default function HomePage() {
       <Navbar />
       
       <main className="flex-1">
-        {/* Componenta Hero (deja adaptată anterior) */}
         <HeroSection />
 
-        {/* Features Section */}
-        <section className="py-16 bg-white/60 border-y border-[#7A8CA5]/15 backdrop-blur-sm">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              
-              {/* Feature 1 */}
-              <div className="flex items-start gap-4 p-6 bg-white rounded-2xl border border-[#7A8CA5]/20 shadow-sm hover:border-[#F26A1B]/50 hover:shadow-md transition-all duration-300">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F26A1B]/10 flex items-center justify-center">
-                  <Shield className="h-6 w-6 text-[#F26A1B]" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-[#0F2A4A] mb-1.5">{t('features.quality.title')}</h3>
-                  <p className="text-sm text-[#7A8CA5] font-medium leading-relaxed">
-                    {t('features.quality.description')}
-                  </p>
-                </div>
-              </div>
+        {/* Componenta de Branduri (extrasă) */}
+        <BrandComp />
 
-              {/* Feature 2 */}
-              <div className="flex items-start gap-4 p-6 bg-white rounded-2xl border border-[#7A8CA5]/20 shadow-sm hover:border-[#F26A1B]/50 hover:shadow-md transition-all duration-300">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F26A1B]/10 flex items-center justify-center">
-                  <Clock className="h-6 w-6 text-[#F26A1B]" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-[#0F2A4A] mb-1.5">{t('features.fast.title')}</h3>
-                  <p className="text-sm text-[#7A8CA5] font-medium leading-relaxed">
-                    {t('features.fast.description')}
-                  </p>
-                </div>
-              </div>
-
-              {/* Feature 3 */}
-              <div className="flex items-start gap-4 p-6 bg-white rounded-2xl border border-[#7A8CA5]/20 shadow-sm hover:border-[#F26A1B]/50 hover:shadow-md transition-all duration-300">
-                <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#F26A1B]/10 flex items-center justify-center">
-                  <MapPin className="h-6 w-6 text-[#F26A1B]" />
-                </div>
-                <div>
-                  <h3 className="font-extrabold text-[#0F2A4A] mb-1.5">{t('features.coverage.title')}</h3>
-                  <p className="text-sm text-[#7A8CA5] font-medium leading-relaxed">
-                    {t('features.coverage.description')}
-                  </p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </section>
-
-        {/* Brands Section */}
-        <section className="py-20">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-extrabold text-[#0F2A4A] mb-4 tracking-tight">
-                {t('brands.title')} <span className="text-[#F26A1B]">{t('brands.titleHighlight')}</span>
-              </h2>
-              <p className="text-[#7A8CA5] font-medium max-w-xl mx-auto text-lg">
-                {t('brands.description')}
-              </p>
-            </div>
-            {/* Grid-ul a fost adaptat pentru 2 coloane */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-              {brands.map((brand) => (
-                <BrandCard key={brand} brand={brand} />
-              ))}
-            </div>
-          </div>
-        </section>
         {/* Why Us Section */}
-        <section className="py-24 bg-[#F5F2EC]">
+        <section className="py-24 bg-white/60 border-y border-[#7A8CA5]/15 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
               <div>
@@ -120,7 +43,6 @@ export default function HomePage() {
                 </ul>
               </div>
               <div className="relative">
-                {/* Caseta de statistică - Navy Blue */}
                 <div className="bg-[#0F2A4A] rounded-3xl p-12 text-center shadow-2xl relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#F26A1B]/10 rounded-full blur-2xl"></div>
                   <div className="absolute bottom-0 left-0 w-32 h-32 bg-[#7A8CA5]/20 rounded-full blur-2xl"></div>
@@ -134,7 +56,7 @@ export default function HomePage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-20">
+        <section className="py-20 bg-[#F5F2EC]">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-gradient-to-br from-[#F26A1B] to-[#C24C0F] rounded-3xl p-10 md:p-16 text-center shadow-[0_20px_50px_-15px_rgba(194,76,15,0.5)]">
               <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">

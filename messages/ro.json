@@ -76,5 +76,27 @@
     "infoTitleHighlight": "brandul?",
     "infoDesc1": "Alegerea unui brand de calitate înseamnă fiabilitate pe termen lung, actualizări de firmware regulate, compatibilitate cu cele mai noi tehnologii și suport tehnic profesionist.",
     "infoDesc2": "Investiția într-un echipament de calitate se amortizează prin durabilitate și performanță constantă. Noi îți oferim consultanță gratuită pentru a alege soluția potrivită nevoilor și bugetului tău."
+  }, 
+  "homePage": {
+    "brands": {
+      "title": "Branduri",
+      "titleHighlight": "partenere",
+      "description": "Lucrăm cu producători de top mondial pentru a vă oferi cea mai bună calitate și fiabilitate."
+    },
+    "whyUs": {
+      "title": "De ce să ne",
+      "titleHighlight": "Alegi pe Noi?",
+      "item1": "Experiență vastă în instalarea sistemelor complexe de securitate.",
+      "item2": "Garanție pentru echipamente și calitatea lucrărilor executate.",
+      "item3": "Suport tehnic dedicat și mentenanță rapidă post-instalare.",
+      "stat": "Clienți Mulțumiți"
+    },
+    "cta": {
+      "title": "Ai nevoie de un",
+      "titleHighlight": "sistem de securitate?",
+      "description": "Sună-ne acum pentru o consultație gratuită. Te ajutăm să alegi sistemul perfect pentru nevoile tale.",
+      "phone": "+373 68 123 456",
+      "form": "Cere o ofertă"
+    }
   }
 }

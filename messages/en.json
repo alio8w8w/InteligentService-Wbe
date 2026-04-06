@@ -80,5 +80,27 @@
     "infoTitleHighlight": "brand matter?",
     "infoDesc1": "Choosing a quality brand means long-term reliability, regular firmware updates, compatibility with the latest technologies, and professional technical support.",
     "infoDesc2": "Investing in quality equipment pays off through durability and consistent performance. We offer free consultations to help you choose the right solution for your needs and budget."
+  },
+  "homePage": {
+    "brands": {
+      "title": "Partner",
+      "titleHighlight": "Brands",
+      "description": "We work with top global manufacturers to offer you the best quality and reliability."
+    },
+    "whyUs": {
+      "title": "Why",
+      "titleHighlight": "Choose Us?",
+      "item1": "Vast experience in installing complex security systems.",
+      "item2": "Warranty for equipment and the quality of work performed.",
+      "item3": "Dedicated technical support and fast post-installation maintenance.",
+      "stat": "Satisfied Customers"
+    },
+    "cta": {
+      "title": "Do you need a",
+      "titleHighlight": "security system?",
+      "description": "Call us now for a free consultation. We help you choose the perfect system for your needs.",
+      "phone": "+373 68 123 456",
+      "form": "Request a Quote"
+    }
   }
 }
