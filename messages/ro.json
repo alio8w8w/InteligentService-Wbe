@@ -22,7 +22,7 @@
     "prenume": "Prenume",
     "telefon": "Număr de telefon",
     "telefon_hint_md": "Introdu 8 cifre (sau 0 + 8 cifre). Prefixul +373 este automat.",
-    "telefon_invalid_8": "Numărul trebuie să aibă exact 8 cifre (0 ini��ial este ignorat).",
+    "telefon_invalid_8": "Numărul trebuie să aibă exact 8 cifre.",
     "btn_login": "Log in",
     "btn_signin": "Sign in",
     "incarcare": "Se încarcă...",
@@ -34,7 +34,13 @@
     "verifica_email": "Verifică emailul pentru confirmare.",
     "eroare_login": "Nu s-a putut face autentificarea.",
     "inapoi_login": "Înapoi",
-    "inapoi": "Înapoi la pagina principală"
+    "inapoi": "Înapoi la pagina principală",
+    "email_exista": "Acest email este deja asociat unui cont existent.",
+    "telefon_exista": "Acest număr de telefon este deja înregistrat.",
+    "parola_incorecta_incercari": "Email sau parolă incorectă. Au mai rămas {n} încercări.",
+    "cont_blocat_60": "Din motive de securitate, contul a fost blocat temporar.",
+    "cont_blocat_titlu": "Acces Suspendat",
+    "cont_blocat_descriere": "Ai introdus parola greșit de prea multe ori. Accesul este blocat pentru {timp}."
   },
   "hero": {
     "imageAlt": "Camera de supraveghere profesionala",
@@ -44,8 +50,8 @@
       "highlight": "inteligenta",
       "after": "pentru casa si afacerea ta"
     },
-    "description": "Instalam si deservim sisteme de supraveghere video pentru gospodarii si companii. Solutii moderne, fiabile si adaptate nevoilor tale. În orice colț al Moldovei.",
-    "ctaServices": "Suna acum ",
+    "description": "Instalăm și deservim sisteme de supraveghere video pentru gospodării și companii. Soluții moderne, fiabile și adaptate nevoilor tale. În orice colț al Moldovei.",
+    "ctaServices": "Sună acum",
     "ctaContact": "Vezi produse",
     "features": {
       "installation": {

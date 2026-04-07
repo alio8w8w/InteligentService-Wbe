@@ -8,37 +8,39 @@
     "autentificare": "Login"
   },
   "auth": {
-    "titlu_login": "Welcome back!",
-    "titlu_signup_signin": "Create account",
-    "titlu_signup": "Create account",
-    "subtitlu_login": "Sign in to your account to continue",
-    "subtitlu_signup": "Fill in your details to register",
-    "tab_login": "Sign In",
-    "tab_signin": "Register",
-    "tab_signup": "Register",
-    "google": "Continue with Google",
-    "sau": "or with email",
-    "nume": "Last name",
-    "prenume": "First name",
-    "telefon": "Phone number",
+    "titlu_login": "Authentication",
+    "titlu_signup_signin": "Create an account",
+    "subtitlu_login": "Log into your account",
+    "subtitlu_signup": "Fill in the details to create an account",
+    "tab_login": "Log in",
+    "tab_signin": "Sign up",
     "email": "Email",
     "email_invalid": "Invalid email format.",
     "invalid_login_credentials": "Incorrect email or password.",
     "parola": "Password",
-    "ai_uitat_parola": "Forgot password?",
-    "btn_login": "Sign In",
-    "btn_signin": "Create account",
-    "btn_signup": "Create account",
+    "nume": "First Name",
+    "prenume": "Last Name",
+    "telefon": "Phone Number",
+    "telefon_hint_md": "Enter 8 digits. The +373 prefix is added automatically.",
+    "telefon_invalid_8": "The number must have exactly 8 digits.",
+    "btn_login": "Log in",
+    "btn_signin": "Sign up",
     "incarcare": "Loading...",
-    "verifica_email": "✅ Check your email for confirmation!",
-    "eroare_login": "Invalid email or password.",
-    "inapoi": "Back to home page",
-    "inapoi_login": "Back to sign in",
-    "recuperare_titlu": "Password recovery",
-    "recuperare_subtitlu_link": "We'll send a reset link to your email",
-    "recuperare_subtitlu": "We'll send a reset link to your email",
-    "trimite_link": "Send reset link",
-    "email_recuperare_trimis": "✅ Recovery link sent! Check your email."
+    "ai_uitat_parola": "Forgot password?",
+    "recuperare_titlu": "Password Recovery",
+    "recuperare_subtitlu_link": "We will send you an email link to reset your password",
+    "trimite_link": "Send reset email",
+    "email_recuperare_trimis": "Email sent. Check your inbox/spam folder.",
+    "verifica_email": "Please check your email for confirmation.",
+    "eroare_login": "Authentication failed.",
+    "inapoi_login": "Back",
+    "inapoi": "Back to Home",
+    "email_exista": "This email is already associated with an existing account.",
+    "telefon_exista": "This phone number is already registered.",
+    "parola_incorecta_incercari": "Incorrect email or password. {n} attempts remaining.",
+    "cont_blocat_60": "For security reasons, the account has been temporarily locked.",
+    "cont_blocat_titlu": "Access Suspended",
+    "cont_blocat_descriere": "You have entered the wrong password too many times. Access is blocked for {timp}."
   },
   "hero": {
     "imageAlt": "Professional surveillance camera",
@@ -48,39 +50,39 @@
       "highlight": "security",
       "after": "for your home and business"
     },
-    "description": "We install and maintain video surveillance systems for households and companies. Modern, reliable solutions tailored to your needs. In every corner of Moldova.",
-    "ctaServices": "Call now ",
+    "description": "We install and service video surveillance systems for homes and businesses. Modern, reliable solutions adapted to your needs. Anywhere in Moldova.",
+    "ctaServices": "Call now",
     "ctaContact": "View products",
     "features": {
       "installation": {
         "title": "Camera Installation",
-        "description": "Professional setup for homes and companies"
+        "description": "Professional mounting for homes and companies"
       },
       "security": {
         "title": "24/7 Security",
         "description": "Continuous monitoring and technical support"
       },
       "intervention": {
-        "title": "Fast Travel",
-        "description": "Travel to any corner of Moldova"
+        "title": "Fast Deployment",
+        "description": "Deployment anywhere in Moldova"
       }
     }
   },
   "brandCard": {
     "products": "products",
     "viewProducts": "View products",
-    "hikvisionDesc": "Global leader in innovative video surveillance and comprehensive security solutions.",
+    "hikvisionDesc": "Global leader in innovative video surveillance and security systems.",
     "dahuaDesc": "Advanced technology and intelligent security systems tailored for any need."
   },
   "brandsPage": {
     "title": "Partner",
     "titleHighlight": "Brands",
-    "description": "We work with world-class manufacturers to provide you with the highest quality and most reliable security solutions.",
+    "description": "We work with top global manufacturers to offer you the highest quality and most reliable security solutions.",
     "infoTitleBefore": "Why does the ",
     "infoTitleHighlight": "brand matter?",
     "infoDesc1": "Choosing a quality brand means long-term reliability, regular firmware updates, compatibility with the latest technologies, and professional technical support.",
-    "infoDesc2": "Investing in quality equipment pays off through durability and consistent performance. We offer free consultations to help you choose the right solution for your needs and budget."
-  },
+    "infoDesc2": "Investing in quality equipment pays off through durability and constant performance. We offer free consulting to help you choose the right solution."
+  }, 
   "homePage": {
     "brands": {
       "title": "Partner",
@@ -91,7 +93,7 @@
       "title": "Why",
       "titleHighlight": "Choose Us?",
       "item1": "Vast experience in installing complex security systems.",
-      "item2": "Warranty for equipment and the quality of work performed.",
+      "item2": "Warranty for equipment and the quality of work executed.",
       "item3": "Dedicated technical support and fast post-installation maintenance.",
       "stat": "Satisfied Customers"
     },
@@ -106,10 +108,10 @@
   "brandPage": {
     "backToBrands": "Back to brands",
     "products": "Products",
-    "noProducts": "There are currently no products available for this brand.",
+    "noProducts": "There are no products currently available for this brand.",
     "ctaTitleBefore": "Do you need",
     "ctaTitleHighlight": "help?",
-    "ctaDesc": "Contact us for a free consultation. We'll help you choose the perfect solution for your needs.",
+    "ctaDesc": "Contact us for free consulting. We will help you choose the perfect solution for your needs.",
     "callNow": "Call now",
     "sendMessage": "Send message"
   }
