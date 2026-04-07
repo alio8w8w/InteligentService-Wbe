@@ -102,5 +102,15 @@
       "phone": "+373 68 123 456",
       "form": "Request a Quote"
     }
+  },
+  "brandPage": {
+    "backToBrands": "Back to brands",
+    "products": "Products",
+    "noProducts": "There are currently no products available for this brand.",
+    "ctaTitleBefore": "Do you need",
+    "ctaTitleHighlight": "help?",
+    "ctaDesc": "Contact us for a free consultation. We'll help you choose the perfect solution for your needs.",
+    "callNow": "Call now",
+    "sendMessage": "Send message"
   }
 }

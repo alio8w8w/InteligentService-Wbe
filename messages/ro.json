@@ -98,5 +98,15 @@
       "phone": "+373 68 123 456",
       "form": "Cere o ofertă"
     }
+  },
+  "brandPage": {
+    "backToBrands": "Înapoi la branduri",
+    "products": "Produse",
+    "noProducts": "Nu există produse disponibile momentan pentru acest brand.",
+    "ctaTitleBefore": "Ai nevoie de",
+    "ctaTitleHighlight": "ajutor?",
+    "ctaDesc": "Contactează-ne pentru consultanță gratuită. Te ajutăm să alegi soluția perfectă pentru nevoile și bugetul tău.",
+    "callNow": "Sună acum",
+    "sendMessage": "Trimite mesaj"
   }
 }
