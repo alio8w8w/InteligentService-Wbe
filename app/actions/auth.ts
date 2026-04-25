@@ -3,23 +3,28 @@
 import { cookies } from "next/headers"
 
 export async function loginAdminAction(login: string, pass: string, remember: boolean) {
-  const ADMIN_LOGIN = "xypbe4-kuqsUh-sygxor"
-  const ADMIN_PASS = "kaxwub-noDzag-6hofze"
+  // Preluăm credențialele sigure din variabilele de mediu
+  const correctUser = process.env.ADMIN_USERNAME;
+  const correctPass = process.env.ADMIN_PASSWORD;
 
-  if (login === ADMIN_LOGIN && pass === ADMIN_PASS) {
+  // Întârziem intenționat răspunsul (măsură de securitate contra atacurilor Brute Force)
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  if (login === correctUser && pass === correctPass) {
+    // Succes! Setăm un cookie securizat (HttpOnly) pentru a recunoaște adminul
     const cookieStore = await cookies()
+    const maxAge = remember ? 30 * 24 * 60 * 60 : 60 * 60; // 30 zile sau 1 oră
     
-    // IMPORTANT: Setăm cookie-ul cu setările de bază
-    cookieStore.set("admin_session", "true", {
-      httpOnly: false, // Permite accesul la cookie din client pentru verificare
+    cookieStore.set("admin_session", "un_token_secret_sau_jwt_aici", {
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: remember ? 60 * 60 * 24 * 30 : 60 * 60 * 2,
-      path: "/", // Trebuie să fie disponibil pe tot site-ul
-      sameSite: "lax",
+      sameSite: "strict",
+      path: "/",
+      maxAge: maxAge,
     })
-
+    
     return { success: true }
   }
-
+  
   return { success: false }
 }
