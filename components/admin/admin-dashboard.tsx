@@ -17,6 +17,7 @@ import ScheduleManager from "./ScheduleManager"
 import GalleryManager from "./galerieadmin" 
 import ClientManager from "./ClientManager" 
 import AnalyticsManager from "./AnalyticsManager" // Importăm componenta nouă
+import ProductForm from "@/components/admin/ProductForm"
 
 interface AdminDashboardProps {
   onOpenBooking: () => void;
@@ -24,13 +25,14 @@ interface AdminDashboardProps {
 
 export default function AdminDashboard({ onOpenBooking }: AdminDashboardProps) {
   // Am adăugat "statistici" la starea activă
-  const [activeTab, setActiveTab] = useState<"acasa" | "orar" | "galerie" | "clienti" | "statistici">("acasa")
+  const [activeTab, setActiveTab] = useState<"acasa" | "orar" | "galerie" | "clienti" | "statistici" | "produse">("acasa")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  const switchTab = (tab: "acasa" | "orar" | "galerie" | "clienti" | "statistici") => {
+  const switchTab = (tab: "acasa" | "orar" | "galerie" | "clienti" | "statistici" | "produse") => {
     setActiveTab(tab)
     setIsMobileMenuOpen(false)
   }
+  
 
   return (
     <div className="min-h-screen bg-[#EED5B9]/20 font-sans text-[#706760]">
@@ -78,12 +80,14 @@ export default function AdminDashboard({ onOpenBooking }: AdminDashboardProps) {
             {activeTab === "clienti" && <div className="animate-in fade-in slide-in-from-right-4 duration-500 h-full"><ClientManager /></div>}
             {/* Rutează către noul tab de statistici */}
             {activeTab === "statistici" && <div className="animate-in fade-in slide-in-from-right-4 duration-500 h-full"><AnalyticsManager /></div>}
+            {activeTab === "produse" && <div className="animate-in fade-in slide-in-from-right-4 duration-500 h-full"><ProductForm /></div>}
           </main>
         </div>
       </div>
     </div>
   )
 }
+
 
 function SidebarContent({ activeTab, switchTab }: any) {
   const btnClass = (tab: string) => `w-full flex items-center gap-3 px-5 py-4 rounded-2xl transition-all ${activeTab === tab ? "bg-[#BFC08E] text-[#1a1613] font-black shadow-lg" : "hover:bg-white/5 opacity-70"}`;
@@ -97,6 +101,7 @@ function SidebarContent({ activeTab, switchTab }: any) {
       
       {/* Butonul de Statistici care înlocuiește Setările */}
       <button onClick={() => switchTab("statistici")} className={btnClass("statistici")}><BarChart3 size={20} /> Statistici Web</button>
+      <button onClick={() => switchTab("produse")} className={btnClass("produse")}><BarChart3 size={20} /> Produse</button>
     </>
   )
 }

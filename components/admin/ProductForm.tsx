@@ -1,180 +1,127 @@
-// components/admin/ProductForm.tsx
+"use client"
 
-import React, { useState } from "react";
+import { useState } from "react"
+import { createClient } from "@supabase/supabase-js"
+import { useRouter } from "next/navigation"
 
-type Brand = "Hikvision" | "Dahua";
-
-const AVAILABLE_BRANDS: Brand[] = ["Hikvision", "Dahua"];
-const LANGUAGES = [
-  { code: "ro", name: "Română" },
-  { code: "ru", name: "Русский" },
-  { code: "en", name: "English" }, // exemplu, adaptează la stack-ul i18n
-];
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 export default function ProductForm() {
-  // State pentru toate câmpurile
-  const [name, setName] = useState("");
-  const [basePrice, setBasePrice] = useState<number>(0);
-  const [brand, setBrand] = useState<Brand>("Hikvision");
-  const [discount, setDiscount] = useState<number | "">("");
-  const [featured, setFeatured] = useState(false);
-  const [description, setDescription] = useState("");
-  const [images, setImages] = useState<File[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [name, setName] = useState("")
+  const [basePrice, setBasePrice] = useState("")
+  const [brand, setBrand] = useState("Hikvision")
+  const [discount, setDiscount] = useState("")
+  const [featured, setFeatured] = useState(false)
+  const [description, setDescription] = useState("")
+  const [images, setImages] = useState<File[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [success, setSuccess] = useState("")
+  const router = useRouter()
 
-  // Helpers pentru image upload (local state, upload eventually in API endpoint)
-  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Upload handler
+  function handleImagesChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) {
-      setImages(Array.from(e.target.files));
+      setImages(Array.from(e.target.files))
     }
-  };
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+    setSuccess("")
 
-    // Construiește "FormData" pentru imagini și date
-    const formData = new FormData();
-    // images multiple
-    images.forEach((file, idx) => formData.append("images", file));
-    formData.append("name", name);
-    formData.append("base_price", String(basePrice));
-    formData.append("brand", brand);
-    formData.append("discount_percentage", discount ? String(discount) : "");
-    formData.append("is_featured_on_homepage", String(featured));
-    formData.append("description", description);
-
-    // Trimite către API Route
-    try {
-      const res = await fetch("/api/translate-and-add-product", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Eroare la adăugare produs");
+    // 1. Check "featured" limit
+    if (featured) {
+      const { count } = await supabase
+        .from("products")
+        .select("*", { count: "exact", head: true })
+        .eq("is_featured_on_homepage", true)
+      if (count! >= 6) {
+        setError("Poți alege maxim 6 produse pe homepage!")
+        setLoading(false)
+        return
       }
-
-      setSuccess("Produs adăugat cu succes!");
-      // reset form
-      setName("");
-      setBasePrice(0);
-      setBrand("Hikvision");
-      setDiscount("");
-      setFeatured(false);
-      setDescription("");
-      setImages([]);
-    } catch (err: any) {
-      setError(err.message || "Eroare necunoscută");
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // 2. Upload imagini
+    let imageUrls: string[] = []
+    for (const image of images) {
+      const { data, error } = await supabase.storage
+        .from("products")
+        .upload(`product_${Date.now()}_${image.name}`, image, {
+          cacheControl: "3600",
+          upsert: false,
+        })
+      if (error) {
+        setError(`Eroare la încărcare imagine: ${error.message}`)
+        setLoading(false)
+        return
+      }
+      // Get Public URL
+      const { data: pub } = supabase.storage.from("products").getPublicUrl(data.path)
+      imageUrls.push(pub.publicUrl)
+    }
+
+    // 3. Adaugă produsul
+    const { data: product, error: prodErr } = await supabase
+      .from("products")
+      .insert([{
+        name,
+        base_price: parseFloat(basePrice),
+        brand,
+        discount_percentage: discount !== "" ? parseFloat(discount) : null,
+        images: imageUrls,
+        is_featured_on_homepage: featured,
+      }])
+      .select()
+      .single()
+    if (prodErr) {
+      setError(prodErr.message)
+      setLoading(false)
+      return
+    }
+
+    // 4. Auto-traducere "description" (mock rapid – folosește API de traducere real dacă vrei)
+    const translations = [
+      { product_id: product.id, language_code: "ro", description_translated: description },
+      { product_id: product.id, language_code: "en", description_translated: `[en] ${description}` },
+      { product_id: product.id, language_code: "ru", description_translated: `[ru] ${description}` },
+    ]
+    await supabase.from("product_translations").insert(translations)
+
+    setSuccess("Produs adăugat cu succes!")
+    setLoading(false)
+    setName("")
+    setBasePrice("")
+    setBrand("Hikvision")
+    setDiscount("")
+    setFeatured(false)
+    setDescription("")
+    setImages([])
+    // Poți da refresh la listă sau redirect dacă vrei: router.refresh()
+  }
 
   return (
-    <form
-      className="w-full max-w-lg bg-[#191A21] p-8 rounded-xl space-y-6"
-      onSubmit={handleSubmit}
-      encType="multipart/form-data"
-    >
-      <h2 className="text-lg font-semibold mb-4">Adaugă produs nou</h2>
-      <div className="space-y-2">
-        <label className="block">Nume produs*</label>
-        <input
-          type="text"
-          required
-          value={name}
-          onChange={e => setName(e.target.value)}
-          className="w-full p-2 rounded bg-[#232336]"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block">Preț de bază (MDL)*</label>
-        <input
-          type="number"
-          required
-          min={0}
-          value={basePrice}
-          onChange={e => setBasePrice(Number(e.target.value))}
-          className="w-full p-2 rounded bg-[#232336]"
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block">Imagini (upload multiplu)</label>
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleImagesChange}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <label className="block">Brand *</label>
-        <select
-          value={brand}
-          onChange={e => setBrand(e.target.value as Brand)}
-          className="w-full p-2 rounded bg-[#232336]"
-        >
-          {AVAILABLE_BRANDS.map(b => (
-            <option key={b} value={b}>{b}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="space-y-2">
-        <label className="block">Reducere (%)</label>
-        <input
-          type="number"
-          step={0.01}
-          min={0}
-          max={100}
-          value={discount}
-          onChange={e => setDiscount(e.target.value === "" ? "" : Number(e.target.value))}
-          className="w-full p-2 rounded bg-[#232336]"
-        />
-      </div>
-
-      <div className="flex items-center">
-        <input
-          type="checkbox"
-          checked={featured}
-          onChange={e => setFeatured(e.target.checked)}
-          id="featured"
-        />
-        <label htmlFor="featured" className="ml-2 cursor-pointer">
-          Afișează pe pagina principală
-        </label>
-      </div>
-
-      <div className="space-y-2">
-        <label className="block">Descriere produs* (va fi tradusă automat)</label>
-        <textarea
-          required
-          value={description}
-          onChange={e => setDescription(e.target.value)}
-          className="w-full p-2 rounded bg-[#232336]"
-          rows={4}
-        />
-      </div>
-    
-      {error && <div className="text-red-500">{error}</div>}
-      {success && <div className="text-green-500">{success}</div>}
-
-      <button
-        type="submit"
-        className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
-        disabled={loading}
-      >
-        {loading ? "Salvez..." : "Adaugă produs"}
-      </button>
+    <form className="space-y-4 bg-white p-8 rounded-xl shadow-xl max-w-lg mx-auto" onSubmit={handleSubmit} encType="multipart/form-data">
+      <h2 className="text-lg font-bold">Adaugă produs nou</h2>
+      <input value={name} onChange={e => setName(e.target.value)} required placeholder="Nume produs" className="input" />
+      <input type="number" value={basePrice} onChange={e => setBasePrice(e.target.value)} required placeholder="Preț (MDL)" className="input" />
+      <select value={brand} onChange={e => setBrand(e.target.value)} className="input">
+        <option value="Hikvision">Hikvision</option>
+        <option value="Dahua">Dahua</option>
+      </select>
+      <input type="number" value={discount} min={0} max={100} step={0.01} onChange={e => setDiscount(e.target.value)} placeholder="Reducere (%)" className="input" />
+      <input type="checkbox" checked={featured} onChange={e => setFeatured(e.target.checked)} /> <span>Afișează pe homepage</span>
+      <textarea value={description} onChange={e => setDescription(e.target.value)} required placeholder="Descriere produs (în RO)" className="input" />
+      <input type="file" multiple onChange={handleImagesChange} className="input" />
+      {error && <span className="text-red-600">{error}</span>}
+      {success && <span className="text-green-600">{success}</span>}
+      <button type="submit" className="btn" disabled={loading}>{loading ? "Salvez..." : "Adaugă produs"}</button>
     </form>
-  );
+  )
 }
