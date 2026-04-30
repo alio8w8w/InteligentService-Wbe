@@ -52,11 +52,15 @@ export default function AdminLogin() {
         localStorage.removeItem("admin_block_until")
         
         const locale = window.location.pathname.split("/")[1] || "ro"
-        // Asigură-te că targetUrl corespunde rutei tale reale de admin
-        const targetUrl = `/${locale}/admininteligent@service34251/dashboard`
+        const targetUrl = `/${locale}/admin`
         
         window.location.replace(targetUrl)
       } else {
+        if (result?.error === "CONFIG_MISSING") {
+          setError("Configurație server invalidă. Repornește aplicația și verifică variabilele ADMIN_USERNAME / ADMIN_PASSWORD.")
+          return
+        }
+
         const currentAttempts = parseInt(localStorage.getItem("login_attempts") || "0") + 1
         localStorage.setItem("login_attempts", currentAttempts.toString())
 

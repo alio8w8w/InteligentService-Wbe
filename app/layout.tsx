@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
 import { Inter, Space_Grotesk } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import ViewTracker from "@/components/ViewTracker" // IMPORT NOU: Am adăugat tracker-ul de vizite
 import "./globals.css"
 
 const inter = Inter({
@@ -32,6 +33,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         că folosește noile variabile de culori (#F5F2EC și #0F2A4A) definite în globals.css 
       */}
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground min-h-screen`}>
+        {/* COMPONENTA NOUĂ: Rulează invizibil în fundal și trimite datele la Supabase */}
+        <ViewTracker />
+        
         {children}
         <Analytics />
       </body>

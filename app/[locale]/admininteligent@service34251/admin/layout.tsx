@@ -19,8 +19,8 @@ export default async function AdminLayout({
   if (session !== "true") {
     console.log(`[AUTH] Acces refuzat pe limba ${locale}. Redirecționare...`);
     
-    // Redirecționăm către login: /ro/vbadmin... sau /ru/vbadmin...
-    redirect(`/${locale}/vbadmin224334beauty@12`);
+    // Redirecționăm către admin-ul curent
+    redirect(`/${locale}/admin`);
   }
 
   // 4. Dacă totul e OK, afișăm interfața de admin

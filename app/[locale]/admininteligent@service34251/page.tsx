@@ -1,5 +1,6 @@
-import AdminLogin from "@/components/admin/admin-login"
+import { redirect } from "next/navigation"
 
-export default function AdminPage() {
-  return <AdminLogin />
+export default async function AdminPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  redirect(`/${locale}/admin`)
 }
