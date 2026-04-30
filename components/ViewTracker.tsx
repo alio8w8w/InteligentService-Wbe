@@ -1,44 +1,40 @@
-import type { Metadata, Viewport } from "next"
-import type { ReactNode } from "react"
-import { Inter, Space_Grotesk } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
-import ViewTracker from "@/components/ViewTracker" // IMPORT NOU: Am adăugat tracker-ul de vizite
-import "./globals.css"
+"use client"
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-})
+import { useEffect } from "react"
+import { usePathname } from "next/navigation"
+import { createClient } from "@supabase/supabase-js"
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-})
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
-export const metadata: Metadata = {
-  title: "Inteligent Service - Soluții de Securitate",
-  description:
-    "Inteligent Service oferă servicii profesionale de cea mai înaltă calitate în domeniul securității și instalării sistemelor de supraveghere.",
-}
+export default function ViewTracker() {
+  const pathname = usePathname()
 
-export const viewport: Viewport = {
-  // Am schimbat culoarea temei browserului (pe mobil) cu noul tău fundal bej
-  themeColor: "#F5F2EC", 
-}
+  useEffect(() => {
+    const trackView = async () => {
+      // NU înregistrăm vizitele pe paginile de admin
+      if (pathname?.includes("/admin")) {
+        console.log("Tracker: Vizită pe admin ignorată.");
+        return;
+      }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
-  return (
-    <html lang="ro">
-      {/* Am adăugat bg-background și text-foreground pentru a ne asigura 
-        că folosește noile variabile de culori (#F5F2EC și #0F2A4A) definite în globals.css 
-      */}
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground min-h-screen`}>
-        {/* COMPONENTA NOUĂ: Rulează invizibil în fundal și trimite datele la Supabase */}
-        <ViewTracker />
-        
-        {children}
-        <Analytics />
-      </body>
-    </html>
-  )
+      console.log("Tracker: Încerc să înregistrez vizita pentru:", pathname);
+
+      const { error } = await supabase
+        .from("page_views")
+        .insert([{ path: pathname || "/" }]);
+
+      if (error) {
+        console.error("Tracker Error:", error.message);
+      } else {
+        console.log("Tracker Success: Vizită salvată în Supabase!");
+      }
+    };
+
+    trackView();
+  }, [pathname]);
+
+  return null; // Componenta este invizibilă
 }

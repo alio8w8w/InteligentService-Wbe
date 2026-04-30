@@ -3,6 +3,7 @@ import { NextIntlClientProvider } from "next-intl"
 import { getMessages } from "next-intl/server"
 import { routing } from "@/i18n/routing"
 import { notFound } from "next/navigation"
+import ViewTracker from "@/components/ViewTracker" // Importăm tracker-ul de vizite
 
 export default async function LocaleLayout({
   children,
@@ -20,6 +21,10 @@ export default async function LocaleLayout({
   const messages = await getMessages()
 
   return (
-    <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+    <NextIntlClientProvider messages={messages}>
+      {/* Tracker-ul este plasat aici pentru a monitoriza toate paginile din acest layout */}
+      <ViewTracker />
+      {children}
+    </NextIntlClientProvider>
   )
 }

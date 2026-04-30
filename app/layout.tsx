@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
 import { Inter, Space_Grotesk } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
-import ViewTracker from "@/components/ViewTracker" // IMPORT NOU: Am adăugat tracker-ul de vizite
-import "./globals.css"
+import ViewTracker from "@/components/ViewTracker" // Aici importăm componenta reparată mai sus
+import "./globals.css" // Funcționează corect pentru că globals.css e în același folder cu layout.tsx
 
 const inter = Inter({
   subsets: ["latin"],
@@ -22,20 +22,14 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  // Am schimbat culoarea temei browserului (pe mobil) cu noul tău fundal bej
   themeColor: "#F5F2EC", 
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ro">
-      {/* Am adăugat bg-background și text-foreground pentru a ne asigura 
-        că folosește noile variabile de culori (#F5F2EC și #0F2A4A) definite în globals.css 
-      */}
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground min-h-screen`}>
-        {/* COMPONENTA NOUĂ: Rulează invizibil în fundal și trimite datele la Supabase */}
         <ViewTracker />
-        
         {children}
         <Analytics />
       </body>
