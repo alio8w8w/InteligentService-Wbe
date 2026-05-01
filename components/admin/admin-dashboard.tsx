@@ -14,21 +14,17 @@ import {
 } from "lucide-react"
 
 // Importuri componente
-import BookingsTable from "./BookingsTable"
 import GalleryManager from "./galerieadmin" 
 import ClientManager from "./ClientManager" 
 import AnalyticsManager from "./AnalyticsManager" 
 import ProductForm from "@/components/admin/ProductForm"
-import BookingModal from "@/components/booking-modal" // Am adăugat importul aici
+import OrdersTable from "@/components/admin/OrdersTable" // Import corectat și redenumit
 
 type TabType = "acasa" | "galerie" | "clienti" | "statistici" | "produse";
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>("acasa")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  
-  // Am mutat starea pentru Booking Modal aici
-  const [isBookingOpen, setIsBookingOpen] = useState(false)
 
   const switchTab = (tab: TabType) => {
     setActiveTab(tab)
@@ -38,12 +34,6 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-[#FEFAE0]/40 font-sans text-[#283618]">
       
-      {/* MODALUL DE PROGRAMĂRI este acum integrat direct aici */}
-      <BookingModal
-        isOpen={isBookingOpen}
-        onClose={() => setIsBookingOpen(false)}
-      />
-
       {/* HEADER MOBIL */}
       <header className="lg:hidden bg-[#283618] p-4 flex items-center justify-between sticky top-0 z-[100] shadow-md">
         <button onClick={() => setIsMobileMenuOpen(true)} className="text-[#FEFAE0]"><Menu size={28} /></button>
@@ -85,7 +75,8 @@ export default function AdminDashboard() {
 
           {/* CONȚINUT PRINCIPAL */}
           <main className="flex-1 p-5 md:p-10 bg-[#FEFAE0]/10 overflow-y-auto">
-            {activeTab === "acasa" && <div className="animate-in fade-in duration-500"><BookingsTable /></div>}
+            {/* Aici am înlocuit BookingsTable cu OrdersTable */}
+            {activeTab === "acasa" && <div className="animate-in fade-in duration-500"><OrdersTable /></div>}
             {activeTab === "galerie" && <div className="animate-in fade-in slide-in-from-right-4 duration-500"><GalleryManager /></div>}
             {activeTab === "clienti" && <div className="animate-in fade-in slide-in-from-right-4 duration-500 h-full"><ClientManager /></div>}
             {activeTab === "statistici" && <div className="animate-in fade-in slide-in-from-right-4 duration-500 h-full"><AnalyticsManager /></div>}
@@ -107,7 +98,8 @@ function SidebarContent({ activeTab, switchTab }: { activeTab: TabType, switchTa
   return (
     <>
       <button onClick={() => switchTab("acasa")} className={btnClass("acasa")}>
-        <LayoutDashboard size={20} /> Dashboard
+        {/* Am modificat textul din "Dashboard" în "Comenzi" pentru a fi mai explicit */}
+        <LayoutDashboard size={20} /> Comenzi 
       </button>
       <button onClick={() => switchTab("galerie")} className={btnClass("galerie")}>
         <ImageIcon size={20} /> Galerie Foto
