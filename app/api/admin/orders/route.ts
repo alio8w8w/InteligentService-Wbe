@@ -20,7 +20,7 @@ export async function GET() {
           pret_unitar,
           produse (
             name,
-            imagine,
+            images,
             pret
           )
         )
