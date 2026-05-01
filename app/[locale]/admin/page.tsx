@@ -1,6 +1,6 @@
 import { cookies } from "next/headers"
 import AdminLogin from "@/components/admin/admin-login"
-import AdminShell from "@/components/admin/admin-shell"
+import AdminDashboard from "@/components/admin/admin-dashboard"
 
 export default async function AdminPage() {
   const cookieStore = await cookies()
@@ -10,5 +10,5 @@ export default async function AdminPage() {
     return <AdminLogin />
   }
 
-  return <AdminShell />
+  return <AdminDashboard /> // Randăm direct Dashboard-ul
 }

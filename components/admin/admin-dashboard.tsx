@@ -19,16 +19,16 @@ import GalleryManager from "./galerieadmin"
 import ClientManager from "./ClientManager" 
 import AnalyticsManager from "./AnalyticsManager" 
 import ProductForm from "@/components/admin/ProductForm"
-
-interface AdminDashboardProps {
-  onOpenBooking: () => void;
-}
+import BookingModal from "@/components/booking-modal" // Am adăugat importul aici
 
 type TabType = "acasa" | "galerie" | "clienti" | "statistici" | "produse";
 
-export default function AdminDashboard({ onOpenBooking }: AdminDashboardProps) {
+export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<TabType>("acasa")
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  
+  // Am mutat starea pentru Booking Modal aici
+  const [isBookingOpen, setIsBookingOpen] = useState(false)
 
   const switchTab = (tab: TabType) => {
     setActiveTab(tab)
@@ -37,6 +37,13 @@ export default function AdminDashboard({ onOpenBooking }: AdminDashboardProps) {
 
   return (
     <div className="min-h-screen bg-[#FEFAE0]/40 font-sans text-[#283618]">
+      
+      {/* MODALUL DE PROGRAMĂRI este acum integrat direct aici */}
+      <BookingModal
+        isOpen={isBookingOpen}
+        onClose={() => setIsBookingOpen(false)}
+      />
+
       {/* HEADER MOBIL */}
       <header className="lg:hidden bg-[#283618] p-4 flex items-center justify-between sticky top-0 z-[100] shadow-md">
         <button onClick={() => setIsMobileMenuOpen(true)} className="text-[#FEFAE0]"><Menu size={28} /></button>
