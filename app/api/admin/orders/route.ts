@@ -19,8 +19,8 @@ export async function GET() {
           cantitate,
           pret_unitar,
           produse (
-            nume,
-            imagine_url,
+            name,
+            imagine,
             pret
           )
         )
