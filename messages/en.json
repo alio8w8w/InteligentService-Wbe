@@ -138,5 +138,54 @@
   "bannerTitle": "Discover Our Full Product Range",
   "bannerBtn": "Shop Now",
   "inStock": "In stock"
+},
+"cart": {
+  "title": "Your Cart",
+  "itemsCount": "{count} items in cart",
+  "itemsCountOne": "1 item in cart",
+  "emptyTitle": "Your cart is empty",
+  "emptyDesc": "Discover our range of security systems and find the perfect equipment for your needs.",
+  "backToShop": "Back to shop",
+  "quantity": "Quantity:",
+  "delete": "Delete",
+  "summaryTitle": "Order Summary",
+  "subtotal": "Subtotal",
+  "taxes": "Taxes / Installation",
+  "calculatedLater": "Calculated later",
+  "estimatedTotal": "Estimated Total",
+  "submitOrder": "Submit Order",
+  "consultantNote": "A consultant will contact you for confirmation and details.",
+  "recommended": "Recommended products",
+  "cta1Title": "Not sure what to choose?",
+  "cta1Desc": "Our engineers offer free consulting to help you choose the optimal system.",
+  "cta1Btn": "Request a phone call →",
+  "cta2Title": "Professional Display Systems",
+  "cta2Desc": "Discover our range of indoor and outdoor LED screens.",
+  "cta2Btn": "View LED collection →"
+},
+"brandDetails": {
+  "hikvision": {
+    "discoverBtn": "Discover Hikvision",
+    "whoIsTitle": "Who is Hikvision",
+    "tags": "Quality • Sustainability • Cybersecurity",
+    "whoIsText": "Hikvision guarantees the highest quality at affordable prices. Founded in 2001, Hikvision focuses on integrated security and scenario-based digitalization, serving diverse industries with AI-powered Internet of Things (AIoT) technologies.",
+    "whyTitle": "Why buy only from an authorized installer?",
+    "whyText": "To better serve customers, Hikvision has created an excellent pre- and post-sales service network for technical support, selling its products exclusively through authorized distributors and installation/integration partners globally.",
+    "whatTitle": "What we offer",
+    "whatText1": "It's time to step into the future. Whether you're considering an upgrade or a scratch install, IP is the solution. It offers better image quality, higher resolution, and advanced features like AI, using fewer devices and cables. We offer a wide range of IP products including NVRs, PTZ dome cameras, panoramic cameras, and network transmission accessories.",
+    "whatText2": "Based on deep learning technology, DeepinView cameras and DeepinMind NVRs are among our most advanced products, allowing person/vehicle recognition and customer interest identification."
+  },
+  "dahua": {
+    "discoverBtn": "Discover Dahua",
+    "whoIsTitle": "Who is Dahua",
+    "tags": "Innovation • AI • Global Security",
+    "whoIsText": "Dahua Technology is a world-leading video-centric AIoT solution and service provider.",
+    "whyTitle": "Choose official support",
+    "whyText": "Working with certified partners ensures you get the latest firmware updates and full warranty.",
+    "whatTitle": "Smart Solutions",
+    "whatText1": "We offer a complete range of AI-powered equipment for advanced protection.",
+    "whatText2": "From facial recognition to perimeter protection, Dahua redefines security."
+  },
+  "productsTitle": "Available Products"
 }
 }
