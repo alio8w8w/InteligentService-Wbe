@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { HeroSection } from '@/components/hero-section'
-import { BrandComp } from '@/components/brand-comp' // Importăm noul component
+import { BrandShowcase } from '@/components/brand-comp'
 import { useTranslations, useLocale } from 'next-intl'
 
 export default function HomePage() {
@@ -21,7 +21,7 @@ export default function HomePage() {
         <HeroSection />
 
         {/* Componenta de Branduri (extrasă) */}
-        <BrandComp />
+        <BrandShowcase />
 
         {/* CTA Section */}
         <section className="py-20 bg-[#F5F2EC]">

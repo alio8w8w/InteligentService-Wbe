@@ -68,6 +68,17 @@
       }
     }
   },
+  "brandShowcase": {
+  "title": "Partenerii Noștri de Încredere",
+  "subtitle": "Lucrăm exclusiv cu lideri globali pentru a-ți garanta o securitate fără compromisuri.",
+  "selectBrand": "Alege un brand pentru detalii",
+  "viewProducts": "Explorează Produsele",
+  "products": "Produse în stoc",
+  "hikvisionTitle": "Lider Global în Soluții de Supraveghere",
+  "hikvisionDesc": "Hikvision oferă tehnologie de ultimă generație, recunoscută mondial pentru claritatea superioară a imaginii, algoritmii avansați de inteligență artificială și fiabilitatea extremă. Sistemele lor sunt concepute pentru a proteja de la reședințe private până la infrastructuri critice.",
+  "dahuaTitle": "Inovație în Tehnologia AI & IoT",
+  "dahuaDesc": "Dahua Technology redefinește standardele de securitate prin integrarea inteligenței artificiale. Echipamentele lor inteligente pot analiza comportamente, recunoaște fețe și asigura o protecție perimetrală cu o precizie remarcabilă, adaptându-se oricărui scenariu."
+},
   "brandCard": {
     "products": "produse",
     "viewProducts": "Vezi produsele",
@@ -114,5 +125,18 @@
     "ctaDesc": "Contactează-ne pentru consultanță gratuită. Te ajutăm să alegi soluția perfectă pentru nevoile și bugetul tău.",
     "callNow": "Sună acum",
     "sendMessage": "Trimite mesaj"
-  }
+  },
+  "brandsCatalog": {
+  "heroTitle": "Securitate de Top pentru Spațiul Tău",
+  "heroDesc": "Găsește camerele și echipamentele perfecte pentru a aduce siguranța în casa sau afacerea ta.",
+  "selectBrand": "Alege un brand:",
+  "exploreHikvision": "Explorează camerele Hikvision",
+  "exploreHikvisionSub": "Lider global în inovație și fiabilitate.",
+  "exploreDahua": "Descoperă inovația Dahua",
+  "exploreDahuaSub": "Tehnologie AI avansată pentru orice scenariu.",
+  "viewAll": "Vezi toate",
+  "bannerTitle": "Descoperă Toată Gama de Produse",
+  "bannerBtn": "Cumpără Acum",
+  "inStock": "În stoc"
+}
 }

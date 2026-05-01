@@ -68,6 +68,17 @@
       }
     }
   },
+  "brandShowcase": {
+  "title": "Our Trusted Partners",
+  "subtitle": "We work exclusively with global leaders to guarantee uncompromising security.",
+  "selectBrand": "Select a brand for details",
+  "viewProducts": "Explore Products",
+  "products": "Products in stock",
+  "hikvisionTitle": "Global Leader in Surveillance Solutions",
+  "hikvisionDesc": "Hikvision provides cutting-edge technology, globally recognized for superior image clarity, advanced AI algorithms, and extreme reliability. Their systems are designed to protect everything from private residences to critical infrastructure.",
+  "dahuaTitle": "Innovation in AI & IoT Technology",
+  "dahuaDesc": "Dahua Technology redefines security standards through AI integration. Their smart equipment can analyze behaviors, recognize faces, and ensure perimeter protection with remarkable precision, adapting to any scenario."
+},
   "brandCard": {
     "products": "products",
     "viewProducts": "View products",
@@ -114,5 +125,18 @@
     "ctaDesc": "Contact us for free consulting. We will help you choose the perfect solution for your needs.",
     "callNow": "Call now",
     "sendMessage": "Send message"
-  }
+  },
+  "brandsCatalog": {
+  "heroTitle": "Top Security for Your Space",
+  "heroDesc": "Find the perfect cameras and equipment to bring safety to your home or business.",
+  "selectBrand": "Select a brand:",
+  "exploreHikvision": "Explore Hikvision Cameras",
+  "exploreHikvisionSub": "Global leader in innovation and reliability.",
+  "exploreDahua": "Discover Dahua Innovation",
+  "exploreDahuaSub": "Advanced AI technology for any scenario.",
+  "viewAll": "View all",
+  "bannerTitle": "Discover Our Full Product Range",
+  "bannerBtn": "Shop Now",
+  "inStock": "In stock"
+}
 }
