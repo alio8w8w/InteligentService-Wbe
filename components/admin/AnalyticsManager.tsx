@@ -36,6 +36,9 @@ export default function AnalyticsManager() {
     </div>
   )
 
+  // Ne asigurăm că topPages este un array valid, chiar dacă API-ul nu îl trimite
+  const safeTopPages = stats.topPages || [];
+
   return (
     <div className="animate-in fade-in duration-500 w-full">
       <div className="flex justify-between items-center mb-8">
@@ -58,12 +61,12 @@ export default function AnalyticsManager() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <StatCard 
           title="Vizitatori (Astăzi)" 
-          value={stats.todayViews.toString()} 
+          value={(stats.todayViews || 0).toString()} 
           icon={<Users size={24} className="text-[#DDA15E]" />} 
         />
         <StatCard 
           title="Afișări Totale (All Time)" 
-          value={stats.totalViews.toString()} 
+          value={(stats.totalViews || 0).toString()} 
           icon={<Eye size={24} className="text-[#606C38]" />} 
         />
       </div>
@@ -79,13 +82,13 @@ export default function AnalyticsManager() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#FEFAE0] text-sm font-medium text-[#283618]">
-            {stats.topPages.map((page, index) => (
+            {safeTopPages.map((page, index) => (
               <tr key={index} className="hover:bg-[#FEFAE0]/30 transition-colors">
                 <td className="py-4 font-mono text-xs text-[#606C38]">{page.path}</td>
                 <td className="py-4 text-right font-black text-[#283618]">{page.count}</td>
               </tr>
             ))}
-            {stats.topPages.length === 0 && (
+            {safeTopPages.length === 0 && (
               <tr><td colSpan={2} className="py-4 text-center italic opacity-50 text-[#606C38]">Nu există date încă. Intră pe site ca să generezi trafic!</td></tr>
             )}
           </tbody>
