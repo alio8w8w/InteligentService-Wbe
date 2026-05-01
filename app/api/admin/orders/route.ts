@@ -18,7 +18,7 @@ export async function GET() {
         order_items (
           cantitate,
           pret_unitar,
-          products (
+          produse (
             nume,
             imagine_url,
             pret
