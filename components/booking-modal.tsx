@@ -12,7 +12,7 @@ const supabase = createClient(
 interface BookingModalProps {
   isOpen: boolean
   onClose: () => void
-  onSuccess: (orderId: string) => void // Returnează ID-ul comenzii create
+  onSuccess: (orderId: string) => void
 }
 
 export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModalProps) {
@@ -33,7 +33,7 @@ export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModa
     setError('')
 
     try {
-      // 1. Creăm comanda inițială (Coșul) în tabelul tău `orders`
+      // 1. Salvăm cererea în baza de date (fără să o legăm de un produs)
       const { data, error: dbError } = await supabase
         .from('orders')
         .insert([{ 
@@ -41,23 +41,23 @@ export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModa
           prenume, 
           telefon, 
           email, 
-          doreste_telefon: consent, // Mapat pe coloana ta din baza de date
-          status: 'cart',           // Status inițial
-          suma_totala: 0            // O vom actualiza pe parcurs sau la checkout
+          doreste_telefon: consent, 
+          status: 'cerere_contact', // Status specific pentru a ști că este doar un lead/contact
+          suma_totala: 0 
         }])
         .select()
         .single()
 
       if (dbError) throw new Error(dbError.message)
 
-      // 2. Salvăm ID-ul Comenzii în memoria browser-ului
+      // 2. Salvăm ID-ul în browser (opțional, dar util dacă ulterior clientul adaugă produse în coș)
       localStorage.setItem('inteligent_order_id', data.id)
 
-      // 3. Anunțăm componenta părinte și dăm ID-ul mai departe
+      // 3. Anunțăm componenta părinte că formularul a fost trimis
       onSuccess(data.id)
       
     } catch (err: any) {
-      setError("A apărut o eroare la salvarea datelor. Te rugăm să încerci din nou.")
+      setError("A apărut o eroare la trimiterea datelor. Te rugăm să încerci din nou.")
       console.error(err)
     } finally {
       setLoading(false)
@@ -74,11 +74,11 @@ export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModa
             <X size={20} />
           </button>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F26A1B]/20 text-[#F26A1B] font-bold text-xs mb-4 border border-[#F26A1B]/30">
-            <ShieldCheck size={14} /> Date Securizate
+            <ShieldCheck size={14} /> Consultație Gratuită
           </div>
-          <h2 className="text-2xl font-extrabold tracking-tight">Date de Contact</h2>
+          <h2 className="text-2xl font-extrabold tracking-tight">Solicită o ofertă</h2>
           <p className="mt-2 text-sm text-[#7A8CA5] font-medium leading-relaxed">
-            Pentru a putea adăuga produse în coș, te rugăm să ne lași câteva detalii. Îți vom cere aceste date o singură dată!
+            Lasă-ne detaliile tale, iar un inginer specialist te va contacta în cel mai scurt timp pentru a te ajuta să alegi sistemul ideal.
           </p>
         </div>
 
@@ -121,12 +121,13 @@ export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModa
             <label className="flex items-start gap-3 cursor-pointer p-4 bg-[#F5F2EC]/50 rounded-xl border border-[#7A8CA5]/10 mt-2">
               <input type="checkbox" checked={consent} onChange={e => setConsent(e.target.checked)} className="w-5 h-5 accent-[#F26A1B] rounded mt-0.5 flex-shrink-0" />
               <span className="text-sm text-[#0F2A4A] font-medium">
-                Doresc să fiu contactat telefonic în legătură cu comanda mea.
+                Sunt de acord să fiu contactat telefonic pentru consultanță.
               </span>
             </label>
 
+            {/* Butonul actualizat */}
             <button type="submit" disabled={loading} className="w-full bg-[#F26A1B] hover:bg-[#C24C0F] disabled:bg-[#7A8CA5] text-white font-bold text-lg py-4 rounded-xl transition-all shadow-md hover:shadow-xl active:scale-[0.98] flex justify-center items-center gap-2 mt-6">
-              {loading ? <Loader2 className="animate-spin" size={24} /> : "Salvează și Adaugă în Coș"}
+              {loading ? <Loader2 className="animate-spin" size={24} /> : "Trimite Solicitarea"}
             </button>
           </form>
         </div>

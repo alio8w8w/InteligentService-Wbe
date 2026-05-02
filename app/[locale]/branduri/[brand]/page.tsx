@@ -8,13 +8,14 @@ export default async function SpecificBrandPage({ params }: { params: Promise<{ 
 
   return (
     <main className="min-h-screen bg-[#F5F2EC] flex flex-col selection:bg-[#F26A1B] selection:text-white">
-      <Navbar  />
+      <Navbar />
       
-      <div className="flex-grow pt-20">
+      {/* AM ȘTERS `pt-20` DE AICI. Acum imaginea va urca până la marginea de sus a ecranului! */}
+      <div className="flex-grow">
         <BrandPageClient locale={resolved.locale} brandName={brandKey} />
       </div>
 
-      <Footer  />
+      <Footer />
     </main>
   )
 }

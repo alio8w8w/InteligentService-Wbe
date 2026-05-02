@@ -4,51 +4,16 @@
     "produse": "Produse",
     "galerie": "Galerie",
     "led_ecrane": "LED Ecrane",
-    "contact": "Contacte",
+    "contact": "Contact",
     "autentificare": "Autentificare"
   },
-  "auth": {
-    "titlu_login": "Autentificare",
-    "titlu_signup_signin": "Sign in (creare cont)",
-    "subtitlu_login": "Intră în contul tău",
-    "subtitlu_signup": "Completează datele pentru a crea cont",
-    "tab_login": "Log in",
-    "tab_signin": "Sign in",
-    "email": "Email",
-    "email_invalid": "Email invalid. Verifică formatul.",
-    "invalid_login_credentials": "Email sau parola incorecte.",
-    "parola": "Parolă",
-    "nume": "Nume",
-    "prenume": "Prenume",
-    "telefon": "Număr de telefon",
-    "telefon_hint_md": "Introdu 8 cifre (sau 0 + 8 cifre). Prefixul +373 este automat.",
-    "telefon_invalid_8": "Numărul trebuie să aibă exact 8 cifre.",
-    "btn_login": "Log in",
-    "btn_signin": "Sign in",
-    "incarcare": "Se încarcă...",
-    "ai_uitat_parola": "Ai uitat parola?",
-    "recuperare_titlu": "Recuperare parolă",
-    "recuperare_subtitlu_link": "Îți trimitem un link pe email pentru resetare",
-    "trimite_link": "Trimite email de resetare",
-    "email_recuperare_trimis": "Email trimis. Verifică inbox/spam.",
-    "verifica_email": "Verifică emailul pentru confirmare.",
-    "eroare_login": "Nu s-a putut face autentificarea.",
-    "inapoi_login": "Înapoi",
-    "inapoi": "Înapoi la pagina principală",
-    "email_exista": "Acest email este deja asociat unui cont existent.",
-    "telefon_exista": "Acest număr de telefon este deja înregistrat.",
-    "parola_incorecta_incercari": "Email sau parolă incorectă. Au mai rămas {n} încercări.",
-    "cont_blocat_60": "Din motive de securitate, contul a fost blocat temporar.",
-    "cont_blocat_titlu": "Acces Suspendat",
-    "cont_blocat_descriere": "Ai introdus parola greșit de prea multe ori. Accesul este blocat pentru {timp}."
-  },
   "hero": {
-    "imageAlt": "Camera de supraveghere profesionala",
+    "imageAlt": "Cameră de supraveghere profesională",
     "badge": "Camere de Supraveghere",
     "title": {
       "before": "Securitate",
-      "highlight": "inteligenta",
-      "after": "pentru casa si afacerea ta"
+      "highlight": "inteligentă",
+      "after": "pentru casa și afacerea ta"
     },
     "description": "Instalăm și deservim sisteme de supraveghere video pentru gospodării și companii. Soluții moderne, fiabile și adaptate nevoilor tale. În orice colț al Moldovei.",
     "ctaServices": "Sună acum",
@@ -56,19 +21,27 @@
     "features": {
       "installation": {
         "title": "Instalare Camere",
-        "description": "Montaj profesional pentru case si companii"
+        "description": "Montaj profesional pentru case și companii."
       },
       "security": {
         "title": "Securitate 24/7",
-        "description": "Monitorizare continua si asistenta tehnica"
+        "description": "Monitorizare continuă și asistență tehnică."
       },
       "intervention": {
-        "title": "Deplasare Rapida",
-        "description": "Deplasare in orice colt al Moldovei"
+        "title": "Deplasare Rapidă",
+        "description": "Deplasare în orice colț al Moldovei."
       }
     }
   },
   "brandShowcase": {
+  "partnerTag": "Parteneri certificați",
+  "sectionTitle": "De ce contează",
+  "sectionTitleAccent": "brandul camerei?",
+  "sectionSubtitle": "Nu toate camerele sunt egale. Calitatea imaginii și fiabilitatea fac diferența.",
+  "hikvisionTag": "Lider mondial în supraveghere",
+  "dahuaTag": "Inovație AI & IoT",
+  "hikvisionCta": "Explorează Hikvision",
+  "dahuaCta": "Explorează Dahua",
   "title": "Partenerii Noștri de Încredere",
   "subtitle": "Lucrăm exclusiv cu lideri globali pentru a-ți garanta o securitate fără compromisuri.",
   "selectBrand": "Alege un brand pentru detalii",
@@ -77,7 +50,8 @@
   "hikvisionTitle": "Lider Global în Soluții de Supraveghere",
   "hikvisionDesc": "Hikvision oferă tehnologie de ultimă generație, recunoscută mondial pentru claritatea superioară a imaginii, algoritmii avansați de inteligență artificială și fiabilitatea extremă. Sistemele lor sunt concepute pentru a proteja de la reședințe private până la infrastructuri critice.",
   "dahuaTitle": "Inovație în Tehnologia AI & IoT",
-  "dahuaDesc": "Dahua Technology redefinește standardele de securitate prin integrarea inteligenței artificiale. Echipamentele lor inteligente pot analiza comportamente, recunoaște fețe și asigura o protecție perimetrală cu o precizie remarcabilă, adaptându-se oricărui scenariu."
+  "dahuaDesc": "Dahua Technology redefinește standardele de securitate prin integrarea inteligenței artificiale. Echipamentele lor inteligente pot analiza comportamente, recunoaște fețe și asigura o protecție perimetrală cu o precizie remarcabilă, adaptându-se oricărui scenariu.",
+  "discoverBrands": "Descoperă Brandurile Noastre"
 },
   "brandCard": {
     "products": "produse",
@@ -93,7 +67,7 @@
     "infoTitleHighlight": "brandul?",
     "infoDesc1": "Alegerea unui brand de calitate înseamnă fiabilitate pe termen lung, actualizări de firmware regulate, compatibilitate cu cele mai noi tehnologii și suport tehnic profesionist.",
     "infoDesc2": "Investiția într-un echipament de calitate se amortizează prin durabilitate și performanță constantă. Noi îți oferim consultanță gratuită pentru a alege soluția potrivită nevoilor și bugetului tău."
-  }, 
+  },
   "homePage": {
     "brands": {
       "title": "Branduri",
@@ -127,89 +101,97 @@
     "sendMessage": "Trimite mesaj"
   },
   "brandsCatalog": {
-  "heroTitle": "Securitate de Top pentru Spațiul Tău",
-  "heroDesc": "Găsește camerele și echipamentele perfecte pentru a aduce siguranța în casa sau afacerea ta.",
-  "selectBrand": "Alege un brand:",
-  "exploreHikvision": "Explorează camerele Hikvision",
-  "exploreHikvisionSub": "Lider global în inovație și fiabilitate.",
-  "exploreDahua": "Descoperă inovația Dahua",
-  "exploreDahuaSub": "Tehnologie AI avansată pentru orice scenariu.",
-  "viewAll": "Vezi toate",
-  "bannerTitle": "Descoperă Toată Gama de Produse",
-  "bannerBtn": "Cumpără Acum",
-  "inStock": "În stoc"
-},
-"cart": {
-  "title": "Coșul tău",
-  "itemsCount": "{count} produse în coș",
-  "itemsCountOne": "1 produs în coș",
-  "emptyTitle": "Coșul tău este gol",
-  "emptyDesc": "Descoperă gama noastră de sisteme de securitate și găsește echipamentul perfect pentru nevoile tale.",
-  "backToShop": "Înapoi la magazin",
-  "quantity": "Cantitate:",
-  "delete": "Șterge",
-  "summaryTitle": "Sumar Comandă",
-  "subtotal": "Subtotal",
-  "taxes": "Taxe / Instalare",
-  "calculatedLater": "Se calculează ulterior",
-  "estimatedTotal": "Total estimat",
-  "submitOrder": "Trimite Comanda",
-  "consultantNote": "Un consultant te va contacta pentru confirmare și detalii.",
-  "recommended": "Produse recomandate",
-  "cta1Title": "Nu ești sigur ce să alegi?",
-  "cta1Desc": "Inginerii noștri îți oferă consultanță gratuită pentru a alege sistemul optim.",
-  "cta1Btn": "Solicită un apel telefonic →",
-  "cta2Title": "Sisteme de afișaj profesionale",
-  "cta2Desc": "Descoperă gama noastră de ecrane LED pentru interior și exterior.",
-  "cta2Btn": "Vezi colecția LED →"
-},
-"cart": {
-  "title": "Your Cart",
-  "itemsCount": "{count} items in cart",
-  "itemsCountOne": "1 item in cart",
-  "emptyTitle": "Your cart is empty",
-  "emptyDesc": "Discover our range of security systems and find the perfect equipment for your needs.",
-  "backToShop": "Back to shop",
-  "quantity": "Quantity:",
-  "delete": "Delete",
-  "summaryTitle": "Order Summary",
-  "subtotal": "Subtotal",
-  "taxes": "Taxes / Installation",
-  "calculatedLater": "Calculated later",
-  "estimatedTotal": "Estimated Total",
-  "submitOrder": "Submit Order",
-  "consultantNote": "A consultant will contact you for confirmation and details.",
-  "recommended": "Recommended products",
-  "cta1Title": "Not sure what to choose?",
-  "cta1Desc": "Our engineers offer free consulting to help you choose the optimal system.",
-  "cta1Btn": "Request a phone call →",
-  "cta2Title": "Professional Display Systems",
-  "cta2Desc": "Discover our range of indoor and outdoor LED screens.",
-  "cta2Btn": "View LED collection →"
-},
-"brandDetails": {
-  "hikvision": {
-    "discoverBtn": "Descoperă Hikvision",
-    "whoIsTitle": "Cine este Hikvision",
-    "tags": "Calitate • Sustinabilitate • Cybersecuritate",
-    "whoIsText": "Hikvision este compania care garanteaza cea mai inalta calitate, la preturi acesibile. Fondată în 2001, Hikvision se concentrează pe securitatea integrată și digitalizarea bazată pe scenarii și se angajează să deservească diverse industrii cu tehnologii Internet of Things (AIoT) bazate pe inteligență artificială.",
-    "whyTitle": "De ce ar trebui să achiziționezi doar de la un instalator autorizat?",
-    "whyText": "Pentru a deservi mai bine clienții și utilizatorii finali, Hikvision a creat o rețea excelentă de servicii pre și post-vânzare pentru suport tehnic și asistență, și comercializează produsele sale exclusiv prin distribuitori autorizați și parteneri autorizați de instalare/integrare (denumiți în continuare „Parteneri Autorizați”) la nivel global.",
-    "whatTitle": "Ce oferim",
-    "whatText1": "Este timpul sa facem un pas în viitor. Fie că aveţi în vedere un upgrade sau doriţi să efectuaţi o instalare de la zero a întregului sistem de securitate, IP este soluţia pe care trebuie să o alegeţi. Comparativ cu implementarea și configurarea analogică tradiţională, un sistem bazat pe IP realizează mult mai multe, oferind o calitate mai bună a imaginii şi o rezoluţie mai mare. În plus, are o mulţime de caracteristici avansate, incluzând chiar şi inteligenţă artificială. Punctul forte este că toate acestea se pot realiza cu mai puţine dispozitive şi cu mult mai puţine cabluri. La Hikvision, oferim o gamă largă de produse IP, inclusiv videorecordere de reţea (NVR-uri), camere PTZ de tip dom, camere panoramice, camere pentru aplicaţii speciale şi o varietate de echipamente şi accesorii de transmisie în reţea.",
-    "whatText2": "Pe baza tehnologiei de învăţare profundă, camerele DeepinView şi NVR-urile DeepinMind se numără printre cele mai avansate produse din această familie de produse. Inteligenţa artificială încorporată vă permite să efectuaţi activităţi precum recunoaşterea persoanelor şi a vehiculelor, dar şi identificarea intereselor clienţilor şi multe altele."
+    "heroTitle": "Securitate de Top pentru Spațiul Tău",
+    "heroDesc": "Găsește camerele și echipamentele perfecte pentru a aduce siguranța în casa sau afacerea ta.",
+    "selectBrand": "Alege un brand:",
+    "exploreHikvision": "Explorează camerele Hikvision",
+    "exploreHikvisionSub": "Lider global în inovație și fiabilitate.",
+    "exploreDahua": "Descoperă inovația Dahua",
+    "exploreDahuaSub": "Tehnologie AI avansată pentru orice scenariu.",
+    "viewAll": "Vezi toate",
+    "bannerTitle": "Descoperă Toată Gama de Produse",
+    "bannerBtn": "Cumpără Acum",
+    "inStock": "În stoc"
   },
-  "dahua": {
-    "discoverBtn": "Descoperă Dahua",
-    "whoIsTitle": "Cine este Dahua",
-    "tags": "Inovație • AI • Securitate Globală",
-    "whoIsText": "Dahua Technology este un furnizor de top de soluții și servicii AIoT centrate pe video. Ne angajăm să oferim inovație continuă.",
-    "whyTitle": "Alege calitatea și suportul oficial",
-    "whyText": "Lucrând cu parteneri certificați, te asiguri că beneficiezi de cele mai noi actualizări de firmware și garanție completă.",
-    "whatTitle": "Soluții inteligente",
-    "whatText1": "Oferim o gamă completă de echipamente bazate pe AI pentru protecție avansată.",
-    "whatText2": "De la recunoaștere facială la protecție perimetrală, Dahua redefinește securitatea."
+  "cart": {
+    "title": "Coșul tău",
+    "itemsCount": "{count} produse în coș",
+    "itemsCountOne": "1 produs în coș",
+    "emptyTitle": "Coșul tău este gol",
+    "emptyDesc": "Descoperă gama noastră de sisteme de securitate și găsește echipamentul perfect pentru nevoile tale.",
+    "backToShop": "Înapoi la magazin",
+    "quantity": "Cantitate:",
+    "delete": "Șterge",
+    "summaryTitle": "Sumar Comandă",
+    "subtotal": "Subtotal",
+    "taxes": "Taxe / Instalare",
+    "calculatedLater": "Se calculează ulterior",
+    "estimatedTotal": "Total estimat",
+    "submitOrder": "Trimite Comanda",
+    "consultantNote": "Un consultant te va contacta pentru confirmare și detalii.",
+    "recommended": "Produse recomandate",
+    "cta1Title": "Nu ești sigur ce să alegi?",
+    "cta1Desc": "Inginerii noștri îți oferă consultanță gratuită pentru a alege sistemul optim.",
+    "cta1Btn": "Solicită un apel telefonic →",
+    "cta2Title": "Sisteme de afișaj profesionale",
+    "cta2Desc": "Descoperă gama noastră de ecrane LED pentru interior și exterior.",
+    "cta2Btn": "Vezi colecția LED →"
   },
-  "productsTitle": "Produse disponibile"
-}
+  "brandDetails": {
+    "productsTitle": "Produse disponibile",
+    "buttons": {
+      "call": "Sună imediat",
+      "gallery": "Vezi Galeria",
+      "contact": "Contactează-ne"
+    },
+    "hikvision": {
+      "heroTitle": "Hikvision - Lider Global în Securitate",
+      "heroDesc": "Sisteme de securitate de ultimă generație pentru protecția completă a afacerii și locuinței tale. Descoperă inovația la un nou nivel.",
+      "discoverBtn": "Descoperă Hikvision",
+      "whoIsTitle": "Cine este Hikvision",
+      "tags": "Calitate • Sustinabilitate • Cybersecuritate",
+      "whoIsText": "Hikvision este compania care garantează cea mai înaltă calitate, la prețuri accesibile. Fondată în 2001, Hikvision se concentrează pe securitatea integrată și digitalizarea bazată pe scenarii și se angajează să deservească diverse industrii cu tehnologii Internet of Things (AIoT) bazate pe inteligență artificială.",
+      "whatTitle": "Ce oferim",
+      "whatText1": "Este timpul să facem un pas în viitor. Fie că aveţi în vedere un upgrade sau doriţi să efectuaţi o instalare de la zero a întregului sistem de securitate, IP este soluţia pe care trebuie să o alegeţi. Comparativ cu implementarea și configurarea analogică tradiţională, un sistem bazat pe IP realizează mult mai multe, oferind o calitate mai bună a imaginii şi o rezoluţie mai mare. În plus, are o mulţime de caracteristici avansate, incluzând chiar şi inteligenţă artificială.",
+      "whatText2": "Punctul forte este că toate acestea se pot realiza cu mai puţine dispozitive şi cu mult mai puţine cabluri. La Hikvision, oferim o gamă largă de produse IP, inclusiv videorecordere de reţea (NVR-uri), camere PTZ de tip dom, camere panoramice, camere pentru aplicaţii speciale şi o varietate de echipamente şi accesorii de transmisie în reţea. Pe baza tehnologiei de învăţare profundă, camerele DeepinView şi NVR-urile DeepinMind se numără printre cele mai avansate.",
+      "whyTitle": "De ce ar trebui să achiziționezi doar de la un instalator autorizat?",
+      "whyText": "Pentru a deservi mai bine clienții și utilizatorii finali, Hikvision a creat o rețea excelentă de servicii pre și post-vânzare pentru suport tehnic și asistență, și comercializează produsele sale exclusiv prin distribuitori autorizați și parteneri autorizați de instalare/integrare la nivel global."
+    },
+    "dahua": {
+      "heroTitle": "Dahua Technology - Inovații în Securitate",
+      "heroDesc": "Inovație în securitatea AIoT. Soluții inteligente, sisteme video de top și management avansat pentru un viitor mai sigur.",
+      "discoverBtn": "Descoperă Dahua",
+      "whoIsTitle": "Cine este Dahua",
+      "tags": "Inovație • Inteligență Integrată • IoT",
+      "whoIsText": "Dahua Technology este un furnizor global lider de soluții și servicii AIoT centrate pe video. Angajată în crearea unei societăți mai inteligente și a unui trai mai bun, Dahua implementează activ strategia sa Dahua Think#2.0, evoluând de la „Inteligență” la „Inteligență Integrată” pentru a stimula inovația și transformarea digitală pentru orașe și întreprinderi. Compania sprijină dezvoltarea urbană prin îmbunătățirea eficienței managementului, facilitând operațiunile urbane autonome, modernizând sistemele de siguranță publică și avansând guvernanța ecologică. În sectorul întreprinderilor, Dahua se concentrează pe consolidarea sistemelor de securitate, creșterea productivității operaționale și facilitarea procesului decizional bazat pe date pentru a ajuta afacerile să prospere.",
+      "whatTitle": "Smart Dahua Solutions",
+      "whatText1": "Dahua a construit un cadru cuprinzător de cercetare și dezvoltare, ancorat pe cinci piloni de bază pentru capabilități. Pe baza acestei fundații, compania a înființat cinci institute de cercetare specializate - Institutul de Tehnologie Avansată, Institutul Big Data, Institutul Central de Cercetare, Institutul de Securitate Cibernetică și Institutul de Inginerie a Produselor. Aceste institute susțin două direcții majore de cercetare și dezvoltare: dispozitive inteligente bazate pe AIoT și o platformă IoT inteligentă pentru date. Această structură permite dezvoltarea sistematică de soluții pentru orașe, întreprinderi și IMM-uri, sprijinind creșterea afacerilor și accelerând descoperirile tehnologice.",
+      "whatText2": "Cu Hangzhou ca sediu global de cercetare și dezvoltare, Dahua a înființat, de asemenea, centre regionale de cercetare și dezvoltare în Xi'an, Chengdu, Europa și America Latină, consolidându-și rețeaua internațională de inovare. Compania găzduiește un centru de cercetare postdoctorală la nivel național și a fost recunoscută ca Centru Național de Tehnologie pentru Întreprinderi, Centru Național de Design Industrial și Întreprindere Națională Demonstrativă de Inovare. Cu capacități puternice de inovare, Dahua continuă să obțină realizări de vârf în industrie și să impulsioneze dezvoltarea de înaltă calitate.",
+      "whyTitle": "Alege calitatea și suportul oficial",
+      "whyText": "Lucrând cu parteneri certificați, te asiguri că beneficiezi de cele mai noi actualizări de firmware și garanție completă.",
+      "stats": {
+        "research": "Proiecte Naționale de Cercetare",
+        "standards1": "Standarde Internaționale & Naționale",
+        "standards2": "Standarde Industriale",
+        "investment": "Proporția Investițiilor Anuale în R&D",
+        "ai": "Realizări Internaționale în AI",
+        "reddot": "Premii RED DOT Design",
+        "if": "Premii iF International Design"
+      }
+    }
+  },
+  "productsPage": {
+    "heroTitle": "Toate Produsele",
+    "heroDesc": "Explorează gama noastră completă de sisteme de securitate de top. Găsește echipamentul perfect pentru nevoile și bugetul tău.",
+    "filtersTitle": "Filtrează Produsele",
+    "brand": "Brand",
+    "priceRange": "Preț (MDL)",
+    "minPrice": "Min",
+    "maxPrice": "Max",
+    "onlyDiscounted": "Doar cu reducere",
+    "applyFilters": "Aplică filtrele",
+    "resetFilters": "Resetează",
+    "noProducts": "Nu am găsit produse conform filtrelor selectate.",
+    "results": "produse găsite"
+  }
 }

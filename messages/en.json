@@ -7,41 +7,6 @@
     "contact": "Contact",
     "autentificare": "Login"
   },
-  "auth": {
-    "titlu_login": "Authentication",
-    "titlu_signup_signin": "Create an account",
-    "subtitlu_login": "Log into your account",
-    "subtitlu_signup": "Fill in the details to create an account",
-    "tab_login": "Log in",
-    "tab_signin": "Sign up",
-    "email": "Email",
-    "email_invalid": "Invalid email format.",
-    "invalid_login_credentials": "Incorrect email or password.",
-    "parola": "Password",
-    "nume": "First Name",
-    "prenume": "Last Name",
-    "telefon": "Phone Number",
-    "telefon_hint_md": "Enter 8 digits. The +373 prefix is added automatically.",
-    "telefon_invalid_8": "The number must have exactly 8 digits.",
-    "btn_login": "Log in",
-    "btn_signin": "Sign up",
-    "incarcare": "Loading...",
-    "ai_uitat_parola": "Forgot password?",
-    "recuperare_titlu": "Password Recovery",
-    "recuperare_subtitlu_link": "We will send you an email link to reset your password",
-    "trimite_link": "Send reset email",
-    "email_recuperare_trimis": "Email sent. Check your inbox/spam folder.",
-    "verifica_email": "Please check your email for confirmation.",
-    "eroare_login": "Authentication failed.",
-    "inapoi_login": "Back",
-    "inapoi": "Back to Home",
-    "email_exista": "This email is already associated with an existing account.",
-    "telefon_exista": "This phone number is already registered.",
-    "parola_incorecta_incercari": "Incorrect email or password. {n} attempts remaining.",
-    "cont_blocat_60": "For security reasons, the account has been temporarily locked.",
-    "cont_blocat_titlu": "Access Suspended",
-    "cont_blocat_descriere": "You have entered the wrong password too many times. Access is blocked for {timp}."
-  },
   "hero": {
     "imageAlt": "Professional surveillance camera",
     "badge": "Surveillance Cameras",
@@ -50,70 +15,79 @@
       "highlight": "security",
       "after": "for your home and business"
     },
-    "description": "We install and service video surveillance systems for homes and businesses. Modern, reliable solutions adapted to your needs. Anywhere in Moldova.",
+    "description": "We install and maintain video surveillance systems for households and companies. Modern, reliable solutions tailored to your needs. Anywhere in Moldova.",
     "ctaServices": "Call now",
     "ctaContact": "View products",
     "features": {
       "installation": {
         "title": "Camera Installation",
-        "description": "Professional mounting for homes and companies"
+        "description": "Professional installation for homes and companies."
       },
       "security": {
         "title": "24/7 Security",
-        "description": "Continuous monitoring and technical support"
+        "description": "Continuous monitoring and technical support."
       },
       "intervention": {
         "title": "Fast Deployment",
-        "description": "Deployment anywhere in Moldova"
+        "description": "Deployment in any corner of Moldova."
       }
     }
   },
   "brandShowcase": {
+  "partnerTag": "Certified Partners",
+  "sectionTitle": "Why does the",
+  "sectionTitleAccent": "camera brand matter?",
+  "sectionSubtitle": "Not all cameras are equal. Image quality and reliability make the difference.",
+  "hikvisionTag": "World leader in surveillance",
+  "dahuaTag": "AI & IoT Innovation",
+  "hikvisionCta": "Explore Hikvision",
+  "dahuaCta": "Explore Dahua",
   "title": "Our Trusted Partners",
-  "subtitle": "We work exclusively with global leaders to guarantee uncompromising security.",
-  "selectBrand": "Select a brand for details",
+  "subtitle": "We work exclusively with global leaders to guarantee you uncompromising security.",
+  "selectBrand": "Choose a brand for details",
   "viewProducts": "Explore Products",
   "products": "Products in stock",
   "hikvisionTitle": "Global Leader in Surveillance Solutions",
-  "hikvisionDesc": "Hikvision provides cutting-edge technology, globally recognized for superior image clarity, advanced AI algorithms, and extreme reliability. Their systems are designed to protect everything from private residences to critical infrastructure.",
+  "hikvisionDesc": "Hikvision provides state-of-the-art technology, globally recognized for superior image clarity, advanced AI algorithms, and extreme reliability. Their systems are designed to protect everything from private residences to critical infrastructures.",
   "dahuaTitle": "Innovation in AI & IoT Technology",
-  "dahuaDesc": "Dahua Technology redefines security standards through AI integration. Their smart equipment can analyze behaviors, recognize faces, and ensure perimeter protection with remarkable precision, adapting to any scenario."
+  "dahuaDesc": "Dahua Technology redefines security standards by integrating artificial intelligence. Their smart equipment can analyze behavior, recognize faces, and provide perimeter protection with remarkable accuracy, adapting to any scenario.",
+  "discoverBrands": "Discover Our Brands"
 },
   "brandCard": {
     "products": "products",
     "viewProducts": "View products",
-    "hikvisionDesc": "Global leader in innovative video surveillance and security systems.",
-    "dahuaDesc": "Advanced technology and intelligent security systems tailored for any need."
+    "hikvisionDesc": "Global leader in innovative video surveillance solutions and security systems.",
+    "dahuaDesc": "Advanced technology and smart security systems tailored to any need."
   },
   "brandsPage": {
     "title": "Partner",
     "titleHighlight": "Brands",
-    "description": "We work with top global manufacturers to offer you the highest quality and most reliable security solutions.",
+    "description": "We work with top global manufacturers to offer you the highest quality and reliability in security solutions.",
     "infoTitleBefore": "Why does the ",
     "infoTitleHighlight": "brand matter?",
     "infoDesc1": "Choosing a quality brand means long-term reliability, regular firmware updates, compatibility with the latest technologies, and professional technical support.",
-    "infoDesc2": "Investing in quality equipment pays off through durability and constant performance. We offer free consulting to help you choose the right solution."
-  }, 
+    "infoDesc2": "An investment in quality equipment pays off through durability and consistent performance. We offer free consulting to help you choose the right solution for your needs and budget."
+  },
   "homePage": {
     "brands": {
       "title": "Partner",
       "titleHighlight": "Brands",
-      "description": "We work with top global manufacturers to offer you the best quality and reliability."
+      "description": "We work with world top manufacturers to offer you the best quality and reliability."
     },
     "whyUs": {
       "title": "Why",
       "titleHighlight": "Choose Us?",
       "item1": "Vast experience in installing complex security systems.",
-      "item2": "Warranty for equipment and the quality of work executed.",
+      "item2": "Warranty for equipment and the quality of executed work.",
       "item3": "Dedicated technical support and fast post-installation maintenance.",
       "stat": "Satisfied Customers"
     },
     "cta": {
       "title": "Do you need a",
       "titleHighlight": "security system?",
-      "description": "Call us now for a free consultation. We help you choose the perfect system for your needs.",
+      "description": "Call us now for a free consultation. We will help you choose the perfect system for your needs.",
       "phone": "+373 68 123 456",
-      "form": "Request a Quote"
+      "form": "Request a quote"
     }
   },
   "brandPage": {
@@ -122,70 +96,102 @@
     "noProducts": "There are no products currently available for this brand.",
     "ctaTitleBefore": "Do you need",
     "ctaTitleHighlight": "help?",
-    "ctaDesc": "Contact us for free consulting. We will help you choose the perfect solution for your needs.",
+    "ctaDesc": "Contact us for free consulting. We will help you choose the perfect solution for your needs and budget.",
     "callNow": "Call now",
     "sendMessage": "Send message"
   },
   "brandsCatalog": {
-  "heroTitle": "Top Security for Your Space",
-  "heroDesc": "Find the perfect cameras and equipment to bring safety to your home or business.",
-  "selectBrand": "Select a brand:",
-  "exploreHikvision": "Explore Hikvision Cameras",
-  "exploreHikvisionSub": "Global leader in innovation and reliability.",
-  "exploreDahua": "Discover Dahua Innovation",
-  "exploreDahuaSub": "Advanced AI technology for any scenario.",
-  "viewAll": "View all",
-  "bannerTitle": "Discover Our Full Product Range",
-  "bannerBtn": "Shop Now",
-  "inStock": "In stock"
-},
-"cart": {
-  "title": "Your Cart",
-  "itemsCount": "{count} items in cart",
-  "itemsCountOne": "1 item in cart",
-  "emptyTitle": "Your cart is empty",
-  "emptyDesc": "Discover our range of security systems and find the perfect equipment for your needs.",
-  "backToShop": "Back to shop",
-  "quantity": "Quantity:",
-  "delete": "Delete",
-  "summaryTitle": "Order Summary",
-  "subtotal": "Subtotal",
-  "taxes": "Taxes / Installation",
-  "calculatedLater": "Calculated later",
-  "estimatedTotal": "Estimated Total",
-  "submitOrder": "Submit Order",
-  "consultantNote": "A consultant will contact you for confirmation and details.",
-  "recommended": "Recommended products",
-  "cta1Title": "Not sure what to choose?",
-  "cta1Desc": "Our engineers offer free consulting to help you choose the optimal system.",
-  "cta1Btn": "Request a phone call →",
-  "cta2Title": "Professional Display Systems",
-  "cta2Desc": "Discover our range of indoor and outdoor LED screens.",
-  "cta2Btn": "View LED collection →"
-},
-"brandDetails": {
-  "hikvision": {
-    "discoverBtn": "Discover Hikvision",
-    "whoIsTitle": "Who is Hikvision",
-    "tags": "Quality • Sustainability • Cybersecurity",
-    "whoIsText": "Hikvision guarantees the highest quality at affordable prices. Founded in 2001, Hikvision focuses on integrated security and scenario-based digitalization, serving diverse industries with AI-powered Internet of Things (AIoT) technologies.",
-    "whyTitle": "Why buy only from an authorized installer?",
-    "whyText": "To better serve customers, Hikvision has created an excellent pre- and post-sales service network for technical support, selling its products exclusively through authorized distributors and installation/integration partners globally.",
-    "whatTitle": "What we offer",
-    "whatText1": "It's time to step into the future. Whether you're considering an upgrade or a scratch install, IP is the solution. It offers better image quality, higher resolution, and advanced features like AI, using fewer devices and cables. We offer a wide range of IP products including NVRs, PTZ dome cameras, panoramic cameras, and network transmission accessories.",
-    "whatText2": "Based on deep learning technology, DeepinView cameras and DeepinMind NVRs are among our most advanced products, allowing person/vehicle recognition and customer interest identification."
+    "heroTitle": "Top Security for Your Space",
+    "heroDesc": "Find the perfect cameras and equipment to bring safety to your home or business.",
+    "selectBrand": "Choose a brand:",
+    "exploreHikvision": "Explore Hikvision cameras",
+    "exploreHikvisionSub": "Global leader in innovation and reliability.",
+    "exploreDahua": "Discover Dahua innovation",
+    "exploreDahuaSub": "Advanced AI technology for any scenario.",
+    "viewAll": "View all",
+    "bannerTitle": "Discover the Entire Product Range",
+    "bannerBtn": "Buy Now",
+    "inStock": "In stock"
   },
-  "dahua": {
-    "discoverBtn": "Discover Dahua",
-    "whoIsTitle": "Who is Dahua",
-    "tags": "Innovation • AI • Global Security",
-    "whoIsText": "Dahua Technology is a world-leading video-centric AIoT solution and service provider.",
-    "whyTitle": "Choose official support",
-    "whyText": "Working with certified partners ensures you get the latest firmware updates and full warranty.",
-    "whatTitle": "Smart Solutions",
-    "whatText1": "We offer a complete range of AI-powered equipment for advanced protection.",
-    "whatText2": "From facial recognition to perimeter protection, Dahua redefines security."
+  "cart": {
+    "title": "Your Cart",
+    "itemsCount": "{count} items in cart",
+    "itemsCountOne": "1 item in cart",
+    "emptyTitle": "Your cart is empty",
+    "emptyDesc": "Discover our range of security systems and find the perfect equipment for your needs.",
+    "backToShop": "Back to shop",
+    "quantity": "Quantity:",
+    "delete": "Delete",
+    "summaryTitle": "Order Summary",
+    "subtotal": "Subtotal",
+    "taxes": "Taxes / Installation",
+    "calculatedLater": "Calculated later",
+    "estimatedTotal": "Estimated Total",
+    "submitOrder": "Submit Order",
+    "consultantNote": "A consultant will contact you for confirmation and details.",
+    "recommended": "Recommended products",
+    "cta1Title": "Not sure what to choose?",
+    "cta1Desc": "Our engineers offer free consulting to help you choose the optimal system.",
+    "cta1Btn": "Request a phone call →",
+    "cta2Title": "Professional Display Systems",
+    "cta2Desc": "Discover our range of indoor and outdoor LED screens.",
+    "cta2Btn": "View LED collection →"
   },
-  "productsTitle": "Available Products"
-}
+  "brandDetails": {
+    "productsTitle": "Available products",
+    "buttons": {
+      "call": "Call now",
+      "gallery": "View Gallery",
+      "contact": "Contact us"
+    },
+    "hikvision": {
+      "heroTitle": "Hikvision - Global Leader in Security",
+      "heroDesc": "Next-generation security systems for complete protection of your business and home. Discover innovation at a new level.",
+      "discoverBtn": "Discover Hikvision",
+      "whoIsTitle": "Who is Hikvision",
+      "tags": "Quality • Sustainability • Cybersecurity",
+      "whoIsText": "Hikvision guarantees the highest quality at affordable prices. Founded in 2001, Hikvision focuses on integrated security and scenario-based digitalization, serving diverse industries with AI-powered Internet of Things (AIoT) technologies.",
+      "whatTitle": "What we offer",
+      "whatText1": "It's time to step into the future. Whether you're considering an upgrade or a scratch install, IP is the solution. Compared to traditional analogue, IP offers better image quality, higher resolution, and advanced features like AI.",
+      "whatText2": "The strength is that all this can be done with fewer devices and cables. We offer a wide range of IP products including NVRs, PTZ dome cameras, panoramic cameras, and network transmission accessories. Based on deep learning technology, DeepinView cameras and DeepinMind NVRs are among our most advanced products.",
+      "whyTitle": "Why buy only from an authorized installer?",
+      "whyText": "To better serve customers, Hikvision has created an excellent pre- and post-sales service network for technical support, selling its products exclusively through authorized distributors and installation/integration partners globally."
+    },
+    "dahua": {
+      "heroTitle": "Dahua Technology - Innovation in Security",
+      "heroDesc": "Innovation in AIoT security. Smart solutions, top-tier video systems, and advanced management for a safer future.",
+      "discoverBtn": "Discover Dahua",
+      "whoIsTitle": "Who is Dahua",
+      "tags": "Innovation • Integrated Intelligence • IoT",
+      "whoIsText": "Dahua Technology is a world-leading video-centric AIoT solution and service provider. Committed to enabling a smarter society and better living, Dahua actively implements its Dahua Think#2.0 strategy, evolving from 'Intelligence' to 'Integrated Intelligence' to drive digital innovation and transformation for cities and enterprises. The company supports urban development by enhancing management efficiency, enabling autonomous city operations, upgrading public safety systems, and advancing ecological governance. In the enterprise sector, Dahua focuses on strengthening security systems, increasing operational productivity, and enabling data-driven decision-making to help businesses thrive.",
+      "whatTitle": "Smart Dahua Solutions",
+      "whatText1": "Dahua has built a comprehensive R&D framework anchored on five core capability pillars. Based on this foundation, the company has established five specialized research institutes - Advanced Technology Institute, Big Data Institute, Central Research Institute, Cybersecurity Institute, and Product Engineering Institute. These support two major R&D directions: AIoT-based smart devices and an intelligent IoT data platform. This enables systematic development of solutions for cities, enterprises, and SMBs.",
+      "whatText2": "With Hangzhou as its global R&D headquarters, Dahua has also set up regional centers in Xi'an, Chengdu, Europe, and Latin America. The company hosts a national-level postdoctoral research center and is recognized as a National Enterprise Technology Center and National Industrial Design Center. With strong innovation capabilities, Dahua continues to achieve industry-leading breakthroughs.",
+      "whyTitle": "Choose quality and authorized support",
+      "whyText": "Working with certified partners ensures you get the latest firmware updates and full warranty.",
+      "stats": {
+        "research": "National Research Projects",
+        "standards1": "International & National Standards",
+        "standards2": "Industry Standards",
+        "investment": "Annual R&D Investment Proportion",
+        "ai": "International AI Achievements",
+        "reddot": "RED DOT Design Awards",
+        "if": "iF International Design Awards"
+      }
+    }
+  },
+  "productsPage": {
+    "heroTitle": "All Products",
+    "heroDesc": "Explore our complete range of top security systems. Find the perfect equipment for your needs and budget.",
+    "filtersTitle": "Filter Products",
+    "brand": "Brand",
+    "priceRange": "Price (MDL)",
+    "minPrice": "Min",
+    "maxPrice": "Max",
+    "onlyDiscounted": "Discounted only",
+    "applyFilters": "Apply filters",
+    "resetFilters": "Reset",
+    "noProducts": "No products found matching your filters.",
+    "results": "products found"
+  }
 }

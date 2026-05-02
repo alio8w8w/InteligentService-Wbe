@@ -4,10 +4,9 @@ import { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@supabase/supabase-js'
-import { ArrowRight, ShoppingCart, X, Tag, Loader2, ChevronRight, ChevronLeft, CheckCircle2, Info } from 'lucide-react'
+import { ArrowRight, ShoppingCart, X, Loader2, ChevronRight, ChevronLeft, CheckCircle2, Info } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
-// IMPORTĂM COMPONENTA DE MODAL AICI
 import BookingModal from '@/components/booking-modal' 
 
 const supabase = createClient(
@@ -60,15 +59,6 @@ export default function BrandsCatalog({ locale }: { locale: string }) {
     }
   }
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id)
-    if (element) {
-      const yOffset = -100;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
-    }
-  }
-
   const getFinalPrice = (p: Product) => p.has_discount ? p.base_price - (p.base_price * p.discount_percentage / 100) : p.base_price;
 
   const handleAddToCart = () => {
@@ -107,52 +97,36 @@ export default function BrandsCatalog({ locale }: { locale: string }) {
   return (
     <div className="w-full bg-[#0F2A4A] text-[#F5F2EC] pb-20">
       
-      {/* 1. HERO SECTION - MODIFICAT CU NOILE BUTOANE */}
-      <div className="relative w-full pt-32 pb-24 px-6 md:px-12 lg:px-24 flex flex-col justify-center overflow-hidden min-h-[600px]">
-        
+      {/* 1. HERO SECTION (Text micșorat și aliniat cu Navbar-ul) */}
+      <div className="relative w-full pt-32 pb-24 flex flex-col justify-center overflow-hidden min-h-[500px]">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[url('/images/brand-back.png')] bg-cover bg-center md:bg-right bg-no-repeat opacity-60 md:opacity-80" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0F2A4A] via-[#0F2A4A]/80 to-transparent w-full md:w-3/4" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0F2A4A] via-transparent to-transparent" />
         </div>
 
-        <div className="relative z-10 max-w-4xl mt-10 md:mt-20">
-          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight text-[#F5F2EC]">
+        {/* Aliniere perfectă cu meniul de sus */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 mt-10 md:mt-16">
+          <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-5 leading-tight text-[#F5F2EC]">
             {t('heroTitle')}
           </h1>
-          <p className="text-lg md:text-xl text-[#7A8CA5] font-medium mb-12 max-w-2xl">
+          <p className="text-base md:text-lg text-[#7A8CA5] font-medium max-w-xl">
             {t('heroDesc')}
           </p>
-
-          {/* Butoane Selecție Brand (Accentuate și Mari) - IMPLEMENTARE NOUĂ */}
-          <div className="flex flex-col sm:flex-row items-center gap-6 mt-8">
-            <button 
-              onClick={() => scrollToSection('hikvision-section')}
-              className="bg-[#F26A1B] hover:bg-[#C24C0F] text-white px-8 sm:px-12 py-4 sm:py-5 rounded-2xl font-black transition-all text-lg sm:text-xl shadow-[0_8px_30px_rgb(242,106,27,0.3)] active:scale-95 flex items-center justify-center gap-3 w-full sm:w-auto"
-            >
-              Explorează Hikvision <ChevronRight size={24} />
-            </button>
-            <button 
-              onClick={() => scrollToSection('dahua-section')}
-              className="bg-white text-[#0F2A4A] hover:bg-[#F5F2EC] px-8 sm:px-12 py-4 sm:py-5 rounded-2xl font-black transition-all text-lg sm:text-xl shadow-xl active:scale-95 flex items-center justify-center gap-3 w-full sm:w-auto border border-transparent hover:border-[#0F2A4A]/10"
-            >
-              Descoperă Dahua <ChevronRight size={24} />
-            </button>
-          </div>
         </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center py-32"><Loader2 className="animate-spin text-[#F26A1B]" size={48} /></div>
       ) : (
-        <div className="max-w-[1600px] mx-auto space-y-24 px-4 sm:px-6 lg:px-12 mt-10">
+        <div className="max-w-7xl mx-auto space-y-24 px-4 sm:px-6 mt-10">
           
-          {/* HIKVISION CAROUSEL */}
+          {/* ================= HIKVISION CAROUSEL ================= */}
           <section id="hikvision-section" className="relative pt-10">
             <div className="flex flex-col sm:flex-row justify-between items-end mb-8 gap-4 px-2">
               <div>
-                <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-[#F5F2EC]">{t('exploreHikvision')}</h2>
-                <p className="text-[#7A8CA5] text-sm md:text-base font-medium">{t('exploreHikvisionSub')}</p>
+                <h2 className="text-3xl font-extrabold mb-2 text-[#F5F2EC]">{t('exploreHikvision')}</h2>
+                <p className="text-[#7A8CA5] text-sm font-medium">{t('exploreHikvisionSub')}</p>
               </div>
               <div className="flex gap-3 hidden sm:flex">
                 <button onClick={() => scroll(hikvisionRef, 'left')} className="p-3 rounded-full bg-white/5 border border-[#7A8CA5]/30 text-[#F5F2EC] hover:bg-[#F26A1B] hover:border-[#F26A1B] transition-colors"><ChevronLeft size={20} /></button>
@@ -160,19 +134,26 @@ export default function BrandsCatalog({ locale }: { locale: string }) {
               </div>
             </div>
 
-            <div ref={hikvisionRef} className="flex gap-6 overflow-x-auto pb-8 pt-4 px-2 snap-x snap-mandatory hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div ref={hikvisionRef} className="flex gap-6 overflow-x-auto pb-6 pt-4 px-2 snap-x snap-mandatory hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {hikvisionProducts.length === 0 ? <p className="text-[#7A8CA5]">Niciun produs găsit.</p> : hikvisionProducts.map(product => (
                 <ProductCard key={product.id} product={product} onClick={() => { setSelectedProduct(product); setIsAddedToCart(false); }} />
               ))}
             </div>
+
+            {/* BUTON CĂTRE PAGINA HIKVISION */}
+            <div className="mt-6 flex justify-start px-2">
+               <Link href={`/${locale}/branduri/hikvision`} className="group flex items-center gap-3 border-2 border-[#F26A1B] text-[#F26A1B] hover:bg-[#F26A1B] hover:text-white px-8 py-3 rounded-xl font-bold transition-all shadow-sm">
+                 Află de ce să alegi Hikvision <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
+               </Link>
+            </div>
           </section>
 
-          {/* DAHUA CAROUSEL */}
+          {/* ================= DAHUA CAROUSEL ================= */}
           <section id="dahua-section" className="relative pt-10 border-t border-[#7A8CA5]/10">
             <div className="flex flex-col sm:flex-row justify-between items-end mb-8 gap-4 px-2">
               <div>
-                <h2 className="text-3xl md:text-4xl font-extrabold mb-2 text-[#F5F2EC]">{t('exploreDahua')}</h2>
-                <p className="text-[#7A8CA5] text-sm md:text-base font-medium">{t('exploreDahuaSub')}</p>
+                <h2 className="text-3xl font-extrabold mb-2 text-[#F5F2EC]">{t('exploreDahua')}</h2>
+                <p className="text-[#7A8CA5] text-sm font-medium">{t('exploreDahuaSub')}</p>
               </div>
               <div className="flex gap-3 hidden sm:flex">
                 <button onClick={() => scroll(dahuaRef, 'left')} className="p-3 rounded-full bg-white/5 border border-[#7A8CA5]/30 text-[#F5F2EC] hover:bg-[#F26A1B] hover:border-[#F26A1B] transition-colors"><ChevronLeft size={20} /></button>
@@ -180,14 +161,21 @@ export default function BrandsCatalog({ locale }: { locale: string }) {
               </div>
             </div>
 
-            <div ref={dahuaRef} className="flex gap-6 overflow-x-auto pb-8 pt-4 px-2 snap-x snap-mandatory hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div ref={dahuaRef} className="flex gap-6 overflow-x-auto pb-6 pt-4 px-2 snap-x snap-mandatory hide-scrollbar" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
               {dahuaProducts.length === 0 ? <p className="text-[#7A8CA5]">Niciun produs găsit.</p> : dahuaProducts.map(product => (
                 <ProductCard key={product.id} product={product} onClick={() => { setSelectedProduct(product); setIsAddedToCart(false); }} />
               ))}
             </div>
+
+            {/* BUTON CĂTRE PAGINA DAHUA */}
+            <div className="mt-6 flex justify-start px-2">
+               <Link href={`/${locale}/branduri/dahua`} className="group flex items-center gap-3 border-2 border-[#F26A1B] text-[#F26A1B] hover:bg-[#F26A1B] hover:text-white px-8 py-3 rounded-xl font-bold transition-all shadow-sm">
+                 Află de ce să alegi Dahua <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
+               </Link>
+            </div>
           </section>
 
-          {/* BOTTOM BANNER */}
+          {/* ================= BOTTOM BANNER ================= */}
           <section className="relative w-full rounded-[2rem] overflow-hidden bg-[#F5F2EC] flex flex-col md:flex-row items-center mt-20 shadow-2xl">
               <div className="md:w-1/2 p-10 md:p-16 lg:p-20 z-10 flex flex-col items-start justify-center">
                 <h2 className="text-3xl md:text-5xl font-extrabold text-[#0F2A4A] mb-8 leading-tight">
@@ -242,6 +230,10 @@ export default function BrandsCatalog({ locale }: { locale: string }) {
                     <span className="text-3xl font-black">{selectedProduct.base_price} MDL</span>
                   )}
                 </div>
+                <div className="flex items-start gap-3 mb-8 p-4 bg-[#7A8CA5]/10 rounded-xl text-sm font-medium text-[#0F2A4A]/80">
+                  <Info className="w-5 h-5 text-[#F26A1B] flex-shrink-0 mt-0.5" />
+                  <p>Pentru detalii complete de instalare și specificații tehnice avansate, consultă secțiunea principală a produsului în magazin.</p>
+                </div>
               </div>
               {isAddedToCart ? (
                  <div className="w-full bg-[#0F2A4A] text-white font-bold text-lg py-4 rounded-xl flex items-center justify-center gap-2 shadow-md animate-in fade-in zoom-in duration-300">
@@ -262,7 +254,7 @@ export default function BrandsCatalog({ locale }: { locale: string }) {
       <BookingModal 
         isOpen={isBookingModalOpen} 
         onClose={() => setIsBookingModalOpen(false)}
-        onSuccess={(orderId) => {
+        onSuccess={(orderId: string) => {
           setIsBookingModalOpen(false);
           proceedToAddProductToCart(orderId);
         }}
