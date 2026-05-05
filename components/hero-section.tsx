@@ -3,10 +3,13 @@
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { ArrowRight, Camera, Shield, MapPin } from "lucide-react"
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
+import { useRouter } from "next/navigation"
 
 export function HeroSection() {
   const t = useTranslations("hero")
+  const locale = useLocale()
+  const router = useRouter()
   const [activeImageIndex, setActiveImageIndex] = useState(0)
 
   const bgImages = [
@@ -42,13 +45,11 @@ export function HeroSection() {
   }, [bgImages.length])
 
   const handleServicesClick = () => {
-    const section = document.getElementById("services")
-    section?.scrollIntoView({ behavior: "smooth", block: "start" })
+    router.push(`/${locale}/produse`)
   }
 
   const handleContactClick = () => {
-    const section = document.getElementById("contact")
-    section?.scrollIntoView({ behavior: "smooth", block: "start" })
+    router.push(`/${locale}/contacte`)
   }
 
   return (
@@ -113,7 +114,7 @@ export function HeroSection() {
             <button
               type="button"
               onClick={handleContactClick}
-              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-base font-bold text-[#0F2A4A] border-2 border-[#0F2A4A]/20 bg-white/50 backdrop-blur-sm transition-all duration-300 hover:border-[#0F2A4A] hover:bg-[#0F2A4A] hover:text-white hover:-translate-y-1"
+              className="inline-flex items-center justify-center px-8 py-4 rounded-full text-base font-bold text-white bg-[#0F2A4A] border-2 border-[#0F2A4A] transition-all duration-300 hover:bg-[#0F2A4A]/80 hover:border-[#0F2A4A]/80 hover:-translate-y-1"
             >
               {t("ctaContact")}
             </button>
