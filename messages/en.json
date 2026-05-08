@@ -193,5 +193,13 @@
     "resetFilters": "Reset",
     "noProducts": "No products found matching your filters.",
     "results": "products found"
+  },
+   "featuredProducts": {
+    "eyebrow": "Featured products",
+    "title": "Smart Security for Your Space",
+    "subtitle": "Discover our range of professional surveillance cameras and systems designed to protect your home or business.",
+    "viewMore": "View details",
+    "viewAll": "View all products",
+    "noProducts": "No featured products available at the moment."
   }
 }

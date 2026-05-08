@@ -24,9 +24,9 @@ type FeaturedProduct = {
 }
 
 export function FeaturedProducts() {
-  const t = useTranslations("hero.products") // Folosim traducerile create anterior
+  const t = useTranslations('featuredProducts')
   const locale = useLocale()
-  
+
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -44,103 +44,112 @@ export function FeaturedProducts() {
 
       if (data) {
         const formatted = data.map((product: any) => {
-          const translation = product.product_translations?.find((tr: any) => tr.language_code === locale);
+          const translation = product.product_translations?.find(
+            (tr: any) => tr.language_code === locale
+          )
           return {
             ...product,
-            translatedDesc: translation ? translation.description : ""
-          } as FeaturedProduct;
-        });
+            translatedDesc: translation?.description ?? '',
+          } as FeaturedProduct
+        })
         setFeaturedProducts(formatted)
       } else if (error) {
-        console.error("Eroare la extragerea produselor:", error)
+        console.error('Eroare la extragerea produselor:', error)
       }
       setLoading(false)
     }
-
     fetchProducts()
   }, [locale])
 
   return (
-    <section className="relative z-20 w-full bg-[#F5F2EC] py-20 border-t border-[#7A8CA5]/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {/* Antet Produse */}
-        <div className="text-center mb-14">
-          <h2 className="text-4xl md:text-5xl font-black text-[#0F2A4A] mb-4 tracking-tight">
-            {t("title")}
+    <section className="w-full bg-[#F5F2EC] py-16 md:py-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 text-[#F26A1B] text-xs font-bold uppercase tracking-widest mb-3">
+            <span className="w-5 h-px bg-[#F26A1B] rounded-full inline-block" />
+            {t('eyebrow')}
+            <span className="w-5 h-px bg-[#F26A1B] rounded-full inline-block" />
+          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0F2A4A] tracking-tight mb-3">
+            {t('title')}
           </h2>
-          <p className="text-[#7A8CA5] font-medium max-w-2xl mx-auto text-lg">
-            {t("subtitle")}
+          <p className="text-[#7A8CA5] font-medium max-w-xl mx-auto text-base">
+            {t('subtitle')}
           </p>
         </div>
 
-        {/* Loader sau Grila de Produse */}
+        {/* Grid */}
         {loading ? (
-          <div className="flex justify-center py-12">
-            <Loader2 className="animate-spin text-[#F26A1B]" size={48} />
+          <div className="flex justify-center py-16">
+            <Loader2 className="animate-spin text-[#F26A1B]" size={40} />
           </div>
         ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {featuredProducts.map((product) => {
-              const finalPrice = product.has_discount 
-                ? product.base_price - (product.base_price * product.discount_percentage / 100) 
-                : product.base_price;
+              const finalPrice = product.has_discount
+                ? product.base_price - (product.base_price * product.discount_percentage) / 100
+                : product.base_price
 
               return (
-                <Link 
-                  href={`/${locale}/produse/${product.id}`} 
-                  key={product.id} 
-                  // Stil modern, border gri-albăstrui subțire care devine portocaliu la hover
-                  className="group relative bg-white rounded-3xl border border-[#7A8CA5]/20 p-5 flex flex-col hover:border-[#F26A1B]/60 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden"
+                <Link
+                  href={`/${locale}/produse/${product.id}`}
+                  key={product.id}
+                  className="group relative bg-white rounded-2xl border border-[#7A8CA5]/15 overflow-hidden flex flex-col hover:border-[#F26A1B]/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
                 >
-                  {/* Badge Reducere cu Portocaliu Închis */}
+                  {/* Discount badge */}
                   {product.has_discount && (
-                    <div className="absolute top-4 left-4 bg-[#C24C0F] text-white text-[11px] font-black uppercase px-3 py-1.5 rounded-lg z-10 shadow-md">
+                    <div className="absolute top-3 left-3 z-10 bg-[#C24C0F] text-white text-[11px] font-black uppercase px-2.5 py-1 rounded-lg shadow-md">
                       -{product.discount_percentage}%
                     </div>
                   )}
 
-                  {/* Imagine MAI MARE (h-48 în loc de h-40) */}
-                  <div className="relative h-48 w-full bg-gradient-to-b from-[#F5F2EC]/80 to-white rounded-2xl mb-5 p-4 flex items-center justify-center overflow-hidden border border-[#7A8CA5]/5 group-hover:bg-[#F26A1B]/5 transition-colors">
-                    {product.images && product.images[0] ? (
-                      <Image 
-                        src={product.images[0]} 
-                        alt={product.name} 
-                        fill 
-                        className="object-contain p-2 mix-blend-multiply group-hover:scale-110 transition-transform duration-500" 
+                  {/* Image zone */}
+                  <div className="relative h-52 bg-gradient-to-b from-[#f7f5f0] to-white flex items-center justify-center overflow-hidden">
+                    {product.images?.[0] ? (
+                      <Image
+                        src={product.images[0]}
+                        alt={product.name}
+                        fill
+                        className="object-contain p-6 mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-full bg-[#7A8CA5]/10 flex items-center justify-center text-[#7A8CA5]/40">
-                        <Search size={28} />
-                      </div>
+                      <Search size={28} className="text-[#7A8CA5]/30" />
                     )}
-                    
-                    {/* Overlay HOVER "Vezi Mai Multe" în culorile brandului */}
-                    <div className="absolute inset-0 bg-[#0F2A4A]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                      <span className="bg-[#F26A1B] text-white text-sm font-bold px-5 py-2.5 rounded-full flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-lg">
-                        {t("viewMore")} <ArrowRight size={16} />
+
+                    {/* Hover overlay — full text always visible */}
+                    <div className="absolute inset-0 bg-[#0F2A4A]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span
+                        className="bg-[#F26A1B] text-white text-sm font-bold px-6 py-2.5 rounded-full flex items-center gap-2 whitespace-nowrap
+                          translate-y-3 group-hover:translate-y-0 transition-transform duration-300 shadow-lg"
+                      >
+                        {t('viewMore')}
+                        <ArrowRight size={15} />
                       </span>
                     </div>
                   </div>
 
-                  {/* Detalii Produs */}
-                  <div className="flex flex-col flex-grow">
-                    <span className="text-xs font-black text-[#7A8CA5] uppercase tracking-widest mb-1.5 border-b border-[#7A8CA5]/10 pb-1 w-max">
+                  {/* Body */}
+                  <div className="flex flex-col flex-grow p-4 pt-3">
+                    <span className="text-[10px] font-black text-[#7A8CA5] uppercase tracking-widest mb-1.5">
                       {product.brand}
                     </span>
-                    <h3 className="text-sm font-extrabold text-[#0F2A4A] mb-4 line-clamp-2 leading-snug group-hover:text-[#F26A1B] transition-colors">
+                    <h3 className="text-sm font-bold text-[#0F2A4A] mb-4 line-clamp-2 leading-snug group-hover:text-[#F26A1B] transition-colors">
                       {product.name}
                     </h3>
-                    
-                    <div className="mt-auto flex flex-col bg-[#F5F2EC]/50 p-3 rounded-xl border border-[#7A8CA5]/5">
+
+                    {/* Price block */}
+                    <div className="mt-auto bg-[#F5F2EC] rounded-xl px-3 py-2.5">
                       {product.has_discount && (
-                        <span className="text-xs text-[#7A8CA5] line-through font-bold">
-                          {product.base_price} MDL
-                        </span>
+                        <p className="text-xs text-[#7A8CA5] line-through font-semibold leading-tight">
+                          {product.base_price.toLocaleString()} MDL
+                        </p>
                       )}
-                      <span className="text-xl font-black text-[#0F2A4A]">
-                        {finalPrice.toFixed(2)} MDL
-                      </span>
+                      <p className="text-xl font-extrabold text-[#0F2A4A] leading-tight">
+                        {finalPrice.toFixed(2)}{' '}
+                        <span className="text-xs font-semibold text-[#7A8CA5]">MDL</span>
+                      </p>
                     </div>
                   </div>
                 </Link>
@@ -148,10 +157,23 @@ export function FeaturedProducts() {
             })}
           </div>
         ) : (
-           <div className="text-center py-10 bg-white rounded-3xl border border-[#7A8CA5]/10 shadow-sm text-[#7A8CA5] text-sm font-medium">
-             Momentan nu există produse recomandate.
-           </div>
+          <div className="text-center py-10 bg-white rounded-2xl border border-[#7A8CA5]/10 text-[#7A8CA5] text-sm font-medium">
+            {t('noProducts')}
+          </div>
         )}
+
+        {/* View all CTA */}
+        <div className="mt-10 text-center">
+          <Link
+            href={`/${locale}/produse`}
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-white text-sm transition-all active:scale-95 hover:shadow-lg"
+            style={{ background: 'linear-gradient(135deg,#F26A1B,#d45a10)' }}
+          >
+            {t('viewAll')}
+            <ArrowRight size={15} />
+          </Link>
+        </div>
+
       </div>
     </section>
   )

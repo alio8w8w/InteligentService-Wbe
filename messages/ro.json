@@ -193,5 +193,13 @@
     "resetFilters": "Resetează",
     "noProducts": "Nu am găsit produse conform filtrelor selectate.",
     "results": "produse găsite"
+  },
+   "featuredProducts": {
+    "eyebrow": "Produse recomandate",
+    "title": "Securitate Inteligentă pentru Spațiul Tău",
+    "subtitle": "Descoperă gama noastră de camere și sisteme de supraveghere profesionale, concepute pentru a-ți proteja casa sau afacerea.",
+    "viewMore": "Vezi detalii",
+    "viewAll": "Vezi toate produsele",
+    "noProducts": "Momentan nu există produse recomandate."
   }
 }
