@@ -102,7 +102,13 @@ export default function GalerieAdmin() {
     setDraggedIndex(null)
 
     // Update bulk în DB pentru toate pozițiile modificate
-    const updatesForDb = updatedItems.map(({ id, position }) => ({ id, position }))
+    // S-A MODIFICAT AICI: Trimitem și url, și type pentru a respecta regulile bazei de date
+    const updatesForDb = updatedItems.map(({ id, position, url, type }) => ({ 
+      id, 
+      position, 
+      url, 
+      type 
+    }))
     
     const { error } = await supabase.from("gallery").upsert(updatesForDb)
     if (error) {
