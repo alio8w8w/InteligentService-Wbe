@@ -1,8 +1,8 @@
 "use client"
 
-import { useEffect, useState, ChangeEvent } from "react"
+import { useEffect, useState, ChangeEvent, DragEvent } from "react"
 import { supabase } from "@/lib/supabase"
-import { Image as ImageIcon, Film, Trash2, ArrowLeft, ArrowRight, UploadCloud, Save, Loader2, X } from "lucide-react"
+import { Image as ImageIcon, Film, Trash2, UploadCloud, Save, Loader2, X, GripVertical } from "lucide-react"
 
 type GalleryItem = {
   id: string
@@ -18,7 +18,7 @@ type PendingItem = {
   type: "image" | "video"
 }
 
-// CONFIGURARE BUCKET - Asigură-te că acesta există în Supabase Storage și e PUBLIC
+// CONFIGURARE BUCKET
 const BUCKET_NAME = "gallery-media"
 
 export default function GalerieAdmin() {
@@ -26,6 +26,7 @@ export default function GalerieAdmin() {
   const [pending, setPending] = useState<PendingItem[]>([])
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
 
   /* ───────── FETCH EXISTING ───────── */
   const fetchItems = async () => {
@@ -44,7 +45,6 @@ export default function GalerieAdmin() {
 
   useEffect(() => {
     fetchItems()
-    // Cleanup pentru URL-urile de preview la demontarea componentei
     return () => {
       pending.forEach(item => URL.revokeObjectURL(item.preview))
     }
@@ -63,36 +63,52 @@ export default function GalerieAdmin() {
 
     setPending((prev) => [...prev, ...mapped])
     setErrorMessage(null)
-    // Reset input value to allow selecting same file again
     e.target.value = ""
   }
 
-  /* ───────── MOVE ITEMS ───────── */
-  const moveItem = async (index: number, direction: "up" | "down") => {
-    if (direction === "up" && index === 0) return
-    if (direction === "down" && index === items.length - 1) return
+  /* ───────── DRAG AND DROP LOGIC ───────── */
+  const handleDragStart = (e: DragEvent<HTMLDivElement>, index: number) => {
+    setDraggedIndex(index)
+    // Efect vizual pentru elementul tras
+    e.dataTransfer.effectAllowed = "move"
+    // Setăm datele (chiar dacă folosim state local, e o bună practică)
+    e.dataTransfer.setData("text/plain", index.toString())
+  }
+
+  const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault() // Necesare pentru a permite "Drop"
+    e.dataTransfer.dropEffect = "move"
+  }
+
+  const handleDrop = async (e: DragEvent<HTMLDivElement>, dropIndex: number) => {
+    e.preventDefault()
+    if (draggedIndex === null || draggedIndex === dropIndex) return
 
     const newItems = [...items]
-    const swapIndex = direction === "up" ? index - 1 : index + 1
+    const draggedItem = newItems[draggedIndex]
 
-    // Swap positions
-    const currentItem = { ...newItems[index] }
-    const siblingItem = { ...newItems[swapIndex] }
+    // Eliminăm elementul din poziția veche
+    newItems.splice(draggedIndex, 1)
+    // Îl adăugăm în poziția nouă
+    newItems.splice(dropIndex, 0, draggedItem)
 
-    const tempPos = currentItem.position
-    currentItem.position = siblingItem.position
-    siblingItem.position = tempPos
+    // Actualizăm "position" pentru toate elementele ca să fie secvențial (0, 1, 2, 3...)
+    const updatedItems = newItems.map((item, index) => ({
+      ...item,
+      position: index,
+    }))
 
-    newItems[index] = siblingItem
-    newItems[swapIndex] = currentItem
+    setItems(updatedItems) // Update UI instantaneu
+    setDraggedIndex(null)
 
-    setItems(newItems)
-
-    // Update silent în DB
-    await supabase.from("gallery").upsert([
-      { id: currentItem.id, position: currentItem.position },
-      { id: siblingItem.id, position: siblingItem.position }
-    ])
+    // Update bulk în DB pentru toate pozițiile modificate
+    const updatesForDb = updatedItems.map(({ id, position }) => ({ id, position }))
+    
+    const { error } = await supabase.from("gallery").upsert(updatesForDb)
+    if (error) {
+      setErrorMessage("Eroare la salvarea noii ordini: " + error.message)
+      fetchItems() // Revert la datele din baza de date în caz de eroare
+    }
   }
 
   /* ───────── DELETE EXISTING ───────── */
@@ -100,20 +116,17 @@ export default function GalerieAdmin() {
     if (!confirm("Sigur vrei să ștergi acest element definitiv din galerie și stocare?")) return
 
     try {
-      // Extragem corect numele fișierului din URL-ul public
       const urlParts = item.url.split('/')
       const fileName = urlParts[urlParts.length - 1]
 
       if (!fileName) throw new Error("Numele fișierului nu a putut fi identificat.")
 
-      // 1. Ștergere din Storage
       const { error: storageError } = await supabase.storage
         .from(BUCKET_NAME)
         .remove([fileName])
 
       if (storageError) throw storageError
 
-      // 2. Ștergere din Database
       const { error: dbError } = await supabase
         .from("gallery")
         .delete()
@@ -121,7 +134,6 @@ export default function GalerieAdmin() {
 
       if (dbError) throw dbError
 
-      // Update UI local
       setItems(prev => prev.filter(i => i.id !== item.id))
     } catch (err: any) {
       setErrorMessage("Eroare la ștergere: " + err.message)
@@ -142,14 +154,12 @@ export default function GalerieAdmin() {
     setErrorMessage(null)
 
     try {
-      // Determinăm ultima poziție
       let currentMaxPos = items.length > 0 ? Math.max(...items.map(i => i.position || 0)) : -1
 
       for (const item of pending) {
         const fileExt = item.file.name.split(".").pop()
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
 
-        // 1. Upload în Storage
         const { error: uploadError } = await supabase.storage
           .from(BUCKET_NAME)
           .upload(fileName, item.file, {
@@ -159,10 +169,8 @@ export default function GalerieAdmin() {
 
         if (uploadError) throw uploadError
 
-        // 2. Obținere URL Public
         const { data: urlData } = supabase.storage.from(BUCKET_NAME).getPublicUrl(fileName)
 
-        // 3. Insert în Database
         currentMaxPos++
         const { error: dbError } = await supabase.from("gallery").insert({
           type: item.type,
@@ -171,7 +179,6 @@ export default function GalerieAdmin() {
         })
 
         if (dbError) throw dbError
-        
         URL.revokeObjectURL(item.preview)
       }
 
@@ -253,6 +260,7 @@ export default function GalerieAdmin() {
       <h3 className="font-black text-[#0F2A4A] text-xl mb-6 flex items-center gap-2">
         Galeria Publică 
         <span className="text-sm font-medium text-gray-400 bg-gray-100 px-3 py-1 rounded-full">{items.length} elemente</span>
+        <span className="text-xs font-normal text-gray-400 ml-auto hidden sm:block">Trage de imagini pentru a le reordona</span>
       </h3>
       
       {items.length === 0 && !loading && (
@@ -264,12 +272,19 @@ export default function GalerieAdmin() {
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {items.map((item, index) => (
-          <div key={item.id} className="group relative rounded-2xl overflow-hidden aspect-square bg-gray-100 border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300">
+          <div 
+            key={item.id} 
+            draggable // Face elementul "trăgabil"
+            onDragStart={(e) => handleDragStart(e, index)}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, index)}
+            className={`group relative rounded-2xl overflow-hidden aspect-square bg-gray-100 border border-gray-100 shadow-sm transition-all duration-300 cursor-grab active:cursor-grabbing ${draggedIndex === index ? 'opacity-50 scale-95 border-[#F26A1B] border-2' : 'hover:shadow-xl'}`}
+          >
             
             {item.type === "image" ? (
-              <img src={item.url} alt="Gallery item" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+              <img src={item.url} alt="Gallery item" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 pointer-events-none" />
             ) : (
-              <div className="w-full h-full relative">
+              <div className="w-full h-full relative pointer-events-none">
                 <video src={item.url} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-black/30 transition-colors">
                   <Film className="text-white drop-shadow-md" size={32} />
@@ -278,25 +293,16 @@ export default function GalerieAdmin() {
             )}
 
             {/* Overlay Control */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
-              <div className="flex justify-between items-center">
-                <div className="flex gap-1">
-                  <button 
-                    onClick={() => moveItem(index, "up")} 
-                    disabled={index === 0}
-                    className="p-2 bg-white/20 backdrop-blur-md rounded-lg text-white hover:bg-[#F26A1B] disabled:opacity-20 transition-all"
-                  >
-                    <ArrowLeft size={18} />
-                  </button>
-                  <button 
-                    onClick={() => moveItem(index, "down")} 
-                    disabled={index === items.length - 1}
-                    className="p-2 bg-white/20 backdrop-blur-md rounded-lg text-white hover:bg-[#F26A1B] disabled:opacity-20 transition-all"
-                  >
-                    <ArrowRight size={18} />
-                  </button>
-                </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
+              
+              {/* Iconiță Drag */}
+              <div className="flex justify-end">
+                 <div className="p-1.5 bg-black/40 backdrop-blur-md rounded-lg text-white">
+                    <GripVertical size={16} />
+                 </div>
+              </div>
 
+              <div className="flex justify-end items-center">
                 <button 
                   onClick={() => deleteExisting(item)} 
                   className="p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-transform hover:scale-110 shadow-lg"
