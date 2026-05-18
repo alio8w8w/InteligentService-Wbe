@@ -1,10 +1,8 @@
-// app/api/guest-cart/route.ts
 import { NextRequest, NextResponse } from "next/server"
 
-// 1. Forțăm ca această rută să ruleze doar în timp real, nu la build-ul Vercel
 export const dynamic = 'force-dynamic';
 
-// 2. Importăm instanța Supabase centralizată (Asta previne eroarea de compilare!)
+// Importăm instanța sigură creată la Pasul 1
 import { supabase } from "@/lib/supabase"
 
 export async function POST(req: NextRequest) {
