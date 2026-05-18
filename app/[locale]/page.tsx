@@ -6,6 +6,8 @@ import { HeroSection } from '@/components/hero-section'
 import { BrandShowcase } from '@/components/brand-comp'
 // IMPORTĂM NOUA COMPONENTĂ DE PRODUSE
 import { FeaturedProducts } from '@/components/featured-products'
+// IMPORTĂM NOUA COMPONENTĂ DE GALERIE
+import { GalleryPreview } from '@/components/Gallerypreview'
 
 export default function HomePage() {
   return (
@@ -21,6 +23,9 @@ export default function HomePage() {
 
         {/* 3. Produsele Recomandate/Cu Reducere (Noua componentă, în loc de CTA-ul vechi) */}
         <FeaturedProducts />
+
+        {/* 4. Galeria - Acum componenta este chemată efectiv să se afișeze pe ecran */}
+        <GalleryPreview />
 
       </main>
       

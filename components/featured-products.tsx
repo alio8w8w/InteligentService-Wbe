@@ -3,14 +3,11 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { createClient } from '@supabase/supabase-js'
+// CORECȚIE: Folosim instanța centralizată pentru a preveni erorile de build pe Vercel!
+import { supabase } from '@/lib/supabase' 
 import { ArrowRight, Loader2, Search } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import { GalleryPreview } from '@/components/Gallerypreview'
 
 type FeaturedProduct = {
   id: string
@@ -88,8 +85,9 @@ export function FeaturedProducts() {
         ) : featuredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {featuredProducts.map((product) => {
+              // CORECȚIE: Adăugat fallback pentru discount_percentage în caz de null în baza de date
               const finalPrice = product.has_discount
-                ? product.base_price - (product.base_price * product.discount_percentage) / 100
+                ? product.base_price - (product.base_price * (product.discount_percentage || 0)) / 100
                 : product.base_price
 
               return (
@@ -99,7 +97,7 @@ export function FeaturedProducts() {
                   className="group relative bg-white rounded-2xl border border-[#7A8CA5]/15 overflow-hidden flex flex-col hover:border-[#F26A1B]/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
                 >
                   {/* Discount badge */}
-                  {product.has_discount && (
+                  {product.has_discount && product.discount_percentage && (
                     <div className="absolute top-3 left-3 z-10 bg-[#C24C0F] text-white text-[11px] font-black uppercase px-2.5 py-1 rounded-lg shadow-md">
                       -{product.discount_percentage}%
                     </div>
@@ -107,7 +105,7 @@ export function FeaturedProducts() {
 
                   {/* Image zone */}
                   <div className="relative h-52 bg-gradient-to-b from-[#f7f5f0] to-white flex items-center justify-center overflow-hidden">
-                    {product.images?.[0] ? (
+                    {product.images && product.images.length > 0 && product.images[0] ? (
                       <Image
                         src={product.images[0]}
                         alt={product.name}

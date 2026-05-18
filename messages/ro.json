@@ -201,5 +201,14 @@
     "viewMore": "Vezi detalii",
     "viewAll": "Vezi toate produsele",
     "noProducts": "Momentan nu există produse recomandate."
+  },
+  "galleryPreview": {
+    "loading": "Se încarcă galeria...",
+    "emptyTitle": "Galeria este goală",
+    "emptyDesc": "Nu s-au găsit imagini, sau permisiunile bazei de date blochează vizualizarea.",
+    "title": "Proiectele Noastre",
+    "subtitle": "Descoperă o parte din portofoliul nostru vizual. Calitatea și atenția la detalii sunt vizibile în fiecare cadru.",
+    "viewAll": "Vezi toată galeria"
   }
+
 }

@@ -201,5 +201,13 @@
     "viewMore": "View details",
     "viewAll": "View all products",
     "noProducts": "No featured products available at the moment."
-  }
+  },
+  "galleryPreview": {
+  "loading": "Loading gallery...",
+  "emptyTitle": "Gallery is empty",
+  "emptyDesc": "No images found, or database permissions are blocking the view.",
+  "title": "Our Projects",
+  "subtitle": "Discover a part of our visual portfolio. Quality and attention to detail are visible in every frame.",
+  "viewAll": "View all gallery"
+}
 }
