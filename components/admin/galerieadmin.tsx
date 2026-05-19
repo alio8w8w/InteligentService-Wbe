@@ -2,7 +2,7 @@
 
 import { useEffect, useState, ChangeEvent, DragEvent } from "react"
 import { supabase } from "@/lib/supabase"
-import { Image as ImageIcon, Film, Trash2, UploadCloud, Save, Loader2, X, GripVertical } from "lucide-react"
+import { Image as ImageIcon, Film, Trash2, UploadCloud, Save, Loader2, X, GripVertical, Star } from "lucide-react"
 
 type GalleryItem = {
   id: string
@@ -10,6 +10,7 @@ type GalleryItem = {
   url: string
   position: number
   created_at?: string
+  is_featured?: boolean // Adăugat pentru steluță
 }
 
 type PendingItem = {
@@ -18,7 +19,6 @@ type PendingItem = {
   type: "image" | "video"
 }
 
-// CONFIGURARE BUCKET
 const BUCKET_NAME = "gallery-media"
 
 export default function GalerieAdmin() {
@@ -28,7 +28,6 @@ export default function GalerieAdmin() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
 
-  /* ───────── FETCH EXISTING ───────── */
   const fetchItems = async () => {
     const { data, error } = await supabase
       .from("gallery")
@@ -50,7 +49,6 @@ export default function GalerieAdmin() {
     }
   }, [])
 
-  /* ───────── ADD FILES ───────── */
   const handleAddFiles = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return
     const files = Array.from(e.target.files)
@@ -66,17 +64,14 @@ export default function GalerieAdmin() {
     e.target.value = ""
   }
 
-  /* ───────── DRAG AND DROP LOGIC ───────── */
   const handleDragStart = (e: DragEvent<HTMLDivElement>, index: number) => {
     setDraggedIndex(index)
-    // Efect vizual pentru elementul tras
     e.dataTransfer.effectAllowed = "move"
-    // Setăm datele (chiar dacă folosim state local, e o bună practică)
     e.dataTransfer.setData("text/plain", index.toString())
   }
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault() // Necesare pentru a permite "Drop"
+    e.preventDefault()
     e.dataTransfer.dropEffect = "move"
   }
 
@@ -87,37 +82,51 @@ export default function GalerieAdmin() {
     const newItems = [...items]
     const draggedItem = newItems[draggedIndex]
 
-    // Eliminăm elementul din poziția veche
     newItems.splice(draggedIndex, 1)
-    // Îl adăugăm în poziția nouă
     newItems.splice(dropIndex, 0, draggedItem)
 
-    // Actualizăm "position" pentru toate elementele ca să fie secvențial (0, 1, 2, 3...)
     const updatedItems = newItems.map((item, index) => ({
       ...item,
       position: index,
     }))
 
-    setItems(updatedItems) // Update UI instantaneu
+    setItems(updatedItems)
     setDraggedIndex(null)
 
-    // Update bulk în DB pentru toate pozițiile modificate
-    // S-A MODIFICAT AICI: Trimitem și url, și type pentru a respecta regulile bazei de date
-    const updatesForDb = updatedItems.map(({ id, position, url, type }) => ({ 
+    const updatesForDb = updatedItems.map(({ id, position, url, type, is_featured }) => ({ 
       id, 
       position, 
       url, 
-      type 
+      type,
+      is_featured // Păstrăm starea steluței la reordonare
     }))
     
     const { error } = await supabase.from("gallery").upsert(updatesForDb)
     if (error) {
       setErrorMessage("Eroare la salvarea noii ordini: " + error.message)
-      fetchItems() // Revert la datele din baza de date în caz de eroare
+      fetchItems()
     }
   }
 
-  /* ───────── DELETE EXISTING ───────── */
+  /* ───────── TOGGLE FEATURED (STELUȚA) ───────── */
+  const toggleFeatured = async (item: GalleryItem) => {
+    const newValue = !item.is_featured
+    
+    // Update în UI instantaneu pentru viteză
+    setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_featured: newValue } : i))
+
+    // Update în baza de date
+    const { error } = await supabase
+      .from("gallery")
+      .update({ is_featured: newValue })
+      .eq("id", item.id)
+
+    if (error) {
+      setErrorMessage("Eroare la actualizarea steluței: " + error.message)
+      fetchItems() // Revert în caz de eroare
+    }
+  }
+
   const deleteExisting = async (item: GalleryItem) => {
     if (!confirm("Sigur vrei să ștergi acest element definitiv din galerie și stocare?")) return
 
@@ -146,14 +155,12 @@ export default function GalerieAdmin() {
     }
   }
 
-  /* ───────── REMOVE PENDING ───────── */
   const removePending = (index: number) => {
     const itemToRemove = pending[index]
     if (itemToRemove) URL.revokeObjectURL(itemToRemove.preview)
     setPending((prev) => prev.filter((_, i) => i !== index))
   }
 
-  /* ───────── SAVE ALL PENDING ───────── */
   const handleSave = async () => {
     if (!pending.length) return
     setLoading(true)
@@ -168,10 +175,7 @@ export default function GalerieAdmin() {
 
         const { error: uploadError } = await supabase.storage
           .from(BUCKET_NAME)
-          .upload(fileName, item.file, {
-            cacheControl: '3600',
-            upsert: false
-          })
+          .upload(fileName, item.file, { cacheControl: '3600', upsert: false })
 
         if (uploadError) throw uploadError
 
@@ -181,7 +185,8 @@ export default function GalerieAdmin() {
         const { error: dbError } = await supabase.from("gallery").insert({
           type: item.type,
           url: urlData.publicUrl,
-          position: currentMaxPos
+          position: currentMaxPos,
+          is_featured: false // Implicit noile imagini NU sunt pe prima pagină
         })
 
         if (dbError) throw dbError
@@ -191,7 +196,7 @@ export default function GalerieAdmin() {
       setPending([])
       fetchItems()
     } catch (err: any) {
-      setErrorMessage("Eroare la salvare: " + err.message + ". Verifică dacă bucket-ul 'gallery-media' există și e public.")
+      setErrorMessage("Eroare la salvare: " + err.message)
     } finally {
       setLoading(false)
     }
@@ -199,8 +204,8 @@ export default function GalerieAdmin() {
 
   return (
     <div className="w-full bg-white rounded-[2rem] border border-gray-100 shadow-sm p-6 lg:p-8">
+      {/* ... HEADER ȘI PENDING SECTION RĂMÂN IDENTICE ... */}
       
-      {/* HEADER */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
         <div>
           <h2 className="text-3xl font-black text-[#283618] flex items-center gap-3">
@@ -224,7 +229,6 @@ export default function GalerieAdmin() {
         </div>
       )}
 
-      {/* PENDING ITEMS SECTION */}
       {pending.length > 0 && (
         <div className="mb-12 bg-orange-50/50 p-8 rounded-[2rem] border border-orange-200">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -250,10 +254,7 @@ export default function GalerieAdmin() {
                 ) : (
                   <video src={item.preview} className="w-full h-full object-cover" />
                 )}
-                <button 
-                  onClick={() => removePending(index)} 
-                  className="absolute top-2 right-2 bg-white/90 hover:bg-red-500 hover:text-white text-red-500 p-2 rounded-lg transition-colors shadow-sm"
-                >
+                <button onClick={() => removePending(index)} className="absolute top-2 right-2 bg-white/90 hover:bg-red-500 hover:text-white text-red-500 p-2 rounded-lg transition-colors shadow-sm">
                   <X size={16} />
                 </button>
               </div>
@@ -266,7 +267,7 @@ export default function GalerieAdmin() {
       <h3 className="font-black text-[#0F2A4A] text-xl mb-6 flex items-center gap-2">
         Galeria Publică 
         <span className="text-sm font-medium text-gray-400 bg-gray-100 px-3 py-1 rounded-full">{items.length} elemente</span>
-        <span className="text-xs font-normal text-gray-400 ml-auto hidden sm:block">Trage de imagini pentru a le reordona</span>
+        <span className="text-xs font-normal text-gray-400 ml-auto hidden sm:block">Apasă pe steluță pentru a afișa pe prima pagină</span>
       </h3>
       
       {items.length === 0 && !loading && (
@@ -280,13 +281,22 @@ export default function GalerieAdmin() {
         {items.map((item, index) => (
           <div 
             key={item.id} 
-            draggable // Face elementul "trăgabil"
+            draggable 
             onDragStart={(e) => handleDragStart(e, index)}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, index)}
             className={`group relative rounded-2xl overflow-hidden aspect-square bg-gray-100 border border-gray-100 shadow-sm transition-all duration-300 cursor-grab active:cursor-grabbing ${draggedIndex === index ? 'opacity-50 scale-95 border-[#F26A1B] border-2' : 'hover:shadow-xl'}`}
           >
             
+            {/* Butonul Steluță mereu vizibil sus-stânga */}
+            <button 
+              onClick={() => toggleFeatured(item)}
+              className={`absolute top-3 left-3 z-20 p-2 rounded-xl transition-all duration-300 shadow-sm ${item.is_featured ? 'bg-[#F26A1B] text-white scale-110 shadow-md shadow-orange-500/40' : 'bg-white/80 text-gray-400 hover:bg-white hover:text-orange-400 backdrop-blur-sm'}`}
+              title={item.is_featured ? "Apare pe prima pagină" : "Setează pentru prima pagină"}
+            >
+              <Star size={18} className={item.is_featured ? "fill-white" : ""} />
+            </button>
+
             {item.type === "image" ? (
               <img src={item.url} alt="Gallery item" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 pointer-events-none" />
             ) : (
@@ -300,8 +310,6 @@ export default function GalerieAdmin() {
 
             {/* Overlay Control */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-between p-4">
-              
-              {/* Iconiță Drag */}
               <div className="flex justify-end">
                  <div className="p-1.5 bg-black/40 backdrop-blur-md rounded-lg text-white">
                     <GripVertical size={16} />
