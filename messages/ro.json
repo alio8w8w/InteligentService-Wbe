@@ -218,6 +218,28 @@
     "filterAll": "Toate",
     "filterImages": "Imagini",
     "filterVideos": "Video-uri"
+  },
+  "featuredLed": {
+    "title": "Ecrane LED Profesionale",
+    "subtitle": "Soluții de afișaj digital de înaltă performanță pentru interior și exterior. Impact vizual garantat.",
+    "loading": "Se încarcă ecranele...",
+    "empty": "Momentan nu sunt ecrane LED recomandate.",
+    "viewMore": "Vizualizează detaliat",
+    "viewAll": "Vezi toate ecranele LED"
+  },
+  "ledPage": {
+    "heroTitle": "Ecrane LED Profesionale",
+    "heroDesc": "Descoperă viitorul afișajului digital. Ecranele noastre LED oferă o luminozitate excepțională, culori vibrante și fiabilitate maximă pentru orice tip de proiect, de la publicitate stradală până la evenimente de top.",
+    "scrollDown": "Vezi Produsele",
+    "filterAll": "Toate Ecranele",
+    "filterDiscount": "Doar cu Reducere",
+    "sortAsc": "Preț Crescător",
+    "sortDesc": "Preț Descrescător",
+    "loading": "Se încarcă produsele...",
+    "empty": "Momentan nu sunt ecrane LED disponibile.",
+    "addToCart": "Adaugă în Coș",
+    "description": "Descriere Produs",
+    "price": "Preț:"
   }
 
 }

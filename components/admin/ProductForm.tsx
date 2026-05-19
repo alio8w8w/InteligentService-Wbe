@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { createClient } from "@supabase/supabase-js"
-import { UploadCloud, Tag, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, Plus, Trash2, Edit3, Star, Percent, ArrowLeft, Square, CheckSquare } from "lucide-react"
+import { UploadCloud, Tag, CheckCircle2, AlertCircle, Loader2, Image as ImageIcon, Plus, Trash2, Edit3, Star, Percent, ArrowLeft, Square, CheckSquare, Filter } from "lucide-react"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,6 +25,9 @@ export default function ProductManager() {
   const [products, setProducts] = useState<Product[]>([])
   const [loadingList, setLoadingList] = useState(true)
   
+  // Stare pentru filtrarea listei în Admin
+  const [filterCategory, setFilterCategory] = useState<"all" | "Supraveghere" | "LED Ecran">("all")
+  
   // Stări pentru acțiuni în masă (Bulk Actions)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkAction, setBulkAction] = useState<"price" | "discount" | null>(null)
@@ -34,7 +37,7 @@ export default function ProductManager() {
   // Stări pentru formularul de adăugare
   const [name, setName] = useState("")
   const [basePrice, setBasePrice] = useState("")
-  const [brand, setBrand] = useState("Hikvision")
+  const [brand, setBrand] = useState("Hikvision") // Acum va suporta și LED Ecran
   const [hasDiscount, setHasDiscount] = useState(false)
   const [discount, setDiscount] = useState("")
   const [featured, setFeatured] = useState(false)
@@ -63,10 +66,21 @@ export default function ProductManager() {
     fetchProducts()
   }, [])
 
+  // Produsele filtrate pentru afișare în tabel
+  const displayedProducts = products.filter(p => {
+    if (filterCategory === "all") return true;
+    if (filterCategory === "LED Ecran") return p.brand === "LED Ecran";
+    if (filterCategory === "Supraveghere") return p.brand === "Hikvision" || p.brand === "Dahua";
+    return true;
+  });
+
   // --- 2. SELECȚIE MULTIPLĂ ---
   const toggleSelectAll = () => {
-    if (selectedIds.size === products.length) setSelectedIds(new Set())
-    else setSelectedIds(new Set(products.map(p => p.id)))
+    if (selectedIds.size === displayedProducts.length && displayedProducts.length > 0) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(displayedProducts.map(p => p.id)))
+    }
   }
 
   const toggleSelect = (id: string) => {
@@ -118,7 +132,7 @@ export default function ProductManager() {
       setBulkAction(null)
       setBulkValue("")
       setSelectedIds(new Set())
-      fetchProducts() // Reîncărcăm lista pentru a vedea noile valori
+      fetchProducts()
       setTimeout(() => setSuccess(""), 3000)
     } else {
       alert("Eroare la actualizare: " + error.message)
@@ -126,11 +140,10 @@ export default function ProductManager() {
     setBulkLoading(false)
   }
 
-  // --- 4. TOGGLE HOMEPAGE ---
+  // --- 4. TOGGLE HOMEPAGE (Steluța) ---
   const toggleHomepage = async (product: Product) => {
     const isCurrentlyFeatured = product.is_featured_on_homepage;
     
-    // Verificăm limita de 6 doar dacă încercăm să ACTIVĂM un produs nou pe homepage
     if (!isCurrentlyFeatured) {
       const currentlyFeaturedCount = products.filter(p => p.is_featured_on_homepage).length;
       if (currentlyFeaturedCount >= 6) {
@@ -139,28 +152,37 @@ export default function ProductManager() {
       }
     }
 
-    // Actualizare Optimistică (UI-ul se schimbă instant, fără să aștepte baza de date)
     setProducts(prev => prev.map(p => p.id === product.id ? { ...p, is_featured_on_homepage: !isCurrentlyFeatured } : p))
 
     const { error } = await supabase.from("produse").update({ is_featured_on_homepage: !isCurrentlyFeatured }).eq("id", product.id)
     if (error) {
-      // Revert dacă dă eroare
       setProducts(prev => prev.map(p => p.id === product.id ? { ...p, is_featured_on_homepage: isCurrentlyFeatured } : p))
       alert("Eroare la actualizare: " + error.message)
     }
   }
 
-  // --- 5. FUNCȚII PENTRU FORMULAR (Traducere & Submit) ---
+  // --- 5. FUNCȚII PENTRU FORMULAR ȘI TRADUCERE AI ---
   function handleImagesChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) setImages(Array.from(e.target.files))
   }
 
+  // TRADUCERE REALĂ CĂTRE API
   async function translateText(text: string, targetLang: string) {
     if (!text) return "";
     if (targetLang === 'ro') return text;
-    if (targetLang === 'en') return `[EN Auto-Translated] ${text}`;
-    if (targetLang === 'ru') return `[RU Auto-Translated] ${text}`;
-    return text;
+    try {
+      const res = await fetch('/api/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, targetLang })
+      });
+      if (!res.ok) throw new Error('API Traducere a eșuat');
+      const data = await res.json();
+      return data.translatedText;
+    } catch (error) {
+      console.error(`Eroare la traducere în ${targetLang}:`, error);
+      return text; // Fallback: lasă textul original dacă AI-ul pică
+    }
   }
 
   async function handleAddSubmit(e: React.FormEvent) {
@@ -202,8 +224,10 @@ export default function ProductManager() {
       if (prodErr) throw new Error(prodErr.message)
 
       if (description.trim() !== "") {
+        // Apelează traducerea automată
         const descEn = await translateText(description, "en");
         const descRu = await translateText(description, "ru");
+        
         const translations = [
           { product_id: product.id, language_code: "ro", description: description },
           { product_id: product.id, language_code: "en", description: descEn },
@@ -214,7 +238,6 @@ export default function ProductManager() {
       }
 
       setSuccess("Produs adăugat cu succes!")
-      // Resetare & Întoarcere la listă
       setName(""); setBasePrice(""); setBrand("Hikvision"); setHasDiscount(false); setDiscount(""); setFeatured(false); setDescription(""); setImages([]);
       if (fileInputRef.current) fileInputRef.current.value = ""
       fetchProducts()
@@ -233,7 +256,7 @@ export default function ProductManager() {
   if (view === "list") {
     return (
       <div className="bg-white rounded-[2rem] border border-[#283618]/10 shadow-sm p-6 lg:p-8 animate-in fade-in duration-500 w-full max-w-6xl mx-auto">
-        {/* HEADER */}
+        
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#283618] flex items-center gap-2">
@@ -252,13 +275,25 @@ export default function ProductManager() {
           </div>
         )}
 
-        {/* BULK ACTIONS BAR (Apare doar dacă ai selectat produse) */}
+        {/* BARA DE FILTRARE (NOU) */}
+        <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
+          <button onClick={() => setFilterCategory("all")} className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors ${filterCategory === "all" ? "bg-[#283618] text-[#FEFAE0]" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
+            <Filter size={16} /> Toate Produsele
+          </button>
+          <button onClick={() => setFilterCategory("Supraveghere")} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${filterCategory === "Supraveghere" ? "bg-[#DDA15E] text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
+            Camere Supraveghere
+          </button>
+          <button onClick={() => setFilterCategory("LED Ecran")} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors ${filterCategory === "LED Ecran" ? "bg-[#BC6C25] text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
+            Ecrane LED
+          </button>
+        </div>
+
+        {/* BULK ACTIONS BAR */}
         {selectedIds.size > 0 && (
           <div className="mb-6 p-4 bg-[#FEFAE0]/50 border border-[#DDA15E]/30 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 animate-in slide-in-from-top-2">
             <span className="font-bold text-[#BC6C25]">{selectedIds.size} produse selectate</span>
             
             <div className="flex flex-wrap gap-2 w-full md:w-auto">
-              {/* MODAL PENTRU INTRODUCERE VALOARE BULK */}
               {bulkAction ? (
                 <div className="flex items-center gap-2 w-full md:w-auto bg-white p-1 rounded-xl border border-[#283618]/20">
                   <input 
@@ -297,7 +332,7 @@ export default function ProductManager() {
               <tr>
                 <th className="p-4 text-center w-10">
                   <button onClick={toggleSelectAll} className="hover:text-[#BC6C25] transition-colors">
-                    {selectedIds.size === products.length && products.length > 0 ? <CheckSquare size={18} className="text-[#BC6C25]" /> : <Square size={18} />}
+                    {selectedIds.size === displayedProducts.length && displayedProducts.length > 0 ? <CheckSquare size={18} className="text-[#BC6C25]" /> : <Square size={18} />}
                   </button>
                 </th>
                 <th className="p-4">Imagine</th>
@@ -310,10 +345,10 @@ export default function ProductManager() {
             <tbody className="divide-y divide-[#FEFAE0]">
               {loadingList ? (
                 <tr><td colSpan={6} className="p-10 text-center"><Loader2 className="animate-spin mx-auto text-[#DDA15E]" size={30} /></td></tr>
-              ) : products.length === 0 ? (
-                <tr><td colSpan={6} className="p-10 text-center text-[#606C38]/50 font-medium italic">Niciun produs în baza de date.</td></tr>
+              ) : displayedProducts.length === 0 ? (
+                <tr><td colSpan={6} className="p-10 text-center text-[#606C38]/50 font-medium italic">Niciun produs găsit în această categorie.</td></tr>
               ) : (
-                products.map((p) => (
+                displayedProducts.map((p) => (
                   <tr key={p.id} className={`transition-colors ${selectedIds.has(p.id) ? 'bg-[#FEFAE0]/40' : 'hover:bg-[#FEFAE0]/20'}`}>
                     <td className="p-4 text-center">
                       <button onClick={() => toggleSelect(p.id)} className="text-[#283618] opacity-50 hover:opacity-100 transition-opacity">
@@ -399,14 +434,15 @@ export default function ProductManager() {
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-bold mb-2">Nume Produs *</label>
-              <input value={name} onChange={e => setName(e.target.value)} required placeholder="Ex: Cameră supraveghere IP" className="w-full bg-[#FEFAE0]/30 border border-[#283618]/10 rounded-xl px-4 py-3 outline-none focus:border-[#DDA15E] focus:ring-1 focus:ring-[#DDA15E] transition-all" />
+              <label className="block text-sm font-bold mb-2">Nume Produs / Model *</label>
+              <input value={name} onChange={e => setName(e.target.value)} required placeholder="Ex: Cameră IP sau Modul LED" className="w-full bg-[#FEFAE0]/30 border border-[#283618]/10 rounded-xl px-4 py-3 outline-none focus:border-[#DDA15E] focus:ring-1 focus:ring-[#DDA15E] transition-all" />
             </div>
             <div>
-              <label className="block text-sm font-bold mb-2">Brand *</label>
+              <label className="block text-sm font-bold mb-2">Categorie / Brand *</label>
               <select value={brand} onChange={e => setBrand(e.target.value)} className="w-full bg-[#FEFAE0]/30 border border-[#283618]/10 rounded-xl px-4 py-3 outline-none focus:border-[#DDA15E] font-bold">
-                <option value="Hikvision">Hikvision</option>
-                <option value="Dahua">Dahua</option>
+                <option value="Hikvision">Hikvision (Supraveghere)</option>
+                <option value="Dahua">Dahua (Supraveghere)</option>
+                <option value="LED Ecran">LED Ecran (Publicitate)</option>
               </select>
             </div>
           </div>
@@ -445,23 +481,23 @@ export default function ProductManager() {
 
           <div>
             <div className="flex justify-between items-end mb-2">
-              <label className="block text-sm font-bold">Descriere Produs</label>
-              <span className="text-[10px] uppercase font-black tracking-widest text-[#DDA15E] bg-[#DDA15E]/10 px-2 py-1 rounded">Se traduce automat</span>
+              <label className="block text-sm font-bold">Descriere Produs (Ro)</label>
+              <span className="text-[10px] uppercase font-black tracking-widest text-white bg-blue-500 px-2 py-1 rounded shadow-sm">⚡ Tradus de AI</span>
             </div>
-            <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Descrierea completă a produsului în Limba Română..." className="w-full min-h-[120px] bg-[#FEFAE0]/30 border border-[#283618]/10 rounded-xl px-4 py-3 outline-none focus:border-[#DDA15E] resize-y" />
+            <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Scrie descrierea în Română. Va fi tradusă automat în EN și RU la salvare..." className="w-full min-h-[120px] bg-[#FEFAE0]/30 border border-[#283618]/10 rounded-xl px-4 py-3 outline-none focus:border-[#DDA15E] resize-y" />
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer p-4 bg-[#FEFAE0]/50 rounded-xl border border-[#283618]/5 hover:border-[#DDA15E]/50 transition-colors">
             <input type="checkbox" checked={featured} onChange={e => setFeatured(e.target.checked)} className="w-5 h-5 accent-[#BC6C25] rounded" /> 
             <div>
-              <span className="font-bold block text-sm">Afișează pe Homepage (Sticker Special)</span>
+              <span className="font-bold block text-sm">Afișează pe Homepage (Steluță)</span>
               <span className="text-xs text-[#606C38]">Maxim 6 produse permise în secțiunea principală.</span>
             </div>
           </label>
 
           <button type="submit" disabled={loadingAdd} className="w-full bg-[#BC6C25] hover:bg-[#283618] disabled:bg-[#FEFAE0] disabled:text-[#606C38] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]">
             {loadingAdd ? <Loader2 className="animate-spin" size={20} /> : <ImageIcon size={20} />}
-            {loadingAdd ? "Se salvează produsul..." : "Salvează Produsul Nou"}
+            {loadingAdd ? "Inteligența Artificială traduce și salvează..." : "Salvează Produsul Nou"}
           </button>
         </div>
       </form>
