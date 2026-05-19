@@ -209,5 +209,14 @@
   "title": "Our Projects",
   "subtitle": "Discover a part of our visual portfolio. Quality and attention to detail are visible in every frame.",
   "viewAll": "View all gallery"
+},
+"galleryPage": {
+  "title": "Complete Gallery",
+  "subtitle": "Explore all our projects and installations in detail. Guaranteed quality in every frame.",
+  "loading": "Loading gallery...",
+  "empty": "The gallery is currently empty.",
+  "filterAll": "All",
+  "filterImages": "Images",
+  "filterVideos": "Videos"
 }
 }
