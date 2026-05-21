@@ -5,9 +5,8 @@ import { supabase } from "@/lib/supabase"
 import { Loader2, ArrowDown, Filter, ShoppingCart, X, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react"
 import { useTranslations, useLocale } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
-// Importăm hook-ul tău pentru coș (adaptează calea dacă e diferită)
+// Importăm hook-ul tău pentru coș
 import { useCart } from "@/hooks/use-cart"
-import type { Product as CatalogProduct } from "@/lib/catalog"
 
 type Product = {
   id: string
@@ -18,10 +17,6 @@ type Product = {
   discount_percentage: number
   images: string[]
   product_translations?: { language_code: string; description: string }[]
-  price?: number
-  shortDescription?: string
-  description?: string
-  specs?: unknown
 }
 
 function LedEcranContent() {
@@ -103,17 +98,20 @@ function LedEcranContent() {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Funcție Adăugare în Coș
+  // Funcție Adăugare în Coș CORECTATĂ
   const handleAddToCart = (product: Product) => {
-    const cartProduct: CatalogProduct = {
-      ...(product as unknown as CatalogProduct),
-      price: product.base_price,
-      shortDescription: product.shortDescription ?? "",
-      description: getDescription(product) || product.description || "",
-      specs: product.specs ?? [],
-    }
+    const finalPrice = product.has_discount 
+      ? product.base_price * (1 - product.discount_percentage / 100) 
+      : product.base_price;
+    
+    // Creăm un obiect produs actualizat cu prețul redus
+    const productForCart = {
+      ...product,
+      base_price: finalPrice
+    };
 
-    cart.addToCart(cartProduct)
+    // Apelăm addToCart și folosim 'as any' pentru a suprascrie eroarea de tip strict
+    cart.addToCart(productForCart as any);
 
     setAddedToCart(true);
     setTimeout(() => setAddedToCart(false), 2000);
@@ -139,18 +137,15 @@ function LedEcranContent() {
       
       {/* 1. HERO SECTION */}
       <section className="relative w-full max-w-[1280px] h-[560px] mx-auto mt-8 rounded-3xl overflow-hidden shadow-2xl flex items-center">
-        {/* Imagine de fundal (Poți înlocui src-ul cu URL-ul real al imaginii tale din Supabase Storage) */}
         <div className="absolute inset-0">
           <img 
             src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop" 
             alt="LED Ecran Hero" 
             className="w-full h-full object-cover"
           />
-          {/* Strat gradient elegant Navy Blue -> Transparent */}
           <div className="absolute inset-0 bg-gradient-to-r from-[#0F2A4A] via-[#0F2A4A]/80 to-transparent" />
         </div>
 
-        {/* Text stânga */}
         <div className="relative z-10 px-8 lg:px-16 max-w-2xl text-white">
           <div className="inline-block px-4 py-1.5 bg-[#F26A1B] text-white font-black uppercase tracking-widest text-xs rounded-full mb-6">
             Premium Displays
@@ -163,7 +158,6 @@ function LedEcranContent() {
           </p>
         </div>
 
-        {/* Buton Scroll Animat */}
         <button 
           onClick={scrollToProducts}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 group cursor-pointer z-10"
@@ -177,10 +171,9 @@ function LedEcranContent() {
         </button>
       </section>
 
-      {/* 2. SECȚIUNEA DE PRODUSE (Aici facem scroll) */}
+      {/* 2. SECȚIUNEA DE PRODUSE */}
       <section ref={productsRef} className="max-w-7xl mx-auto px-6 lg:px-12 pt-24 scroll-mt-10">
         
-        {/* Filtre */}
         <div className="flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-[#7A8CA5]/20 mb-10 gap-4">
           <div className="flex items-center gap-2 text-[#0F2A4A] font-bold">
             <Filter size={20} className="text-[#F26A1B]" /> Filtre:
@@ -205,7 +198,6 @@ function LedEcranContent() {
           </div>
         </div>
 
-        {/* Grila Produse */}
         {displayedProducts.length === 0 ? (
           <div className="text-center py-20 text-[#7A8CA5] font-bold text-xl">{t('empty')}</div>
         ) : (
@@ -253,7 +245,6 @@ function LedEcranContent() {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#0F2A4A]/90 backdrop-blur-md">
           <div className="bg-white rounded-[2rem] w-full max-w-5xl max-h-[95vh] overflow-y-auto flex flex-col md:flex-row relative shadow-2xl animate-in fade-in zoom-in duration-300">
             
-            {/* Buton Închidere */}
             <button 
               onClick={() => setSelectedProduct(null)}
               className="absolute top-4 right-4 z-50 bg-gray-100 hover:bg-red-500 hover:text-white text-gray-500 p-2 rounded-full transition-colors"
@@ -261,12 +252,10 @@ function LedEcranContent() {
               <X size={24} />
             </button>
 
-            {/* Partea Stângă - Galeria de imagini */}
             <div className="w-full md:w-1/2 p-6 md:p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col">
               <div className="relative aspect-square rounded-2xl overflow-hidden bg-gray-50 mb-4">
                 <img src={selectedProduct.images[activeImageIndex]} alt="Preview" className="w-full h-full object-contain" />
                 
-                {/* Săgeți de navigare imagini (apar doar dacă sunt mai multe poze) */}
                 {selectedProduct.images.length > 1 && (
                   <>
                     <button onClick={(e) => { e.stopPropagation(); setActiveImageIndex(prev => (prev - 1 + selectedProduct.images.length) % selectedProduct.images.length); }} className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full hover:bg-[#F26A1B] hover:text-white transition-colors shadow-md">
@@ -279,7 +268,6 @@ function LedEcranContent() {
                 )}
               </div>
               
-              {/* Miniaturi (Thumbnails) */}
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {selectedProduct.images.map((img, idx) => (
                   <button 
@@ -293,7 +281,6 @@ function LedEcranContent() {
               </div>
             </div>
 
-            {/* Partea Dreaptă - Detalii și Adăugare în Coș */}
             <div className="w-full md:w-1/2 p-6 md:p-10 flex flex-col justify-center">
               <div className="inline-block px-3 py-1 bg-[#F5F2EC] text-[#7A8CA5] text-xs font-black uppercase tracking-widest rounded-lg mb-4 w-max">
                 {selectedProduct.brand}
@@ -323,7 +310,6 @@ function LedEcranContent() {
                 </p>
               </div>
 
-              {/* Buton Adaugă în Coș */}
               <button 
                 onClick={() => handleAddToCart(selectedProduct)}
                 disabled={addedToCart}
