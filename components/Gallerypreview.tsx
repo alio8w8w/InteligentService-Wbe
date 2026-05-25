@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import Link from "next/link"
-import { ArrowRight, Film, Image as ImageIcon, Loader2 } from "lucide-react"
+import { Film, Image as ImageIcon, Loader2 } from "lucide-react"
 import { useTranslations, useLocale } from 'next-intl'
-import Masonry from 'react-masonry-css';
+import Masonry from 'react-masonry-css'
 
 type GalleryItem = {
   id: string
@@ -18,13 +18,12 @@ const breakpointColumnsObj = {
   default: 4,
   1024: 3,
   768: 2,
-  640: 1
-};
+  640: 2
+}
 
 export function GalleryPreview() {
   const t = useTranslations('galleryPreview')
   const locale = useLocale()
-
   const [items, setItems] = useState<GalleryItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -34,17 +33,17 @@ export function GalleryPreview() {
         const { data, error } = await supabase
           .from("gallery")
           .select("*")
-          .eq("is_featured", true) // EXTRAGE DOAR POZELE CU STELUȚĂ
+          .eq("is_featured", true)
           .order("position", { ascending: true })
-          .limit(8) // LIMITEAZĂ LA MAXIM 8 ELEMENTE (aprox 2 rânduri)
+          .limit(8)
 
         if (error) {
-          console.error("Eroare la extragerea galeriei:", error)
+          console.error(error)
         } else if (data) {
           setItems(data)
         }
       } catch (err) {
-        console.error("Eroare neașteptată:", err)
+        console.error(err)
       } finally {
         setLoading(false)
       }
@@ -127,17 +126,6 @@ export function GalleryPreview() {
             </Link>
           ))}
         </Masonry>
-
-        <div className="mt-16 flex justify-center">
-          <Link 
-            href={`/${locale}/galerie`}
-            className="flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-white text-sm transition-all active:scale-95 hover:shadow-lg"
-            style={{ background: 'linear-gradient(135deg,#F26A1B,#d45a10)' }}
-          >
-            {t('viewAll')}
-            <ArrowRight size={15} />
-          </Link>
-        </div>
 
       </div>
     </section>
