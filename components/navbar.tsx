@@ -1,7 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { Phone, Menu, X, User, ShoppingCart, Globe } from "lucide-react"
+import { useEffect, useState, useCallback } from "react"
+import { Phone, Menu, X, ShoppingCart, Globe } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useTranslations, useLocale } from "next-intl"
@@ -20,13 +20,13 @@ const NAV_LINKS = [
   { key: "produse", route: "/produse" },
   { key: "galerie", route: "/galerie" },
   { key: "led_ecrane", route: "/led-ecrane" },
-  { key: "contact", route: "/contact" },
+  { key: "contact", route: "/#contact" },
 ] as const
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [cartCount, setCartCount] = useState(0) // Stare pentru numărul de produse
+  const [cartCount, setCartCount] = useState(0)
   
   const t = useTranslations("nav")
   const currentLocale = useLocale()
@@ -35,41 +35,35 @@ export function Navbar() {
   
   const homePath = `/${currentLocale}`
   const langLabel = (currentLocale ?? "ro").toUpperCase()
-  const loginHref = `/${currentLocale}/login`
-  const cartHref = `/${currentLocale}/cos` // Ruta pentru coș
+  const cartHref = `/${currentLocale}/cos`
 
-  // Extragerea numărului de produse din coș
-  const fetchCartCount = async () => {
-    const savedOrderId = localStorage.getItem('inteligent_order_id');
-    if (!savedOrderId) return;
+  const fetchCartCount = useCallback(async () => {
+    const savedOrderId = localStorage.getItem('inteligent_order_id')
+    if (!savedOrderId) return
 
     const { count, error } = await supabase
       .from('order_items')
       .select('*', { count: 'exact', head: true })
-      .eq('order_id', savedOrderId);
+      .eq('order_id', savedOrderId)
 
     if (!error && count !== null) {
-      setCartCount(count);
+      setCartCount(count)
     }
-  }
+  }, [])
 
-  // Detectare scroll și actualizare coș când pagina reintră în focus
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 20)
-    window.addEventListener("scroll", onScroll)
     
-    // Extragem coșul la încărcarea paginii
-    fetchCartCount()
-    
-    // Extragem coșul de fiecare dată când utilizatorul revine pe acest tab
+    window.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("focus", fetchCartCount)
-    // Sau poți apela fetchCartCount la intervale, dar "focus" este mult mai eficient
+    
+    fetchCartCount()
     
     return () => {
       window.removeEventListener("scroll", onScroll)
       window.removeEventListener("focus", fetchCartCount)
     }
-  }, [])
+  }, [fetchCartCount])
 
   const toggleLang = () => {
     const currentIndex = LOCALES.indexOf(currentLocale as (typeof LOCALES)[number])
@@ -80,11 +74,7 @@ export function Navbar() {
   }
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = "unset"
-    }
+    document.body.style.overflow = isOpen ? "hidden" : "unset"
     return () => {
       document.body.style.overflow = "unset"
     }
@@ -103,8 +93,8 @@ export function Navbar() {
 
           <div className="hidden lg:flex items-center gap-8 xl:gap-10">
             {NAV_LINKS.map(({ key, route }) => {
-              const fullRoute = `/${currentLocale}${route}`;
-              const isActive = pathname.startsWith(fullRoute);
+              const fullRoute = `/${currentLocale}${route}`
+              const isActive = pathname === fullRoute || (route !== "/#contact" && pathname.startsWith(fullRoute))
 
               return (
                 <Link
@@ -134,11 +124,6 @@ export function Navbar() {
             <div className="h-8 w-px bg-[#0F2A4A]/10"></div>
 
             <div className="flex items-center gap-3">
-              <Link href={loginHref} className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all" title={t("autentificare")}>
-                <User className="h-5 w-5 stroke-[1.5px]" />
-              </Link>
-              
-              {/* === BUTON COȘ (LINK) === */}
               <Link href={cartHref} className="flex items-center justify-center w-10 h-10 rounded-full border border-[#0F2A4A]/10 text-[#0F2A4A] hover:border-[#F26A1B]/30 hover:bg-[#F26A1B]/5 hover:text-[#F26A1B] transition-all relative">
                 <ShoppingCart className="h-5 w-5 stroke-[1.5px]" />
                 {cartCount > 0 && (
@@ -171,8 +156,8 @@ export function Navbar() {
         {isOpen && (
           <div className="absolute top-[80px] left-4 right-4 z-50 lg:hidden p-5 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-5 animate-fade-in-down">
             {NAV_LINKS.map(({ key, route }) => {
-              const fullRoute = `/${currentLocale}${route}`;
-              const isActive = pathname.startsWith(fullRoute);
+              const fullRoute = `/${currentLocale}${route}`
+              const isActive = pathname === fullRoute || (route !== "/#contact" && pathname.startsWith(fullRoute))
               
               return (
                 <Link 
@@ -189,12 +174,6 @@ export function Navbar() {
             })}
             
             <div className="flex justify-center items-center gap-6 pt-4 border-t border-gray-100">
-               <Link href={loginHref} className="flex flex-col items-center gap-1 text-[#0F2A4A]" onClick={() => setIsOpen(false)}>
-                  <User className="h-7 w-7 stroke-[1.5px]" />
-                  <span className="text-xs">{t("autentificare")}</span>
-               </Link>
-               
-               {/* === BUTON COȘ MOBIL === */}
                <Link href={cartHref} onClick={() => setIsOpen(false)} className="flex flex-col items-center gap-1 text-[#0F2A4A] relative">
                   <ShoppingCart className="h-7 w-7 stroke-[1.5px]" />
                   <span className="text-xs">Coș</span>
