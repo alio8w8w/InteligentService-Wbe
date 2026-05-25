@@ -12,10 +12,8 @@ export function HeroSection() {
   const router = useRouter()
   const [activeImageIndex, setActiveImageIndex] = useState(0)
 
-  // Imaginea specifică pentru mobil
   const mobileImage = "/images/hero-cctv-mobil.jpg"
 
-  // Imaginile pentru slider-ul de pe desktop
   const bgImagesDesktop = [
     "/images/hero-cctv.jpg",
     "/images/hero-cctv2.jpg",
@@ -48,11 +46,24 @@ export function HeroSection() {
     return () => window.clearInterval(intervalId)
   }, [bgImagesDesktop.length])
 
+  // Funcția care duce pe pagina de produse
+  const handleServicesClick = () => {
+    router.push(`/${locale}/produse`)
+  }
+
+  // Funcția care face scroll fluid la secțiunea de contact
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const contactSection = document.getElementById("contact")
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   return (
     <section id="intro" className="relative min-h-screen flex items-center overflow-hidden bg-[#F5F2EC]">
       <div className="absolute inset-0 z-0">
         
-        {/* IMAGINEA PENTRU MOBIL (Vizibilă doar pe ecrane mici) */}
         <Image
           src={mobileImage}
           alt={t("imageAlt")}
@@ -61,7 +72,6 @@ export function HeroSection() {
           priority
         />
 
-        {/* SLIDER-UL PENTRU DESKTOP (Vizibil doar de la tablete în sus) */}
         {bgImagesDesktop.map((imageSrc, index) => (
           <Image
             key={imageSrc}
@@ -75,7 +85,6 @@ export function HeroSection() {
           />
         ))}
 
-        {/* Gradienți pentru lizibilitate */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#F5F2EC] via-[#F5F2EC]/90 to-[#F5F2EC]/40 md:to-transparent" />
         <div className="absolute inset-0 bg-[#F5F2EC]/40 md:bg-transparent" />
       </div>
@@ -103,21 +112,23 @@ export function HeroSection() {
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row gap-5">
+            {/* Butonul 1: Duce la Produse. Am pus {t("ctaContact")} pentru că în json-ul tău înseamnă "Vezi Produse" */}
             <button
               type="button"
-              onClick={() => router.push(`/${locale}/produse`)}
+              onClick={handleServicesClick}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full text-base font-bold text-white bg-[#F26A1B] shadow-[0_8px_25px_-8px_rgba(242,106,27,0.6)] transition-all duration-300 hover:bg-[#C24C0F] hover:shadow-[0_8px_25px_-8px_rgba(194,76,15,0.6)] hover:-translate-y-1"
             >
-              {t("ctaServices")}
+              {t("ctaContact")} 
               <ArrowRight className="h-5 w-5" />
             </button>
             
+            {/* Butonul 2: Face Scroll la Contact. Am pus {t("ctaServices")} pentru că în json-ul tău înseamnă "Sună acum" */}
             <button
               type="button"
-              onClick={() => router.push(`/${locale}/contacte`)}
+              onClick={handleContactClick}
               className="inline-flex items-center justify-center px-8 py-4 rounded-full text-base font-bold text-white bg-[#0F2A4A] border-2 border-[#0F2A4A] transition-all duration-300 hover:bg-[#0F2A4A]/80 hover:border-[#0F2A4A]/80 hover:-translate-y-1"
             >
-              {t("ctaContact")}
+              {t("ctaServices")}
             </button>
           </div>
         </div>
