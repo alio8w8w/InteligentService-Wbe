@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase' 
 import { ArrowRight, Loader2, Search } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
-import { GalleryPreview } from '@/components/Gallerypreview'
 
 type FeaturedProduct = {
   id: string
@@ -60,31 +59,37 @@ export function FeaturedProducts() {
   }, [locale])
 
   return (
-    <section className="w-full bg-[#F5F2EC] py-16 md:py-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    // 1. Fundal schimbat în #0F2A4A
+    <section className="w-full bg-[#0F2A4A] py-16 md:py-24 relative overflow-hidden">
+      
+      {/* Decorațiuni subtile de fundal pentru a nu fi un albastru simplu */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-white/5 blur-[100px]" />
+        <div className="absolute -bottom-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-[#F26A1B]/5 blur-[120px]" />
+      </div>
 
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 text-[#F26A1B] text-xs font-bold uppercase tracking-widest mb-3">
-            <span className="w-5 h-px bg-[#F26A1B] rounded-full inline-block" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+        {/* Header - Culori ajustate pentru contrast */}
+        <div className="text-center mb-10 sm:mb-14">
+          <div className="inline-flex items-center gap-2 text-[#F26A1B] text-xs sm:text-sm font-bold uppercase tracking-widest mb-3 sm:mb-4 bg-[#F26A1B]/10 px-4 py-1.5 rounded-full border border-[#F26A1B]/20">
             {t('eyebrow')}
-            <span className="w-5 h-px bg-[#F26A1B] rounded-full inline-block" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#0F2A4A] tracking-tight mb-3">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
             {t('title')}
           </h2>
-          <p className="text-[#7A8CA5] font-medium max-w-xl mx-auto text-base">
+          <p className="text-[#7A8CA5] font-medium max-w-xl mx-auto text-sm sm:text-base">
             {t('subtitle')}
           </p>
         </div>
 
-        {/* Grid */}
+        {/* Grid - Modificat la grid-cols-2 pentru mobil */}
         {loading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="animate-spin text-[#F26A1B]" size={40} />
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin text-[#F26A1B]" size={48} />
           </div>
         ) : featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {featuredProducts.map((product) => {
               const finalPrice = product.has_discount
                 ? product.base_price - (product.base_price * (product.discount_percentage || 0)) / 100
@@ -92,61 +97,60 @@ export function FeaturedProducts() {
 
               return (
                 <Link
-                  href={`/${locale}/produse/${product.id}`}
+                  // 4. Modificat linkul cu query parameter pentru fereastra plutitoare
+                  href={`/${locale}/produse?productId=${product.id}`}
                   key={product.id}
-                  className="group relative bg-white rounded-2xl border border-[#7A8CA5]/15 overflow-hidden flex flex-col hover:border-[#F26A1B]/50 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+                  className="group relative bg-white rounded-xl sm:rounded-2xl border border-transparent overflow-hidden flex flex-col hover:border-[#F26A1B]/50 hover:-translate-y-1 sm:hover:-translate-y-2 hover:shadow-xl hover:shadow-[#F26A1B]/10 transition-all duration-300"
                 >
                   {/* Discount badge */}
                   {product.has_discount && product.discount_percentage && (
-                    <div className="absolute top-3 left-3 z-10 bg-[#C24C0F] text-white text-[11px] font-black uppercase px-2.5 py-1 rounded-lg shadow-md">
+                    <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10 bg-[#C24C0F] text-white text-[10px] sm:text-xs font-black uppercase px-2 sm:px-3 py-1 rounded-md sm:rounded-lg shadow-md">
                       -{product.discount_percentage}%
                     </div>
                   )}
 
-                  {/* Image zone */}
-                  <div className="relative h-52 bg-gradient-to-b from-[#f7f5f0] to-white flex items-center justify-center overflow-hidden">
+                  {/* Image zone - Înălțime ajustată pentru mobil */}
+                  <div className="relative h-36 sm:h-56 bg-gradient-to-b from-[#f7f5f0] to-white flex items-center justify-center overflow-hidden p-2 sm:p-4">
                     {product.images && product.images.length > 0 && product.images[0] ? (
                       <Image
                         src={product.images[0]}
                         alt={product.name}
                         fill
-                        className="object-contain p-6 mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                        className="object-contain p-4 sm:p-6 mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <Search size={28} className="text-[#7A8CA5]/30" />
+                      <Search size={24} className="text-[#7A8CA5]/30 sm:w-8 sm:h-8" />
                     )}
 
-                    {/* Hover overlay — full text always visible */}
-                    <div className="absolute inset-0 bg-[#0F2A4A]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <span
-                        className="bg-[#F26A1B] text-white text-sm font-bold px-6 py-2.5 rounded-full flex items-center gap-2 whitespace-nowrap
-                          translate-y-3 group-hover:translate-y-0 transition-transform duration-300 shadow-lg"
-                      >
+                    {/* Hover overlay - Ascuns pe ecrane foarte mici (mobil) pentru a nu încurca touch-ul, vizibil pe desktop */}
+                    <div className="hidden sm:flex absolute inset-0 bg-[#0F2A4A]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 items-center justify-center backdrop-blur-[2px]">
+                      <span className="bg-[#F26A1B] text-white text-sm font-bold px-6 py-2.5 rounded-full flex items-center gap-2 whitespace-nowrap translate-y-4 group-hover:translate-y-0 transition-transform duration-300 shadow-lg">
                         {t('viewMore')}
                         <ArrowRight size={15} />
                       </span>
                     </div>
                   </div>
 
-                  {/* Body */}
-                  <div className="flex flex-col flex-grow p-4 pt-3">
-                    <span className="text-[10px] font-black text-[#7A8CA5] uppercase tracking-widest mb-1.5">
+                  {/* Body - Padding și text micșorate adaptiv */}
+                  <div className="flex flex-col flex-grow p-3 sm:p-5 pt-2 sm:pt-4">
+                    <span className="text-[9px] sm:text-[10px] font-black text-[#7A8CA5] uppercase tracking-wider mb-1 sm:mb-1.5">
                       {product.brand}
                     </span>
-                    <h3 className="text-sm font-bold text-[#0F2A4A] mb-4 line-clamp-2 leading-snug group-hover:text-[#F26A1B] transition-colors">
+                    
+                    <h3 className="text-xs sm:text-base font-bold text-[#0F2A4A] mb-3 sm:mb-5 line-clamp-2 leading-tight group-hover:text-[#F26A1B] transition-colors">
                       {product.name}
                     </h3>
 
                     {/* Price block */}
-                    <div className="mt-auto bg-[#F5F2EC] rounded-xl px-3 py-2.5">
+                    <div className="mt-auto bg-[#F5F2EC] rounded-lg sm:rounded-xl px-2.5 sm:px-4 py-2 sm:py-3 border border-[#0F2A4A]/5">
                       {product.has_discount && (
-                        <p className="text-xs text-[#7A8CA5] line-through font-semibold leading-tight">
+                        <p className="text-[10px] sm:text-xs text-[#7A8CA5] line-through font-semibold leading-none mb-1">
                           {product.base_price.toLocaleString()} MDL
                         </p>
                       )}
-                      <p className="text-xl font-extrabold text-[#0F2A4A] leading-tight">
-                        {finalPrice.toFixed(2)}{' '}
-                        <span className="text-xs font-semibold text-[#7A8CA5]">MDL</span>
+                      <p className="text-sm sm:text-xl font-black text-[#0F2A4A] leading-none flex items-baseline gap-1">
+                        {finalPrice.toFixed(0)}{' '}
+                        <span className="text-[9px] sm:text-xs font-bold text-[#7A8CA5]">MDL</span>
                       </p>
                     </div>
                   </div>
@@ -155,20 +159,20 @@ export function FeaturedProducts() {
             })}
           </div>
         ) : (
-          <div className="text-center py-10 bg-white rounded-2xl border border-[#7A8CA5]/10 text-[#7A8CA5] text-sm font-medium">
+          <div className="text-center py-12 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 text-[#F5F2EC] text-sm font-medium">
             {t('noProducts')}
           </div>
         )}
 
-        {/* View all CTA */}
-        <div className="mt-10 text-center">
+        {/* View all CTA - 3. Mărit pe versiunea de desktop */}
+        <div className="mt-12 sm:mt-16 text-center">
           <Link
             href={`/${locale}/produse`}
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-white text-sm transition-all active:scale-95 hover:shadow-lg"
-            style={{ background: 'linear-gradient(135deg,#F26A1B,#d45a10)' }}
+            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 sm:px-12 sm:py-4 rounded-xl sm:rounded-2xl font-black text-white text-sm sm:text-lg transition-all active:scale-95 shadow-xl shadow-[#F26A1B]/20 hover:shadow-[#F26A1B]/40 hover:-translate-y-1"
+            style={{ background: 'linear-gradient(135deg, #F26A1B, #d45a10)' }}
           >
             {t('viewAll')}
-            <ArrowRight size={15} />
+            <ArrowRight size={18} className="sm:w-5 sm:h-5" />
           </Link>
         </div>
 
