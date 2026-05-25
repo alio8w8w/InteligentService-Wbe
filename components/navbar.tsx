@@ -114,11 +114,11 @@ export function Navbar() {
 
           <div className="hidden lg:flex items-center gap-4">
             <a 
-              href="tel:+37368123456" 
+              href="tel:+37369230593" 
               className="flex items-center gap-2.5 bg-[#0F2A4A] text-[#F26A1B] px-5 py-2.5 rounded-full shadow-md hover:bg-[#0F2A4A]/90 transition-all group hover:-translate-y-0.5"
             >
               <Phone className="h-4 w-4 stroke-[2px] group-hover:scale-110 transition-transform" />
-              <span className="text-sm font-bold tracking-tight">+373 68 123 456</span>
+              <span className="text-sm font-bold tracking-tight">+373 69 230 593</span>
             </a>
 
             <div className="h-8 w-px bg-[#0F2A4A]/10"></div>
