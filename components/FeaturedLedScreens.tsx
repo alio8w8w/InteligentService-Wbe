@@ -12,7 +12,7 @@ type Product = {
   brand: string;
   base_price: number;
   has_discount: boolean;
-  discount_percentage: number;
+  discount_percentage: number | null;
   images: string[];
 }
 
@@ -30,10 +30,12 @@ export function FeaturedLedScreens() {
         const { data, error } = await supabase
           .from("produse")
           .select("*")
-          // Search case-insensitively for any brand containing "LED" to avoid missing rows
-          .ilike("brand", "%led%")
+          // Caută specific brandul care conține "led ecran" (insensibil la majuscule)
+          .ilike("brand", "%led ecran%")
+          // Doar cele care au steluța activată pentru pagina principală
           .eq("is_featured_on_homepage", true)
-          .limit(6) // Modificat din 4 în 6 conform cerinței tale
+          // Limitat la 6 produse, exact cum ai cerut
+          .limit(6) 
 
         if (error) {
           console.error("Eroare la extragerea ecranelor LED:", error)
@@ -53,8 +55,9 @@ export function FeaturedLedScreens() {
   return (
     <section className="py-24 px-6 lg:px-12 bg-[#0F2A4A] relative overflow-hidden">
       
+      {/* Background decorations */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-125 h-125 bg-[#F26A1B]/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#F26A1B]/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         
@@ -80,65 +83,75 @@ export function FeaturedLedScreens() {
             {t('empty')}
           </div>
         ) : (
-          /* Grila actualizată: 1 coloană pe mobil, 2 pe tablete, 3 pe desktop (pentru a încadra frumos 6 produse) */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {products.map((product) => (
-              <Link 
-                key={product.id} 
-                href={`/${locale}/led-ecran?productId=${product.id}`}
-                className="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-[#F26A1B]/20 transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full"
-              >
-                <div className="relative aspect-4/3 overflow-hidden bg-gray-100">
-                  <img 
-                    src={product.images && product.images[0] ? product.images[0] : '/placeholder.png'} 
-                    alt={product.name} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  
-                  <div className="absolute inset-0 bg-[#0F2A4A]/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm">
-                    <div className="bg-[#F26A1B] text-white p-3 rounded-full mb-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                      <Eye size={24} />
+            {products.map((product) => {
+              // Calculăm prețul final în siguranță (fallback la 0 dacă discount_percentage e null)
+              const discountValue = product.discount_percentage || 0
+              const finalPrice = product.has_discount 
+                ? product.base_price - (product.base_price * discountValue / 100)
+                : product.base_price
+
+              return (
+                <Link 
+                  key={product.id} 
+                  href={`/${locale}/led-ecran/${product.id}`} // Rută ajustată să ducă direct la produs
+                  className="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-[#F26A1B]/20 transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full"
+                >
+                  <div className="relative aspect-4/3 overflow-hidden bg-[#f7f5f0] flex items-center justify-center p-4">
+                    <img 
+                      src={product.images && product.images[0] ? product.images[0] : '/placeholder.png'} 
+                      alt={product.name} 
+                      className="w-full h-full object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                    />
+                    
+                    <div className="absolute inset-0 bg-[#0F2A4A]/80 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 backdrop-blur-sm">
+                      <div className="bg-[#F26A1B] text-white p-3 rounded-full mb-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                        <Eye size={24} />
+                      </div>
+                      <span className="text-white font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
+                        {t('viewMore')}
+                      </span>
                     </div>
-                    <span className="text-white font-bold tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">
-                      {t('viewMore')}
-                    </span>
+
+                    {product.has_discount && product.discount_percentage && (
+                      <div className="absolute top-3 right-3 bg-[#F26A1B] text-white text-xs font-black px-3 py-1.5 rounded-full z-10 shadow-md">
+                        -{product.discount_percentage}%
+                      </div>
+                    )}
                   </div>
 
-                  {product.has_discount && (
-                    <div className="absolute top-3 right-3 bg-[#F26A1B] text-white text-xs font-black px-3 py-1.5 rounded-full z-10 shadow-md">
-                      -{product.discount_percentage}%
-                    </div>
-                  )}
-                </div>
-
-                <div className="p-6 flex flex-col flex-1 justify-between bg-white relative z-20">
-                  <div>
-                    <h3 className="text-[#0F2A4A] font-extrabold text-xl mb-1 line-clamp-2">
-                      {product.name}
-                    </h3>
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                  <div className="p-6 flex flex-col flex-1 justify-between bg-white relative z-20">
                     <div>
-                      {product.has_discount ? (
-                        <div className="flex flex-col">
-                          <span className="text-[#7A8CA5] text-sm line-through">
+                      <span className="text-[10px] font-black text-[#7A8CA5] uppercase tracking-widest mb-1.5 block">
+                        {product.brand}
+                      </span>
+                      <h3 className="text-[#0F2A4A] font-extrabold text-lg mb-1 line-clamp-2 leading-snug group-hover:text-[#F26A1B] transition-colors">
+                        {product.name}
+                      </h3>
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                      <div>
+                        {product.has_discount ? (
+                          <div className="flex flex-col">
+                            <span className="text-[#7A8CA5] text-sm line-through font-semibold">
+                              {product.base_price.toLocaleString()} MDL
+                            </span>
+                            <span className="text-[#F26A1B] font-black text-xl">
+                              {finalPrice.toFixed(2)} MDL
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-[#0F2A4A] font-black text-xl">
                             {product.base_price.toLocaleString()} MDL
                           </span>
-                          <span className="text-[#F26A1B] font-black text-xl">
-                            {(product.base_price - (product.base_price * product.discount_percentage / 100)).toLocaleString()} MDL
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-[#0F2A4A] font-black text-xl">
-                          {product.base_price.toLocaleString()} MDL
-                        </span>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         )}
 

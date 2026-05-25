@@ -146,8 +146,9 @@ export default function ProductManager() {
     
     if (!isCurrentlyFeatured) {
       const currentlyFeaturedCount = products.filter(p => p.is_featured_on_homepage).length;
-      if (currentlyFeaturedCount >= 6) {
-        alert("Ai atins limita maximă! Poți afișa maxim 6 produse pe homepage. Debifează altul mai întâi.");
+      // LIMITA MODIFICATĂ AICI: de la 6 la 12
+      if (currentlyFeaturedCount >= 12) {
+        alert("Ai atins limita maximă! Poți afișa maxim 12 produse pe homepage. Debifează altul mai întâi.");
         return;
       }
     }
@@ -198,8 +199,9 @@ export default function ProductManager() {
 
     if (featured) {
       const currentlyFeaturedCount = products.filter(p => p.is_featured_on_homepage).length;
-      if (currentlyFeaturedCount >= 6) {
-        setError("Poți alege maxim 6 produse pe homepage! Ai atins deja limita.")
+      // LIMITA MODIFICATĂ AICI: de la 6 la 12
+      if (currentlyFeaturedCount >= 12) {
+        setError("Poți alege maxim 12 produse pe homepage! Ai atins deja limita.")
         setLoadingAdd(false); return
       }
     }
@@ -339,7 +341,7 @@ export default function ProductManager() {
                 <th className="p-4">Nume Produs</th>
                 <th className="p-4">Preț</th>
                 <th className="p-4">Reducere</th>
-                <th className="p-4 text-center" title="Afișează pe pagina principală (Maxim 6)">Homepage</th>
+                <th className="p-4 text-center" title="Afișează pe pagina principală (Maxim 12)">Homepage</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#FEFAE0]">
@@ -491,7 +493,8 @@ export default function ProductManager() {
             <input type="checkbox" checked={featured} onChange={e => setFeatured(e.target.checked)} className="w-5 h-5 accent-[#BC6C25] rounded" /> 
             <div>
               <span className="font-bold block text-sm">Afișează pe Homepage (Steluță)</span>
-              <span className="text-xs text-[#606C38]">Maxim 6 produse permise în secțiunea principală.</span>
+              {/* TEXT MODIFICAT AICI */}
+              <span className="text-xs text-[#606C38]">Maxim 12 produse permise în secțiunile principale.</span>
             </div>
           </label>
 

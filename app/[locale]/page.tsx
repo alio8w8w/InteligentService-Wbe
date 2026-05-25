@@ -6,9 +6,8 @@ import { HeroSection } from '@/components/hero-section'
 import { BrandShowcase } from '@/components/brand-comp'
 import { FeaturedProducts } from '@/components/featured-products'
 import { GalleryPreview } from '@/components/Gallerypreview'
-
-// IMPORTĂM NOUA COMPONENTĂ
 import { FeaturedLedScreens } from '@/components/FeaturedLedScreens'
+import { ContactSection } from '@/components/contact-section'
 
 export default function HomePage() {
   return (
@@ -18,11 +17,16 @@ export default function HomePage() {
       <main className="flex-1">
         <HeroSection />
         <BrandShowcase />
+        
+        {/* Aici se afișează produsele obișnuite (Dahua, Hikvision, etc.) */}
         <FeaturedProducts />
+        
         <GalleryPreview />
         
-        {/* 5. Aici adăugăm componenta pentru Ecrane LED sub galerie */}
+        {/* Aici se afișează DOAR Ecranele LED, cu designul separat */}
         <FeaturedLedScreens />
+
+        <ContactSection />
       </main>
       
       <Footer />

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-// CORECȚIE: Folosim instanța centralizată pentru a preveni erorile de build pe Vercel!
 import { supabase } from '@/lib/supabase' 
 import { ArrowRight, Loader2, Search } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
@@ -36,6 +35,8 @@ export function FeaturedProducts() {
           id, name, base_price, has_discount, discount_percentage, images, brand,
           product_translations (language_code, description)
         `)
+        // EXCLUDEM brandurile care conțin "led ecran" pentru a le lăsa doar în secțiunea dedicată
+        .not('brand', 'ilike', '%led ecran%') 
         .order('has_discount', { ascending: false })
         .limit(6)
 
@@ -85,7 +86,6 @@ export function FeaturedProducts() {
         ) : featuredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {featuredProducts.map((product) => {
-              // CORECȚIE: Adăugat fallback pentru discount_percentage în caz de null în baza de date
               const finalPrice = product.has_discount
                 ? product.base_price - (product.base_price * (product.discount_percentage || 0)) / 100
                 : product.base_price
