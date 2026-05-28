@@ -240,6 +240,58 @@
     "addToCart": "Adaugă în Coș",
     "description": "Descriere Produs",
     "price": "Preț:"
+  },
+  "contactSection": {
+    "badge": "Contact & Locație",
+    "title": "Unde ne găsești",
+    "description": "Suntem disponibili pentru consultanță gratuită. Vizitează-ne la sediu sau contactează-ne prin orice metodă de mai jos.",
+    "info": {
+      "address": {
+        "label": "Adresa",
+        "city": "Or. Călărași",
+        "street": "str. Mihai Eminescu 32A, et.2"
+      },
+      "phone": {
+        "label": "Telefon"
+      },
+      "email": {
+        "label": "Email"
+      },
+      "schedule": {
+        "label": "Grafic de lucru",
+        "weekdays": "L-V",
+        "saturday": "S",
+        "sunday": "D",
+        "closed": "Zi liberă"
+      }
+    },
+    "map": {
+      "getDirections": "Obține direcții către noi",
+      "openMap": "Deschide Harta"
+    }
+  },
+  "footer": {
+    "companyDescription": "Sistem inteligent pentru procesarea bidirecțională a datelor. Securitate profesională și soluții moderne.",
+    "sections": {
+      "navigation": "Navigare",
+      "services": "Servicii",
+      "contact": "Contact"
+    },
+    "nav": {
+      "brands": "Branduri",
+      "products": "Produse",
+      "gallery": "Galerie",
+      "ledScreens": "LED Ecrane",
+      "contact": "Contact"
+    },
+    "contactInfo": {
+      "address": "Or. Călărași, str. Mihai Eminescu 32A, et.2"
+    },
+    "legal": {
+      "rights": "Toate drepturile rezervate",
+      "terms": "Termeni și Condiții",
+      "privacy": "Politica de Confidențialitate"
+    }
   }
 
 }

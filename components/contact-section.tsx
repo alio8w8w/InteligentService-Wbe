@@ -1,122 +1,130 @@
-import { MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react"
+"use client"
 
-const contactItems = [
-  {
-    icon: MapPin,
-    label: "Adresa",
-    content: (
-      <p className="text-sm text-[#9BABAB] mt-1 leading-relaxed">
-        Str. Exemplu Nr. 123,<br />
-        Oras, Judet, Romania
-      </p>
-    ),
-  },
-  {
-    icon: Phone,
-    label: "Telefon",
-    content: (
-      <div className="mt-1 flex flex-col gap-1">
-        <a href="tel:+40700000000" className="text-sm text-[#CCD0CF] hover:text-[#FF4B04] transition-colors duration-300">
-          +40 700 000 000
-        </a>
-        <a href="tel:+40700000001" className="text-sm text-[#9BABAB] hover:text-[#CCD0CF] transition-colors duration-300">
-          +40 700 000 001
-        </a>
-      </div>
-    ),
-  },
-  {
-    icon: Mail,
-    label: "Email",
-    content: (
-      <a href="mailto:contact@inteligentservice.ro" className="text-sm text-[#CCD0CF] hover:text-[#FF4B04] transition-colors duration-300 mt-1 block">
-        contact@inteligentservice.ro
-      </a>
-    ),
-  },
-  {
-    icon: Clock,
-    label: "Program",
-    content: (
-      <div className="mt-1 flex flex-col gap-1.5">
-        <div className="flex justify-between gap-6">
-          <span className="text-sm text-[#4A5C6A]">Luni - Vineri</span>
-          <span className="text-sm text-[#CCD0CF] font-medium">08:00 - 18:00</span>
-        </div>
-        <div className="flex justify-between gap-6">
-          <span className="text-sm text-[#4A5C6A]">Sambata</span>
-          <span className="text-sm text-[#CCD0CF] font-medium">09:00 - 14:00</span>
-        </div>
-        <div className="flex justify-between gap-6">
-          <span className="text-sm text-[#4A5C6A]">Duminica</span>
-          <span className="text-sm text-[#FF4B04] font-medium">Inchis</span>
-        </div>
-      </div>
-    ),
-  },
-]
+import { MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react"
+import { useTranslations } from 'next-intl'
 
 export function ContactSection() {
+  const t = useTranslations('contactSection')
+
+  const contactItems = [
+    {
+      icon: MapPin,
+      label: t('info.address.label'),
+      content: (
+        <p className="text-sm text-[#0F2A4A] mt-1 leading-relaxed font-bold">
+          {t('info.address.city')},<br />
+          {t('info.address.street')}
+        </p>
+      ),
+    },
+    {
+      icon: Phone,
+      label: t('info.phone.label'),
+      content: (
+        <div className="mt-1 flex flex-col gap-1">
+          <a href="tel:+37369230593" className="text-sm font-bold text-[#0F2A4A] hover:text-[#F26A1B] transition-colors duration-300">
+            +373 69 230 593
+          </a>
+        </div>
+      ),
+    },
+    {
+      icon: Mail,
+      label: t('info.email.label'),
+      content: (
+        <a href="mailto:inteligentservice2023@gmail.com" className="text-sm font-bold text-[#0F2A4A] hover:text-[#F26A1B] transition-colors duration-300 mt-1 block break-all">
+          inteligentservice2023@gmail.com
+        </a>
+      ),
+    },
+    {
+      icon: Clock,
+      label: t('info.schedule.label'),
+      content: (
+        <div className="mt-2 flex flex-col gap-2.5">
+          <div className="flex justify-between items-center gap-6 border-b border-[#7A8CA5]/20 pb-1.5">
+            <span className="text-sm font-black text-[#7A8CA5] uppercase">{t('info.schedule.weekdays')}</span>
+            <span className="text-sm text-[#0F2A4A] font-bold">08:30 - 16:00</span>
+          </div>
+          <div className="flex justify-between items-center gap-6 border-b border-[#7A8CA5]/20 pb-1.5">
+            <span className="text-sm font-black text-[#7A8CA5] uppercase">{t('info.schedule.saturday')}</span>
+            <span className="text-sm text-[#0F2A4A] font-bold">09:00 - 14:00</span>
+          </div>
+          <div className="flex justify-between items-center gap-6 pt-0.5">
+            <span className="text-sm font-black text-[#7A8CA5] uppercase">{t('info.schedule.sunday')}</span>
+            <span className="text-xs text-[#F26A1B] font-black uppercase tracking-widest bg-[#F26A1B]/10 px-2 py-1 rounded-md">
+              {t('info.schedule.closed')}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+  ]
+
   return (
-    <section id="contact" className="relative py-24 md:py-32 bg-[#06141B]">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* Section header */}
+    <section id="contact" className="relative py-24 md:py-32 bg-[#F5F2EC]">
+      <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/5 to-transparent pointer-events-none" />
+
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+        
         <div className="flex items-center gap-3 mb-4">
-          <div className="h-[2px] w-10 bg-[#FF4B04]" />
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-[#FF4B04]">
-            Contact & Locatie
+          <div className="h-[3px] w-12 bg-[#F26A1B] rounded-full" />
+          <span className="text-xs font-black tracking-[0.2em] uppercase text-[#F26A1B]">
+            {t('badge')}
           </span>
         </div>
 
-        <h2 className="text-3xl sm:text-4xl font-bold text-[#CCD0CF] leading-tight text-balance font-mono">
-          Unde ne gasesti
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0F2A4A] leading-tight text-balance font-mono tracking-tight">
+          {t('title')}
         </h2>
-        <p className="mt-4 text-[#9BABAB] leading-relaxed max-w-2xl">
-          Suntem disponibili pentru consultanta gratuita. Viziteaza-ne la sediu sau
-          contacteaza-ne prin orice metoda de mai jos.
+        <p className="mt-4 text-[#7A8CA5] font-medium leading-relaxed max-w-2xl text-lg">
+          {t('description')}
         </p>
 
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* Contact info cards - glass */}
-          <div className="lg:col-span-2 flex flex-col gap-4">
+        <div className="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-8">
+          
+          <div className="lg:col-span-2 flex flex-col gap-5">
             {contactItems.map((item) => (
               <div
                 key={item.label}
-                className="p-5 rounded-2xl border border-[#9BABAB]/10 bg-[#9BABAB]/5 backdrop-blur-sm flex items-start gap-4 transition-all duration-300 hover:bg-[#9BABAB]/10 hover:border-[#9BABAB]/20"
+                className="p-6 rounded-3xl bg-white shadow-lg shadow-[#0F2A4A]/5 flex items-start gap-5 transition-all duration-300 hover:shadow-xl hover:shadow-[#0F2A4A]/10 hover:-translate-y-1 border border-[#7A8CA5]/10"
               >
-                <div className="flex items-center justify-center h-10 w-10 rounded-xl bg-[#253745]/60 border border-[#9BABAB]/10 flex-shrink-0">
-                  <item.icon className="h-5 w-5 text-[#9BABAB]" />
+                <div className="flex items-center justify-center h-14 w-14 rounded-2xl bg-[#0F2A4A] text-[#F26A1B] flex-shrink-0">
+                  <item.icon className="h-6 w-6" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#CCD0CF]">{item.label}</p>
+                <div className="flex-1 min-w-0 pt-1">
+                  <p className="text-[11px] font-black uppercase tracking-widest text-[#7A8CA5] mb-1.5">
+                    {item.label}
+                  </p>
                   {item.content}
                 </div>
               </div>
             ))}
           </div>
 
-          {/* Map embed area - glass frame */}
-          <div className="lg:col-span-3 rounded-2xl border border-[#9BABAB]/10 overflow-hidden min-h-[420px] flex flex-col bg-[#9BABAB]/5 backdrop-blur-sm">
-            <div className="flex-1 relative">
+          <div className="lg:col-span-3 rounded-3xl shadow-lg shadow-[#0F2A4A]/5 overflow-hidden min-h-[450px] flex flex-col bg-white border border-[#7A8CA5]/10">
+            <div className="flex-1 relative bg-gray-100">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2848.862646818427!2d26.1025!3d44.4268!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDTCsDI1JzM2LjUiTiAyNsKwMDYnMDkuMCJF!5e0!3m2!1sro!2sro!4v1"
-                className="absolute inset-0 w-full h-full border-0 opacity-80"
+                src="https://maps.google.com/maps?q=C%C4%83l%C4%83ra%C8%99i,%20Republica%20Moldova&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                className="absolute inset-0 w-full h-full border-0 grayscale-[10%]"
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Locatia Inteligent Service pe harta"
+                title="Harta locație Călărași"
               />
             </div>
-            <div className="p-4 flex items-center justify-between border-t border-[#9BABAB]/10 bg-[#06141B]/40 backdrop-blur-md">
-              <p className="text-sm text-[#4A5C6A]">Obtine directii catre noi</p>
+            <div className="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-[#7A8CA5]/10 bg-white">
+              <p className="text-sm font-black text-[#0F2A4A] uppercase tracking-wide">
+                {t('map.getDirections')}
+              </p>
               <a
-                href="https://maps.google.com"
+                href="https://www.google.com/maps/place/C%C4%83l%C4%83ra%C8%99i,+Moldova/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-[#CCD0CF] border border-[#9BABAB]/15 bg-[#9BABAB]/5 backdrop-blur-sm transition-all duration-300 hover:bg-[#9BABAB]/15 hover:border-[#9BABAB]/25 hover:scale-[1.02] active:scale-[0.98]"
+                className="flex items-center justify-center w-full sm:w-auto gap-2 px-8 py-3.5 rounded-xl text-sm font-bold text-[#F5F2EC] bg-[#F26A1B] transition-all duration-300 hover:bg-[#C24C0F] hover:shadow-lg hover:shadow-[#F26A1B]/30 hover:-translate-y-0.5 active:scale-95"
               >
-                <ExternalLink className="h-3.5 w-3.5" />
-                Deschide Harta
+                <ExternalLink className="h-4 w-4" />
+                {t('map.openMap')}
               </a>
             </div>
           </div>

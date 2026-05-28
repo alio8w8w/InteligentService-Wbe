@@ -218,5 +218,65 @@
   "filterAll": "All",
   "filterImages": "Images",
   "filterVideos": "Videos"
-}
+},
+  "featuredLed": {
+    "title": "Featured LED Screens",
+    "subtitle": "Discover our selection of premium LED screens, perfect for highlighting your business and capturing the audience's attention.",
+    "loading": "Loading products...",
+    "empty": "There are currently no featured LED screens available.",
+    "viewMore": "View details",
+    "viewAll": "View all screens"
+  },
+  "contactSection": {
+    "badge": "Contact & Location",
+    "title": "Where to find us",
+    "description": "We are available for free consultation. Visit our office or contact us using any of the methods below.",
+    "info": {
+      "address": {
+        "label": "Address",
+        "city": "Calarasi City",
+        "street": "32A Mihai Eminescu str., 2nd floor"
+      },
+      "phone": {
+        "label": "Phone"
+      },
+      "email": {
+        "label": "Email"
+      },
+      "schedule": {
+        "label": "Work Schedule",
+        "weekdays": "Mon - Fri",
+        "saturday": "Sat",
+        "sunday": "Sun",
+        "closed": "Closed"
+      }
+    },
+    "map": {
+      "getDirections": "Get directions to us",
+      "openMap": "Open Map"
+    }
+  },
+  "footer": {
+    "companyDescription": "Intelligent system for bidirectional data processing. Professional security and modern solutions.",
+    "sections": {
+      "navigation": "Navigation",
+      "services": "Services",
+      "contact": "Contact"
+    },
+    "nav": {
+      "brands": "Brands",
+      "products": "Products",
+      "gallery": "Gallery",
+      "ledScreens": "LED Screens",
+      "contact": "Contact"
+    },
+    "contactInfo": {
+      "address": "Calarasi City, 32A Mihai Eminescu str., 2nd floor"
+    },
+    "legal": {
+      "rights": "All rights reserved",
+      "terms": "Terms & Conditions",
+      "privacy": "Privacy Policy"
+    }
+  }
 }
