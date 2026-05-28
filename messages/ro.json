@@ -185,6 +185,7 @@
     "heroDesc": "Explorează gama noastră completă de sisteme de securitate de top. Găsește echipamentul perfect pentru nevoile și bugetul tău.",
     "filtersTitle": "Filtrează Produsele",
     "brand": "Brand",
+    "allBrands": "Toate",
     "priceRange": "Preț (MDL)",
     "minPrice": "Min",
     "maxPrice": "Max",
@@ -192,7 +193,12 @@
     "applyFilters": "Aplică filtrele",
     "resetFilters": "Resetează",
     "noProducts": "Nu am găsit produse conform filtrelor selectate.",
-    "results": "produse găsite"
+    "results": "produse găsite",
+    "discountBadge": "REDUCERE",
+    "noDescription": "Detalii indisponibile.",
+    "unitPrice": "Preț unitar",
+    "addToCart": "Adaugă în Coș",
+    "addedSuccess": "Produs adăugat!"
   },
    "featuredProducts": {
     "eyebrow": "Produse recomandate",

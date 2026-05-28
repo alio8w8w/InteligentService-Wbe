@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import { ShoppingCart, Loader2, X, CheckCircle, Info, Filter, SlidersHorizontal, ArrowRight } from 'lucide-react'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import BookingModal from '@/components/booking-modal' 
 
 const supabase = createClient(
@@ -187,7 +187,7 @@ export default function ProductsClient({ locale }: { locale: string }) {
                 <div className="space-y-2">
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="radio" name="brand" checked={selectedBrand === 'all'} onChange={() => setSelectedBrand('all')} className="w-4 h-4 accent-[#F26A1B]" />
-                    <span className="text-sm font-medium group-hover:text-[#F26A1B] transition-colors">Toate</span>
+                    <span className="text-sm font-medium group-hover:text-[#F26A1B] transition-colors">{t('allBrands')}</span>
                   </label>
                   {uniqueBrands.map(brand => (
                     <label key={brand} className="flex items-center gap-3 cursor-pointer group">
@@ -253,7 +253,7 @@ export default function ProductsClient({ locale }: { locale: string }) {
                     <div className="relative h-48 w-full bg-[#F5F2EC]/30 p-6 flex items-center justify-center">
                       {product.has_discount && (
                         <div className="absolute top-3 left-3 bg-[#C24C0F] text-white text-[10px] font-black uppercase px-3 py-1.5 rounded-full z-10 shadow-md">
-                          -{product.discount_percentage}%
+                          -{product.discount_percentage}% {t('discountBadge')}
                         </div>
                       )}
                       {product.images && product.images[0] ? (
@@ -267,7 +267,7 @@ export default function ProductsClient({ locale }: { locale: string }) {
                       <span className="text-[10px] font-black text-[#7A8CA5] uppercase tracking-widest mb-1">{product.brand}</span>
                       <h3 className="text-base font-extrabold text-[#0F2A4A] mb-2 leading-snug line-clamp-2">{product.name}</h3>
                       <p className="text-[#7A8CA5] text-xs font-medium leading-relaxed mb-4 line-clamp-2">
-                        {product.translatedDesc || "Detalii indisponibile."}
+                        {product.translatedDesc || t('noDescription')}
                       </p>
                       
                       <div className="mt-auto pt-4 border-t border-[#7A8CA5]/10 flex items-center justify-between">
@@ -308,7 +308,7 @@ export default function ProductsClient({ locale }: { locale: string }) {
             <div className="w-full md:w-1/2 bg-white relative min-h-[250px] md:min-h-[400px] flex items-center justify-center p-8 border-b md:border-b-0 md:border-r border-[#7A8CA5]/10">
               {selectedProduct.has_discount && (
                 <div className="absolute top-6 left-6 bg-[#C24C0F] text-white text-xs font-black uppercase px-4 py-1.5 rounded-full z-10 shadow-md">
-                  -{selectedProduct.discount_percentage}% REDUCERE
+                  -{selectedProduct.discount_percentage}% {t('discountBadge')}
                 </div>
               )}
               {selectedProduct.images && selectedProduct.images[0] ? (
@@ -323,10 +323,10 @@ export default function ProductsClient({ locale }: { locale: string }) {
                 <span className="text-[#7A8CA5] font-black uppercase tracking-widest text-xs mb-2 block">{selectedProduct.brand}</span>
                 <h2 className="text-2xl md:text-3xl font-extrabold mb-4 leading-tight">{selectedProduct.name}</h2>
                 <p className="text-sm text-[#7A8CA5] font-medium leading-relaxed mb-6 overflow-y-auto max-h-[150px] pr-2 hide-scrollbar">
-                   {selectedProduct.translatedDesc}
+                   {selectedProduct.translatedDesc || t('noDescription')}
                 </p>
                 <div className="mb-8 p-5 bg-white rounded-2xl border border-[#7A8CA5]/20 shadow-sm flex justify-between items-center">
-                  <span className="block text-sm text-[#7A8CA5] font-bold">Preț unitar:</span>
+                  <span className="block text-sm text-[#7A8CA5] font-bold">{t('unitPrice')}:</span>
                   {selectedProduct.has_discount ? (
                     <div className="flex items-center gap-3">
                       <span className="text-lg text-[#7A8CA5] line-through font-medium">{selectedProduct.base_price} MDL</span>
@@ -340,11 +340,11 @@ export default function ProductsClient({ locale }: { locale: string }) {
               
               {isAddedToCartModal ? (
                  <div className="w-full bg-[#0F2A4A] text-white font-bold text-lg py-4 rounded-xl flex items-center justify-center gap-2 shadow-md animate-in fade-in zoom-in duration-300">
-                   <CheckCircle size={24} className="text-[#F26A1B]" /> Produs adăugat!
+                   <CheckCircle size={24} className="text-[#F26A1B]" /> {t('addedSuccess')}
                  </div>
               ) : (
                 <button onClick={() => handleAddToCart(undefined, selectedProduct.id)} className="mt-auto w-full bg-[#F26A1B] hover:bg-[#C24C0F] text-white font-bold text-lg py-4 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center gap-3">
-                  <ShoppingCart size={22} /> Adaugă în Coș
+                  <ShoppingCart size={22} /> {t('addToCart')}
                 </button>
               )}
             </div>

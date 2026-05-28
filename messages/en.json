@@ -180,19 +180,25 @@
       }
     }
   },
-  "productsPage": {
+    "productsPage": {
     "heroTitle": "All Products",
-    "heroDesc": "Explore our complete range of top security systems. Find the perfect equipment for your needs and budget.",
-    "filtersTitle": "Filter Products",
+    "heroDesc": "Explore our complete range of premium security systems. Find the ideal equipment for your needs and budget.",
+    "filtersTitle": "Product Filters",
     "brand": "Brand",
+    "allBrands": "All",
     "priceRange": "Price (MDL)",
     "minPrice": "Min",
     "maxPrice": "Max",
-    "onlyDiscounted": "Discounted only",
-    "applyFilters": "Apply filters",
+    "onlyDiscounted": "Discounts Only",
+    "applyFilters": "Apply Filters",
     "resetFilters": "Reset",
-    "noProducts": "No products found matching your filters.",
-    "results": "products found"
+    "noProducts": "We couldn't find any products matching the selected filters.",
+    "results": "products found",
+    "discountBadge": "SALE",
+    "noDescription": "Details are unavailable.",
+    "unitPrice": "Unit Price",
+    "addToCart": "Add to Cart",
+    "addedSuccess": "Product added!"
   },
    "featuredProducts": {
     "eyebrow": "Featured products",
