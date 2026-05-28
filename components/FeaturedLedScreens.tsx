@@ -30,11 +30,8 @@ export function FeaturedLedScreens() {
         const { data, error } = await supabase
           .from("produse")
           .select("*")
-          // Caută specific brandul care conține "led ecran" (insensibil la majuscule)
           .ilike("brand", "%led ecran%")
-          // Doar cele care au steluța activată pentru pagina principală
           .eq("is_featured_on_homepage", true)
-          // Limitat la 6 produse, exact cum ai cerut
           .limit(6) 
 
         if (error) {
@@ -57,7 +54,7 @@ export function FeaturedLedScreens() {
       
       {/* Background decorations */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#F26A1B]/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-125 h-125 bg-[#F26A1B]/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         
@@ -85,7 +82,6 @@ export function FeaturedLedScreens() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {products.map((product) => {
-              // Calculăm prețul final în siguranță (fallback la 0 dacă discount_percentage e null)
               const discountValue = product.discount_percentage || 0
               const finalPrice = product.has_discount 
                 ? product.base_price - (product.base_price * discountValue / 100)
@@ -94,7 +90,8 @@ export function FeaturedLedScreens() {
               return (
                 <Link 
                   key={product.id} 
-                  href={`/${locale}/led-ecran/${product.id}`} // Rută ajustată să ducă direct la produs
+                  /* CORECȚIA 1: Am adăugat 'e' la 'led-ecrane' pentru a se potrivi cu pagina ta reală */
+                  href={`/${locale}/led-ecrane?productId=${product.id}`}
                   className="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-[#F26A1B]/20 transition-all duration-500 transform hover:-translate-y-2 flex flex-col h-full"
                 >
                   <div className="relative aspect-4/3 overflow-hidden bg-[#f7f5f0] flex items-center justify-center p-4">
@@ -157,7 +154,8 @@ export function FeaturedLedScreens() {
 
         <div className="mt-16 flex justify-center relative z-10">
           <Link 
-            href={`/${locale}/led-ecran`}
+            /* CORECȚIA 2: Am adăugat 'e' și aici pentru butonul de "View All" */
+            href={`/${locale}/led-ecrane`}
             className="group flex items-center gap-3 px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 active:scale-95 shadow-xl shadow-[#F26A1B]/20 hover:shadow-[#F26A1B]/40 bg-[#F26A1B] hover:bg-[#c24c0f]"
           >
             {t('viewAll')}

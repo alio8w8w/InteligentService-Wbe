@@ -1,9 +1,15 @@
 "use client"
 
-import { useEffect, useState, useMemo } from "react"
-import { Trash2, CheckCircle, ArrowUpDown, Loader2, AlertCircle, Phone, Mail, DollarSign, Filter, PhoneCall } from "lucide-react"
+import React, { useEffect, useState, useMemo } from "react"
+import { Trash2, CheckCircle, ArrowUpDown, Loader2, AlertCircle, Phone, Mail, Filter, PhoneCall, ShoppingBag, ChevronDown, ChevronUp } from "lucide-react"
 
-// Tipul de date adaptat noului model
+type CartItem = {
+  id: string; 
+  nume_produs: string;
+  cantitate: number;
+  pret_unitar: number;
+}
+
 type Order = {
   id: string
   created_at: string
@@ -13,7 +19,8 @@ type Order = {
   telefon: string
   suma_totala: number
   doreste_telefon: boolean
-  status: 'noua' | 'procesata' // Am înlocuit "confirmed" boolean cu un status clar
+  status: 'noua' | 'procesata'
+  produse?: CartItem[] 
 }
 
 export default function OrdersTable() {
@@ -21,16 +28,16 @@ export default function OrdersTable() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
-  // Stări pentru Sortare și Filtrare
+  const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+
   const [sortField, setSortField] = useState<"data" | "pret" | "nume">("data")
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc") // Default: cele mai noi primele
-  const [filterPhoneCall, setFilterPhoneCall] = useState<boolean | null>(null) // null = toate, true = doar cei ce vor apel
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
+  const [filterPhoneCall, setFilterPhoneCall] = useState<boolean | null>(null)
 
   const loadOrders = async () => {
     setLoading(true)
     setError(null)
     try {
-      // Notă: Va trebui să actualizezi și API-ul tău să citească din tabela 'orders'
       const res = await fetch("/api/admin/orders") 
       if (!res.ok) throw new Error("Nu s-au putut încărca datele.")
       const data = await res.json()
@@ -44,7 +51,16 @@ export default function OrdersTable() {
 
   useEffect(() => { loadOrders() }, [])
 
-  // --- FUNCȚIA DE ȘTERGERE ---
+  const toggleRowExpand = (id: string) => {
+    const newExpandedRows = new Set(expandedRows)
+    if (newExpandedRows.has(id)) {
+      newExpandedRows.delete(id)
+    } else {
+      newExpandedRows.add(id)
+    }
+    setExpandedRows(newExpandedRows)
+  }
+
   const deleteOrder = async (id: string) => {
     if (!confirm("Sigur dorești să ștergi această comandă?")) return
     const previousOrders = [...orders]
@@ -63,7 +79,6 @@ export default function OrdersTable() {
     }
   }
 
-  // --- FUNCȚIA DE ACTUALIZARE STATUS ---
   const toggleStatus = async (order: Order) => {
     const previousOrders = [...orders]
     const newStatus = order.status === 'noua' ? 'procesata' : 'noua'
@@ -83,22 +98,30 @@ export default function OrdersTable() {
     }
   }
 
-  // --- LOGICA DE FILTRARE ȘI SORTARE ---
+  // Helper pentru calcularea totalului pe loc
+  const calculeazaTotalComanda = (order: Order) => {
+    if (order.produse && order.produse.length > 0) {
+      return order.produse.reduce((suma, produs) => suma + (produs.pret_unitar * produs.cantitate), 0);
+    }
+    return order.suma_totala || 0; // fallback la valoarea din DB dacă nu are produse
+  }
+
   const processedData = useMemo(() => {
     let result = [...orders];
 
-    // 1. Filtrare
     if (filterPhoneCall !== null) {
       result = result.filter(o => o.doreste_telefon === filterPhoneCall);
     }
 
-    // 2. Sortare
     result.sort((a, b) => {
       let comparison = 0;
       if (sortField === "data") {
         comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       } else if (sortField === "pret") {
-        comparison = (a.suma_totala || 0) - (b.suma_totala || 0);
+        // Folosim funcția nouă pentru a sorta după prețul real calculat
+        const totalA = calculeazaTotalComanda(a);
+        const totalB = calculeazaTotalComanda(b);
+        comparison = totalA - totalB;
       } else if (sortField === "nume") {
         comparison = (a.nume || "").localeCompare(b.nume || "");
       }
@@ -108,7 +131,6 @@ export default function OrdersTable() {
     return result;
   }, [orders, sortField, sortOrder, filterPhoneCall])
 
-  // Funcție helper pentru formatarea datei
   const formatDate = (dateString: string) => {
     const d = new Date(dateString);
     return d.toLocaleDateString('ro-RO', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute:'2-digit' });
@@ -129,7 +151,6 @@ export default function OrdersTable() {
         </div>
       )}
 
-      {/* HEADER & FILTRE */}
       <div className="flex flex-col xl:flex-row xl:justify-between xl:items-end gap-6 mb-8 bg-white p-6 rounded-3xl border border-[#283618]/10 shadow-sm">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-[#283618]">Comenzi & Coșuri</h1>
@@ -137,7 +158,6 @@ export default function OrdersTable() {
         </div>
 
         <div className="flex flex-col sm:flex-row flex-wrap gap-3">
-          {/* Filtru Apel Telefonic */}
           <div className="flex items-center gap-2 bg-[#FEFAE0] p-1 rounded-xl border border-[#283618]/10">
             <button 
               onClick={() => setFilterPhoneCall(null)}
@@ -153,7 +173,6 @@ export default function OrdersTable() {
             </button>
           </div>
 
-          {/* Sortare Câmp */}
           <select 
             value={sortField}
             onChange={(e) => setSortField(e.target.value as any)}
@@ -164,7 +183,6 @@ export default function OrdersTable() {
             <option value="nume">Sortează după Nume (A-Z)</option>
           </select>
 
-          {/* Sortare Direcție */}
           <button 
             onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
             className="flex items-center justify-center gap-2 bg-[#DDA15E] text-[#283618] px-5 py-2 rounded-xl font-bold text-sm hover:bg-[#BC6C25] hover:text-white transition-all shadow-sm"
@@ -175,8 +193,7 @@ export default function OrdersTable() {
         </div>
       </div>
 
-      {/* VERSIUNEA DESKTOP (TABEL) */}
-      <div className="hidden lg:block bg-white rounded-[2rem] border border-[#283618]/10 overflow-hidden shadow-sm">
+      <div className="hidden lg:block bg-white rounded-4xl border border-[#283618]/10 overflow-hidden shadow-sm">
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#FEFAE0]/50 text-[#606C38] text-[11px] uppercase tracking-widest font-black border-b border-[#283618]/10">
@@ -188,61 +205,100 @@ export default function OrdersTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-[#FEFAE0]">
-            {processedData.map((o) => (
-              <tr key={o.id} className="hover:bg-[#FEFAE0]/30 transition-colors group">
-                {/* Nume Client */}
-                <td className="p-6">
-                  <div className="font-bold text-[#283618] text-sm">{o.nume} {o.prenume}</div>
-                </td>
-                
-                {/* Contact & Status */}
-                <td className="p-6">
-                  <div className="text-sm text-[#606C38] font-medium flex items-center gap-2">
-                    <Phone size={12} className="opacity-60" /> {o.telefon}
-                  </div>
-                  <div className="text-xs text-[#606C38] opacity-70 lowercase flex items-center gap-2 mt-1 mb-2">
-                    <Mail size={12} /> {o.email}
-                  </div>
-                  {o.doreste_telefon && (
-                    <span className="inline-flex items-center gap-1 bg-[#BC6C25]/10 text-[#BC6C25] px-2 py-0.5 rounded text-[10px] font-black uppercase">
-                      <PhoneCall size={10} /> De contactat
-                    </span>
+            {processedData.map((o) => {
+              const isExpanded = expandedRows.has(o.id)
+              const valoareTotalaCalculata = calculeazaTotalComanda(o);
+
+              return (
+                <React.Fragment key={o.id}>
+                  <tr className="hover:bg-[#FEFAE0]/30 transition-colors group">
+                    <td className="p-6">
+                      <div className="font-bold text-[#283618] text-sm mb-2">{o.nume} {o.prenume}</div>
+                      
+                      <button 
+                        onClick={() => toggleRowExpand(o.id)}
+                        className="text-xs font-bold text-[#BC6C25] flex items-center gap-1 hover:text-[#283618] transition-colors"
+                      >
+                        <ShoppingBag size={14} /> 
+                        {o.produse && o.produse.length > 0 ? `Vezi Produse (${o.produse.length})` : "Fără produse detaliate"}
+                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </button>
+                    </td>
+                    
+                    <td className="p-6">
+                      <div className="text-sm text-[#606C38] font-medium flex items-center gap-2">
+                        <Phone size={12} className="opacity-60" /> {o.telefon}
+                      </div>
+                      <div className="text-xs text-[#606C38] opacity-70 lowercase flex items-center gap-2 mt-1 mb-2">
+                        <Mail size={12} /> {o.email}
+                      </div>
+                      {o.doreste_telefon && (
+                        <span className="inline-flex items-center gap-1 bg-[#BC6C25]/10 text-[#BC6C25] px-2 py-0.5 rounded text-[10px] font-black uppercase">
+                          <PhoneCall size={10} /> De contactat
+                        </span>
+                      )}
+                    </td>
+
+                    <td className="p-6 text-[#606C38] text-sm font-medium">
+                      {formatDate(o.created_at)}
+                    </td>
+
+                    <td className="p-6 text-right">
+                       <span className="inline-flex items-center bg-[#DDA15E]/10 text-[#283618] px-3 py-1.5 rounded-xl font-black text-sm">
+                        {valoareTotalaCalculata} Lei
+                      </span>
+                    </td>
+
+                    <td className="p-6">
+                      <div className="flex justify-center gap-3">
+                        <button 
+                          onClick={() => toggleStatus(o)}
+                          className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all shadow-sm flex items-center gap-1 ${o.status === 'procesata' ? 'bg-[#606C38] text-white' : 'bg-[#FEFAE0] text-[#606C38] hover:bg-[#DDA15E] hover:text-[#283618]'}`}
+                        >
+                          <CheckCircle size={14} />
+                          {o.status === 'procesata' ? "Procesată" : "Marchează Procesată"}
+                        </button>
+                        <button 
+                          onClick={() => deleteOrder(o.id)}
+                          className="p-1.5 rounded-lg bg-[#FEFAE0] text-[#BC6C25] hover:bg-red-50 hover:text-red-600 transition-all shadow-sm"
+                          title="Șterge comanda"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+
+                  {isExpanded && (
+                    <tr className="bg-[#FEFAE0]/20">
+                      <td colSpan={5} className="p-0">
+                        <div className="px-6 py-4 bg-white/50 border-t border-b border-[#283618]/5">
+                          <h4 className="text-xs font-black text-[#606C38] uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <ShoppingBag size={14} /> Conținutul Comenzii
+                          </h4>
+                          
+                          {o.produse && o.produse.length > 0 ? (
+                            <ul className="space-y-2">
+                              {o.produse.map((produs, index) => (
+                                <li key={index} className="flex justify-between items-center text-sm p-2 rounded bg-white border border-[#283618]/5 shadow-sm">
+                                  <span className="font-medium text-[#283618]">{produs.nume_produs}</span>
+                                  <div className="flex items-center gap-4">
+                                    <span className="text-[#606C38]">x {produs.cantitate}</span>
+                                    <span className="font-bold text-[#BC6C25] min-w-[80px] text-right">{produs.pret_unitar * produs.cantitate} Lei</span>
+                                  </div>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <p className="text-sm text-[#606C38] italic">Nu au putut fi încărcate detaliile produselor pentru această comandă.</p>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
                   )}
-                </td>
-
-                {/* Data */}
-                <td className="p-6 text-[#606C38] text-sm font-medium">
-                  {formatDate(o.created_at)}
-                </td>
-
-                {/* Pret */}
-                <td className="p-6 text-right">
-                   <span className="inline-flex items-center bg-[#DDA15E]/10 text-[#283618] px-3 py-1.5 rounded-xl font-black text-sm">
-                    {o.suma_totala} Lei
-                  </span>
-                </td>
-
-                {/* Actiuni */}
-                <td className="p-6">
-                  <div className="flex justify-center gap-3">
-                    <button 
-                      onClick={() => toggleStatus(o)}
-                      className={`px-3 py-1.5 rounded-lg font-bold text-xs transition-all shadow-sm flex items-center gap-1 ${o.status === 'procesata' ? 'bg-[#606C38] text-white' : 'bg-[#FEFAE0] text-[#606C38] hover:bg-[#DDA15E] hover:text-[#283618]'}`}
-                    >
-                      <CheckCircle size={14} />
-                      {o.status === 'procesata' ? "Procesată" : "Marchează Procesată"}
-                    </button>
-                    <button 
-                      onClick={() => deleteOrder(o.id)}
-                      className="p-1.5 rounded-lg bg-[#FEFAE0] text-[#BC6C25] hover:bg-red-50 hover:text-red-600 transition-all shadow-sm"
-                      title="Șterge comanda"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                </React.Fragment>
+              )
+            })}
           </tbody>
         </table>
         {processedData.length === 0 && (
@@ -252,7 +308,6 @@ export default function OrdersTable() {
         )}
       </div>
 
-      {/* VERSIUNEA MOBILĂ - Va trebui adaptată similar dacă ai nevoie, am păstrat structura curată momentan pentru focus pe funcționalități */}
     </div>
   )
 }

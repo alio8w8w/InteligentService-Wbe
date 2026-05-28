@@ -227,6 +227,23 @@
     "viewMore": "View details",
     "viewAll": "View all screens"
   },
+  "ledPage": {
+    "heroTitle": "Professional LED Screens",
+    "heroDesc": "Discover the future of digital display. Our LED screens offer exceptional brightness, vibrant colors, and maximum reliability for any type of project, from street advertising to top-tier events.",
+    "scrollDown": "View Products",
+    "filterLabel": "Filters:",
+    "filterAll": "All Screens",
+    "filterDiscount": "Discounts Only",
+    "sortAsc": "Price: Low to High",
+    "sortDesc": "Price: High to Low",
+    "loading": "Loading products...",
+    "empty": "No LED screens currently available.",
+    "addToCart": "Add to Cart",
+    "addedSuccess": "Successfully Added!",
+    "description": "Product Description",
+    "noDescription": "No description available.",
+    "price": "Price:"
+  },
   "contactSection": {
     "badge": "Contact & Location",
     "title": "Where to find us",

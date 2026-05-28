@@ -1,7 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextResponse } from 'next/server';
 
-
 export async function GET() {
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,7 +27,25 @@ export async function GET() {
 
     if (error) throw error;
 
-    return NextResponse.json({ orders: data });
+    const formattedOrders = data.map((order: any) => {
+      // 1. Extragem și formatăm produsele
+      const produseFormatate = order.order_items 
+        ? order.order_items.map((item: any) => ({
+            // Luăm numele din relația cu tabela 'produse'
+            nume_produs: item.produse?.name || "Produs necunoscut", 
+            cantitate: item.cantitate,
+            pret_unitar: item.pret_unitar
+          })) 
+        : [];
+      const { order_items, ...restOfOrder } = order;
+      
+      return {
+        ...restOfOrder,
+        produse: produseFormatate
+      };
+    });
+
+    return NextResponse.json({ orders: formattedOrders });
 
   } catch (error: any) {
     console.error("Eroare la extragerea comenzilor:", error.message);

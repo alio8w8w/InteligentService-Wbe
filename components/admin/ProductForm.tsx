@@ -25,19 +25,16 @@ export default function ProductManager() {
   const [products, setProducts] = useState<Product[]>([])
   const [loadingList, setLoadingList] = useState(true)
   
-  // Stare pentru filtrarea listei în Admin
   const [filterCategory, setFilterCategory] = useState<"all" | "Supraveghere" | "LED Ecran">("all")
   
-  // Stări pentru acțiuni în masă (Bulk Actions)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [bulkAction, setBulkAction] = useState<"price" | "discount" | null>(null)
   const [bulkValue, setBulkValue] = useState("")
   const [bulkLoading, setBulkLoading] = useState(false)
 
-  // Stări pentru formularul de adăugare
   const [name, setName] = useState("")
   const [basePrice, setBasePrice] = useState("")
-  const [brand, setBrand] = useState("Hikvision") // Acum va suporta și LED Ecran
+  const [brand, setBrand] = useState("Hikvision")
   const [hasDiscount, setHasDiscount] = useState(false)
   const [discount, setDiscount] = useState("")
   const [featured, setFeatured] = useState(false)
@@ -49,24 +46,16 @@ export default function ProductManager() {
   const [success, setSuccess] = useState("")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // --- 1. ÎNCĂRCARE PRODUSE ---
   const fetchProducts = async () => {
     setLoadingList(true)
-    const { data, error } = await supabase
-      .from("produse")
-      .select("*")
-      .order("created_at", { ascending: false })
-    
+    const { data, error } = await supabase.from("produse").select("*").order("created_at", { ascending: false })
     if (data) setProducts(data as Product[])
     if (error) console.error("Eroare la extragere:", error.message)
     setLoadingList(false)
   }
 
-  useEffect(() => {
-    fetchProducts()
-  }, [])
+  useEffect(() => { fetchProducts() }, [])
 
-  // Produsele filtrate pentru afișare în tabel
   const displayedProducts = products.filter(p => {
     if (filterCategory === "all") return true;
     if (filterCategory === "LED Ecran") return p.brand === "LED Ecran";
@@ -74,7 +63,6 @@ export default function ProductManager() {
     return true;
   });
 
-  // --- 2. SELECȚIE MULTIPLĂ ---
   const toggleSelectAll = () => {
     if (selectedIds.size === displayedProducts.length && displayedProducts.length > 0) {
       setSelectedIds(new Set())
@@ -90,13 +78,10 @@ export default function ProductManager() {
     setSelectedIds(newSet)
   }
 
-  // --- 3. ACȚIUNI ÎN MASĂ (BULK) ---
   const handleBulkDelete = async () => {
     if (!confirm(`Sigur vrei să ștergi cele ${selectedIds.size} produse selectate?`)) return
-    
     setBulkLoading(true)
     const { error } = await supabase.from("produse").delete().in("id", Array.from(selectedIds))
-    
     if (!error) {
       setProducts(prev => prev.filter(p => !selectedIds.has(p.id)))
       setSelectedIds(new Set())
@@ -111,7 +96,6 @@ export default function ProductManager() {
       alert("Te rog introdu o valoare numerică validă!")
       return
     }
-
     setBulkLoading(true)
     const val = parseFloat(bulkValue)
     let updateData = {}
@@ -119,10 +103,7 @@ export default function ProductManager() {
     if (bulkAction === "price") {
       updateData = { base_price: val }
     } else if (bulkAction === "discount") {
-      updateData = { 
-        has_discount: val > 0, 
-        discount_percentage: val > 0 ? val : 0 
-      }
+      updateData = { has_discount: val > 0, discount_percentage: val > 0 ? val : 0 }
     }
 
     const { error } = await supabase.from("produse").update(updateData).in("id", Array.from(selectedIds))
@@ -140,13 +121,10 @@ export default function ProductManager() {
     setBulkLoading(false)
   }
 
-  // --- 4. TOGGLE HOMEPAGE (Steluța) ---
   const toggleHomepage = async (product: Product) => {
     const isCurrentlyFeatured = product.is_featured_on_homepage;
-    
     if (!isCurrentlyFeatured) {
       const currentlyFeaturedCount = products.filter(p => p.is_featured_on_homepage).length;
-      // LIMITA MODIFICATĂ AICI: de la 6 la 12
       if (currentlyFeaturedCount >= 12) {
         alert("Ai atins limita maximă! Poți afișa maxim 12 produse pe homepage. Debifează altul mai întâi.");
         return;
@@ -154,7 +132,6 @@ export default function ProductManager() {
     }
 
     setProducts(prev => prev.map(p => p.id === product.id ? { ...p, is_featured_on_homepage: !isCurrentlyFeatured } : p))
-
     const { error } = await supabase.from("produse").update({ is_featured_on_homepage: !isCurrentlyFeatured }).eq("id", product.id)
     if (error) {
       setProducts(prev => prev.map(p => p.id === product.id ? { ...p, is_featured_on_homepage: isCurrentlyFeatured } : p))
@@ -162,30 +139,11 @@ export default function ProductManager() {
     }
   }
 
-  // --- 5. FUNCȚII PENTRU FORMULAR ȘI TRADUCERE AI ---
   function handleImagesChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (e.target.files) setImages(Array.from(e.target.files))
   }
 
-  // TRADUCERE REALĂ CĂTRE API
-  async function translateText(text: string, targetLang: string) {
-    if (!text) return "";
-    if (targetLang === 'ro') return text;
-    try {
-      const res = await fetch('/api/translate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text, targetLang })
-      });
-      if (!res.ok) throw new Error('API Traducere a eșuat');
-      const data = await res.json();
-      return data.translatedText;
-    } catch (error) {
-      console.error(`Eroare la traducere în ${targetLang}:`, error);
-      return text; // Fallback: lasă textul original dacă AI-ul pică
-    }
-  }
-
+  // NOUA FUNCȚIE DE SUBMIT CARE TRIMITE DATELE LA BACKEND
   async function handleAddSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoadingAdd(true)
@@ -199,7 +157,6 @@ export default function ProductManager() {
 
     if (featured) {
       const currentlyFeaturedCount = products.filter(p => p.is_featured_on_homepage).length;
-      // LIMITA MODIFICATĂ AICI: de la 6 la 12
       if (currentlyFeaturedCount >= 12) {
         setError("Poți alege maxim 12 produse pe homepage! Ai atins deja limita.")
         setLoadingAdd(false); return
@@ -207,41 +164,42 @@ export default function ProductManager() {
     }
 
     try {
-      let imageUrls: string[] = []
-      for (const image of images) {
-        const safeName = `${Date.now()}_${image.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`
-        const { data, error: uploadErr } = await supabase.storage.from("products").upload(safeName, image, { cacheControl: "3600", upsert: false })
-        if (uploadErr) throw new Error(`Eroare imagine: ${uploadErr.message}`)
-        const { data: pubData } = supabase.storage.from("products").getPublicUrl(data.path)
-        imageUrls.push(pubData.publicUrl)
-      }
-
-      const finalDiscount = hasDiscount && discount ? parseFloat(discount) : 0;
+      // 1. Creăm un obiect FormData cu toate informațiile din formular
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("base_price", basePrice);
+      formData.append("brand", brand);
       
-      const { data: product, error: prodErr } = await supabase.from("produse").insert([{
-        name, base_price: parseFloat(basePrice), brand, has_discount: hasDiscount,
-        discount_percentage: finalDiscount, images: imageUrls, is_featured_on_homepage: featured,
-      }]).select().single()
-        
-      if (prodErr) throw new Error(prodErr.message)
+      const finalDiscount = hasDiscount && discount ? discount : "0";
+      if (hasDiscount) formData.append("discount_percentage", finalDiscount);
+      
+      formData.append("is_featured_on_homepage", featured ? "true" : "false");
+      formData.append("description", description);
+      
+      // 2. Adăugăm toate imaginile selectate
+      images.forEach((image) => {
+        formData.append("images", image);
+      });
 
-      if (description.trim() !== "") {
-        // Apelează traducerea automată
-        const descEn = await translateText(description, "en");
-        const descRu = await translateText(description, "ru");
-        
-        const translations = [
-          { product_id: product.id, language_code: "ro", description: description },
-          { product_id: product.id, language_code: "en", description: descEn },
-          { product_id: product.id, language_code: "ru", description: descRu },
-        ]
-        const { error: transErr } = await supabase.from("product_translations").insert(translations)
-        if (transErr) throw new Error("Produsul s-a salvat, dar a apărut o eroare la traducere.")
+      // 3. Trimitem cererea POST către API-ul nostru inteligent de pe server
+      const res = await fetch('/api/translate-and-add-product', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || data.details || "Eroare necunoscută la salvare.");
       }
 
-      setSuccess("Produs adăugat cu succes!")
+      setSuccess("Produs adăugat și tradus cu succes!")
+      
+      // Resetăm formularul
       setName(""); setBasePrice(""); setBrand("Hikvision"); setHasDiscount(false); setDiscount(""); setFeatured(false); setDescription(""); setImages([]);
       if (fileInputRef.current) fileInputRef.current.value = ""
+      
+      // Reîncărcăm lista și schimbăm view-ul
       fetchProducts()
       setTimeout(() => { setView("list"); setSuccess("") }, 1500)
 
@@ -252,13 +210,9 @@ export default function ProductManager() {
     }
   }
 
-  // ============================================================================
-  // RENDER PENTRU LISTA DE PRODUSE (MANAGERUL)
-  // ============================================================================
   if (view === "list") {
     return (
       <div className="bg-white rounded-[2rem] border border-[#283618]/10 shadow-sm p-6 lg:p-8 animate-in fade-in duration-500 w-full max-w-6xl mx-auto">
-        
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
             <h2 className="text-2xl sm:text-3xl font-bold text-[#283618] flex items-center gap-2">
@@ -277,7 +231,6 @@ export default function ProductManager() {
           </div>
         )}
 
-        {/* BARA DE FILTRARE (NOU) */}
         <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
           <button onClick={() => setFilterCategory("all")} className={`px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-colors ${filterCategory === "all" ? "bg-[#283618] text-[#FEFAE0]" : "bg-gray-100 text-gray-500 hover:bg-gray-200"}`}>
             <Filter size={16} /> Toate Produsele
@@ -290,11 +243,9 @@ export default function ProductManager() {
           </button>
         </div>
 
-        {/* BULK ACTIONS BAR */}
         {selectedIds.size > 0 && (
           <div className="mb-6 p-4 bg-[#FEFAE0]/50 border border-[#DDA15E]/30 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 animate-in slide-in-from-top-2">
             <span className="font-bold text-[#BC6C25]">{selectedIds.size} produse selectate</span>
-            
             <div className="flex flex-wrap gap-2 w-full md:w-auto">
               {bulkAction ? (
                 <div className="flex items-center gap-2 w-full md:w-auto bg-white p-1 rounded-xl border border-[#283618]/20">
@@ -327,7 +278,6 @@ export default function ProductManager() {
           </div>
         )}
 
-        {/* TABEL PRODUSE */}
         <div className="overflow-x-auto rounded-2xl border border-[#283618]/10 bg-white">
           <table className="w-full text-left border-collapse">
             <thead className="bg-[#FEFAE0]/50 text-[#606C38] text-[11px] uppercase tracking-widest font-black border-b border-[#283618]/10">
@@ -404,9 +354,6 @@ export default function ProductManager() {
     )
   }
 
-  // ============================================================================
-  // RENDER PENTRU ADAUGARE PRODUS NOU (FORMULARUL)
-  // ============================================================================
   return (
     <div className="w-full max-w-2xl mx-auto">
       <button onClick={() => setView("list")} className="flex items-center gap-2 text-[#606C38] hover:text-[#283618] font-bold mb-6 transition-colors">
@@ -483,17 +430,16 @@ export default function ProductManager() {
 
           <div>
             <div className="flex justify-between items-end mb-2">
-              <label className="block text-sm font-bold">Descriere Produs (Ro)</label>
-              <span className="text-[10px] uppercase font-black tracking-widest text-white bg-blue-500 px-2 py-1 rounded shadow-sm">⚡ Tradus de AI</span>
+              <label className="block text-sm font-bold">Descriere Produs</label>
+              <span className="text-[10px] uppercase font-black tracking-widest text-white bg-blue-500 px-2 py-1 rounded shadow-sm">⚡ Tradus automat de AI</span>
             </div>
-            <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Scrie descrierea în Română. Va fi tradusă automat în EN și RU la salvare..." className="w-full min-h-[120px] bg-[#FEFAE0]/30 border border-[#283618]/10 rounded-xl px-4 py-3 outline-none focus:border-[#DDA15E] resize-y" />
+            <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Scrie descrierea în limba ta (Ro, En sau Ru). Inteligența Artificială o va detecta și o va traduce automat pentru restul site-ului..." className="w-full min-h-[120px] bg-[#FEFAE0]/30 border border-[#283618]/10 rounded-xl px-4 py-3 outline-none focus:border-[#DDA15E] resize-y" />
           </div>
 
           <label className="flex items-center gap-3 cursor-pointer p-4 bg-[#FEFAE0]/50 rounded-xl border border-[#283618]/5 hover:border-[#DDA15E]/50 transition-colors">
             <input type="checkbox" checked={featured} onChange={e => setFeatured(e.target.checked)} className="w-5 h-5 accent-[#BC6C25] rounded" /> 
             <div>
               <span className="font-bold block text-sm">Afișează pe Homepage (Steluță)</span>
-              {/* TEXT MODIFICAT AICI */}
               <span className="text-xs text-[#606C38]">Maxim 12 produse permise în secțiunile principale.</span>
             </div>
           </label>

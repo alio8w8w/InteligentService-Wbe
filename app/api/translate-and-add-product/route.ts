@@ -1,26 +1,24 @@
 // app/api/translate-and-add-product/route.ts
 import { NextRequest, NextResponse } from 'next/server'
+import { supabase } from '@/lib/supabase'
 
 // 1. FORȚĂM RULAREA DINAMICĂ PENTRU A PREVENI ERORILE DE BUILD PE VERCEL
 export const dynamic = 'force-dynamic'
 
-// 2. IMPORTĂM INSTANȚA SIGURĂ (Nu mai instanțiem manual aici!)
-import { supabase } from '@/lib/supabase'
-
-// 3. FUNCȚIA REALĂ DE TRADUCERE AUTOMATĂ (Google API)
-async function translateText(text: string, targetLang: string) {
-  if (!text) return "";
-  if (targetLang === 'ro') return text; // Nu traducem româna
-
+// 2. FUNCȚIA REALĂ DE TRADUCERE AUTOMATĂ (Google API) cu Auto-Detect
+async function translateText(textToTranslate: string, targetLang: string) {
+  if (!textToTranslate) return "";
+  
   try {
+    // sl=auto permite Google-ului să detecteze limba în care ai scris tu (Ro, En sau Ru)
     const response = await fetch(
-      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=ro&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(textToTranslate)}`
     );
     const data = await response.json();
     return data[0].map((item: any) => item[0]).join('');
   } catch (error) {
     console.error(`Eroare la traducere în ${targetLang}:`, error);
-    return `[Traducere Eșuată] ${text}`;
+    return textToTranslate; // Fallback la textul original în caz de eroare
   }
 }
 
@@ -60,15 +58,15 @@ export async function POST(req: NextRequest) {
       if (pub?.publicUrl) images.push(pub.publicUrl)
     }
 
-    // 2. VALIDARE MAX 6 PRODUSE FEATURED (Corectat numele tabelei din "products" în "produse")
+    // 2. VALIDARE MAX 12 PRODUSE FEATURED
     if (is_featured_on_homepage) {
       const { count, error: countErr } = await supabase
         .from("produse")
         .select("*", { count: "exact", head: true })
         .eq("is_featured_on_homepage", true)
 
-      if (!countErr && count !== null && count >= 6) {
-        return NextResponse.json({ message: "Sunt deja 6 produse pe homepage" }, { status: 400 })
+      if (!countErr && count !== null && count >= 12) {
+        return NextResponse.json({ message: "Sunt deja 12 produse pe homepage" }, { status: 400 })
       }
     }
 
@@ -95,15 +93,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Adăugare produs eșuată", details: prodError.message }, { status: 400 })
     }
 
-    // 4. TRADUCERI AUTOMATE (Dacă există o descriere)
-    if (description && description.trim() !== "") {
+    // 4. TRADUCERI AUTOMATE (Nume + Descriere) PENTRU TOATE CELE 3 LIMBI
+    if (name || description) {
       const languages = ["ro", "en", "ru"]
       
-      const translations = await Promise.all(languages.map(async (lang) => ({
-        product_id: product.id,
-        language_code: lang,
-        description: await translateText(description, lang), // Corectat din description_translated
-      })))
+      const translations = await Promise.all(languages.map(async (lang) => {
+        // Indiferent ce limbă folosești la input, traducem în toate cele 3 limbi finale
+        const translatedName = name ? await translateText(name, lang) : "";
+        const translatedDesc = description ? await translateText(description, lang) : "";
+        
+        return {
+          product_id: product.id,
+          language_code: lang,
+          name: translatedName, 
+          description: translatedDesc, 
+        }
+      }))
       
       const { error: trErr } = await supabase.from("product_translations").insert(translations)
       if (trErr) {
