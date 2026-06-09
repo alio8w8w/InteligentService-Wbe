@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import { X, Loader2, User, Phone, Mail, ShieldCheck } from 'lucide-react'
 
@@ -21,53 +21,48 @@ export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModa
   const [telefon, setTelefon] = useState('')
   const [email, setEmail] = useState('')
   const [consent, setConsent] = useState(true)
-  
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   if (!isOpen) return null
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
     try {
-      // 1. Salvăm cererea în baza de date (fără să o legăm de un produs)
       const { data, error: dbError } = await supabase
         .from('orders')
-        .insert([{ 
-          nume, 
-          prenume, 
-          telefon, 
-          email, 
-          doreste_telefon: consent, 
-          status: 'cerere_contact', // Status specific pentru a ști că este doar un lead/contact
-          suma_totala: 0 
+        .insert([{
+          nume,
+          prenume,
+          telefon,
+          email,
+          doreste_telefon: consent,
+          status: 'cerere_contact',
+          suma_totala: 0,
         }])
         .select()
         .single()
 
       if (dbError) throw new Error(dbError.message)
 
-      // 2. Salvăm ID-ul în browser (opțional, dar util dacă ulterior clientul adaugă produse în coș)
       localStorage.setItem('inteligent_order_id', data.id)
-
-      // 3. Anunțăm componenta părinte că formularul a fost trimis
       onSuccess(data.id)
-      
-    } catch (err: any) {
-      setError("A apărut o eroare la trimiterea datelor. Te rugăm să încerci din nou.")
+    } catch (err) {
+      setError('A apărut o eroare la trimiterea datelor. Te rugăm să încerci din nou.')
       console.error(err)
     } finally {
       setLoading(false)
     }
-  }
+  }, [nume, prenume, telefon, email, consent, onSuccess])
 
   return (
     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6">
       <div className="absolute inset-0 bg-[#0F2A4A]/80 backdrop-blur-sm transition-opacity" onClick={onClose} />
-      
+
       <div className="relative z-10 w-full max-w-lg rounded-[2rem] bg-[#F5F2EC] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         <div className="bg-[#0F2A4A] p-6 sm:p-8 text-[#F5F2EC] relative">
           <button onClick={onClose} className="absolute right-4 top-4 text-[#7A8CA5] hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition-all">
@@ -125,7 +120,6 @@ export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModa
               </span>
             </label>
 
-            {/* Butonul actualizat */}
             <button type="submit" disabled={loading} className="w-full bg-[#F26A1B] hover:bg-[#C24C0F] disabled:bg-[#7A8CA5] text-white font-bold text-lg py-4 rounded-xl transition-all shadow-md hover:shadow-xl active:scale-[0.98] flex justify-center items-center gap-2 mt-6">
               {loading ? <Loader2 className="animate-spin" size={24} /> : "Trimite Solicitarea"}
             </button>

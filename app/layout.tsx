@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next"
 import type { ReactNode } from "react"
 import { Inter, Space_Grotesk } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
-import ViewTracker from "@/components/ViewTracker" // Aici importăm componenta reparată mai sus
-import "./globals.css" // Funcționează corect pentru că globals.css e în același folder cu layout.tsx
+import ViewTracker from "@/components/ViewTracker"
+import "./globals.css"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,13 +24,18 @@ export const viewport: Viewport = {
   themeColor: "#F5F2EC", 
 }
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ 
+  children,
+  params: { locale } 
+}: { 
+  children: ReactNode
+  params: { locale: string }
+}) {
   return (
-    <html lang="ro">
+    <html lang={locale}>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground min-h-screen`}>
         <ViewTracker />
         {children}
-        <Analytics />
       </body>
     </html>
   )

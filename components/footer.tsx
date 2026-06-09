@@ -32,9 +32,10 @@ export function Footer() {
     { label: t('nav.contact'), href: `/${locale}#contact` },
   ]
 
+  // AICI A FOST CORECTAT: S-a adăugat segmentul "/branduri" în interiorul URL-urilor
   const serviceLinks = [
-    { label: "Dahua", href: `/${locale}/dahua` },
-    { label: "Hikvision", href: `/${locale}/hikvision` },
+    { label: "Dahua", href: `/${locale}/branduri/dahua` },
+    { label: "Hikvision", href: `/${locale}/branduri/hikvision` },
     { label: t('nav.ledScreens'), href: `/${locale}/led-ecran` },
   ]
 

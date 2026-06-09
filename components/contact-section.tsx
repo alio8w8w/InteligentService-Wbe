@@ -1,12 +1,16 @@
 "use client"
 
+import { useMemo } from 'react'
 import { MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react"
 import { useTranslations } from 'next-intl'
 
 export function ContactSection() {
   const t = useTranslations('contactSection')
 
-  const contactItems = [
+  const PHONE = '+373 69 230 593'
+  const EMAIL = 'inteligentservice2023@gmail.com'
+
+  const contactItems = useMemo(() => [
     {
       icon: MapPin,
       label: t('info.address.label'),
@@ -22,8 +26,8 @@ export function ContactSection() {
       label: t('info.phone.label'),
       content: (
         <div className="mt-1 flex flex-col gap-1">
-          <a href="tel:+37369230593" className="text-sm font-bold text-[#0F2A4A] hover:text-[#F26A1B] transition-colors duration-300">
-            +373 69 230 593
+          <a href={`tel:${PHONE.replace(/\s+/g,'')}`} className="text-sm font-bold text-[#0F2A4A] hover:text-[#F26A1B] transition-colors duration-300">
+            {PHONE}
           </a>
         </div>
       ),
@@ -32,8 +36,8 @@ export function ContactSection() {
       icon: Mail,
       label: t('info.email.label'),
       content: (
-        <a href="mailto:inteligentservice2023@gmail.com" className="text-sm font-bold text-[#0F2A4A] hover:text-[#F26A1B] transition-colors duration-300 mt-1 block break-all">
-          inteligentservice2023@gmail.com
+        <a href={`mailto:${EMAIL}`} className="text-sm font-bold text-[#0F2A4A] hover:text-[#F26A1B] transition-colors duration-300 mt-1 block break-all">
+          {EMAIL}
         </a>
       ),
     },
@@ -59,14 +63,13 @@ export function ContactSection() {
         </div>
       ),
     },
-  ]
+  ], [t])
 
   return (
     <section id="contact" className="relative py-24 md:py-32 bg-[#F5F2EC]">
       <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/5 to-transparent pointer-events-none" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-        
         <div className="flex items-center gap-3 mb-4">
           <div className="h-[3px] w-12 bg-[#F26A1B] rounded-full" />
           <span className="text-xs font-black tracking-[0.2em] uppercase text-[#F26A1B]">
@@ -82,7 +85,6 @@ export function ContactSection() {
         </p>
 
         <div className="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-8">
-          
           <div className="lg:col-span-2 flex flex-col gap-5">
             {contactItems.map((item) => (
               <div

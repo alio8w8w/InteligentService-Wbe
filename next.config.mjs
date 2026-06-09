@@ -10,6 +10,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  experimental: {
+  },
+  trailingSlash: true,
 }
 
 export default withNextIntl(nextConfig)
