@@ -1,13 +1,9 @@
 "use client"
 
 import React, { useState, useCallback } from 'react'
-import { createClient } from '@supabase/supabase-js'
+// 1. Am modificat importul aici
+import { createClient } from '@/lib/utils'
 import { X, Loader2, User, Phone, Mail, ShieldCheck } from 'lucide-react'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 interface BookingModalProps {
   isOpen: boolean
@@ -25,7 +21,8 @@ export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModa
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  if (!isOpen) return null
+  // 2. Inițializăm clientul în interiorul componentei
+  const supabase = createClient()
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,31 +30,59 @@ export default function BookingModal({ isOpen, onClose, onSuccess }: BookingModa
     setError('')
 
     try {
-      const { data, error: dbError } = await supabase
+      let finalOrderId = '';
+
+      // 1. Căutăm dacă utilizatorul are deja o comandă/coș activ pe baza numărului de telefon
+      const { data: existingOrder, error: searchError } = await supabase
         .from('orders')
-        .insert([{
-          nume,
-          prenume,
-          telefon,
-          email,
-          doreste_telefon: consent,
-          status: 'cerere_contact',
-          suma_totala: 0,
-        }])
-        .select()
-        .single()
+        .select('id')
+        .eq('telefon', telefon)
+        .eq('status', 'cerere_contact')
+        .order('created_at', { ascending: false })
+        .maybeSingle()
 
-      if (dbError) throw new Error(dbError.message)
+      if (existingOrder) {
+        // Utilizatorul a mai fost pe site și are deja un coș activ - REUTILIZĂM COȘUL
+        finalOrderId = existingOrder.id;
+      } else {
+        // 2. Dacă este un utilizator nou sau nu are coș activ, creăm o comandă nouă
+        const { data: newOrder, error: dbError } = await supabase
+          .from('orders')
+          .insert([{
+            nume,
+            prenume,
+            telefon,
+            email,
+            doreste_telefon: consent,
+            status: 'cerere_contact',
+            suma_totala: 0,
+          }])
+          .select()
+          .single()
 
-      localStorage.setItem('inteligent_order_id', data.id)
-      onSuccess(data.id)
+        if (dbError) throw new Error(dbError.message)
+        finalOrderId = newOrder.id;
+      }
+
+      // 3. Setăm timpul de expirare: 3 zile în milisecunde (3 * 24 * 60 * 60 * 1000)
+      const THREE_DAYS_IN_MS = 259200000;
+      const expiryTime = new Date().getTime() + THREE_DAYS_IN_MS;
+
+      // Salvăm ID-ul și data expirării în LocalStorage
+      localStorage.setItem('inteligent_order_id', finalOrderId);
+      localStorage.setItem('inteligent_order_expiry', expiryTime.toString());
+
+      onSuccess(finalOrderId);
     } catch (err) {
       setError('A apărut o eroare la trimiterea datelor. Te rugăm să încerci din nou.')
       console.error(err)
     } finally {
       setLoading(false)
     }
-  }, [nume, prenume, telefon, email, consent, onSuccess])
+  // 3. Am adăugat supabase la dependențele useCallback
+  }, [nume, prenume, telefon, email, consent, onSuccess, supabase])
+
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 sm:p-6">

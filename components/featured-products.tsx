@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase' 
+// 1. Am modificat importul pentru a folosi funcția centralizată:
+import { createClient } from '@/lib/utils' 
 import { ArrowRight, Loader2, Search } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
 
@@ -21,6 +22,9 @@ type FeaturedProduct = {
 export function FeaturedProducts() {
   const t = useTranslations('featuredProducts')
   const locale = useLocale()
+
+  // 2. Am inițializat clientul Supabase în interiorul componentei:
+  const supabase = createClient()
 
   const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>([])
   const [loading, setLoading] = useState(true)
@@ -55,7 +59,8 @@ export function FeaturedProducts() {
       setLoading(false)
     }
     fetchProducts()
-  }, [locale])
+  // 3. Am adăugat supabase la array-ul de dependențe pentru useEffect:
+  }, [locale, supabase])
 
   return (
     <section className="w-full bg-[#0F2A4A] py-16 md:py-24 relative overflow-hidden">

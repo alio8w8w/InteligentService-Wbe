@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
+import { createClient } from "@/lib/supabase"
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic'
 
-// Importăm instanța sigură creată la Pasul 1
-import { supabase } from "@/lib/supabase"
+const supabase = createClient()
 
 export async function POST(req: NextRequest) {
   try {
     const { guest, session_id, cartItems } = await req.json()
 
-    // 1. Upsert guest
     const { data: guestData, error: guestError } = await supabase
       .from("leads_and_customers")
       .upsert({
@@ -24,7 +23,6 @@ export async function POST(req: NextRequest) {
 
     if (guestError) return NextResponse.json({ error: guestError.message }, { status: 400 })
 
-    // 2. Creezi sau updatezi coș (carts)
     const { data: cartData, error: cartError } = await supabase
       .from("carts")
       .upsert(
@@ -38,10 +36,9 @@ export async function POST(req: NextRequest) {
       )
       .select()
       .single()
-      
+
     if (cartError) return NextResponse.json({ error: cartError.message }, { status: 400 })
 
-    // 3. Ștergi itemii existenți din coș și îi reinserți
     await supabase.from("cart_items").delete().eq("cart_id", cartData.id)
     
     const itemsInsert = cartItems.map((i: any) => ({
@@ -56,9 +53,7 @@ export async function POST(req: NextRequest) {
     if (cartItemErr) return NextResponse.json({ error: cartItemErr.message }, { status: 400 })
 
     return NextResponse.json({ success: true, cart_id: cartData.id })
-    
   } catch (error: any) {
-    // Prindem orice altă eroare neașteptată pentru a nu bloca serverul
     return NextResponse.json({ error: "A apărut o eroare la procesarea cererii." }, { status: 500 })
   }
 }

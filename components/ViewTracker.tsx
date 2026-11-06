@@ -2,15 +2,13 @@
 
 import { useEffect } from "react"
 import { usePathname } from "next/navigation"
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// 1. Am modificat importul pentru a folosi funcția ta din utils
+import { createClient } from "@/lib/utils"
 
 export default function ViewTracker() {
   const pathname = usePathname()
+  // 2. Am inițializat clientul Supabase în interiorul componentei
+  const supabase = createClient()
 
   useEffect(() => {
     const trackView = async () => {
@@ -34,7 +32,8 @@ export default function ViewTracker() {
     };
 
     trackView();
-  }, [pathname]);
+  // 3. Am adăugat supabase în array-ul de dependențe pentru useEffect
+  }, [pathname, supabase]);
 
   return null; // Componenta este invizibilă
 }

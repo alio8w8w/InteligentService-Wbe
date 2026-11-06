@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState, useMemo } from "react"
-import { supabase } from "@/lib/supabase"
+// 1. Am modificat importul pentru a folosi funcția centralizată:
+import { createClient } from "@/lib/utils"
 import Link from "next/link"
 import { ArrowRight, MonitorPlay, Loader2, Eye } from "lucide-react"
 import { useTranslations, useLocale } from 'next-intl'
@@ -20,8 +21,12 @@ export function FeaturedLedScreens() {
   const t = useTranslations('featuredLed')
   const locale = useLocale()
 
+  // 2. Am inițializat clientul Supabase sigur pentru SSR:
+  const supabase = createClient()
+
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  
   useEffect(() => {
     let mounted = true
     const fetchLedScreens = async () => {
@@ -50,7 +55,8 @@ export function FeaturedLedScreens() {
     return () => {
       mounted = false
     }
-  }, [])
+  // 3. Am adăugat supabase la array-ul de dependențe:
+  }, [supabase])
 
   const processedProducts = useMemo(() => {
     return products.map((product) => {

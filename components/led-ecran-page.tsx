@@ -1,11 +1,10 @@
 "use client"
 
 import { useEffect, useState, useRef, Suspense } from "react"
-import { supabase } from "@/lib/supabase"
+import { createClient } from "@/lib/supabase"
 import { Loader2, ArrowDown, Filter, ShoppingCart, X, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react"
 import { useTranslations, useLocale } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
-// Importăm hook-ul tău pentru coș
 import { useCart } from "@/hooks/use-cart"
 
 type Product = {
@@ -24,28 +23,22 @@ function LedEcranContent() {
   const locale = useLocale()
   const searchParams = useSearchParams()
   const initialProductId = searchParams.get('productId')
-  const cart = useCart() // Hook-ul tău de coș
+  const cart = useCart()
 
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  
-  // Stări pentru filtre
   const [sortOrder, setSortOrder] = useState<"default" | "asc" | "desc">("default")
   const [showDiscountOnly, setShowDiscountOnly] = useState(false)
-
-  // Stări pentru Modal (Fereastră Plutitoare)
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [addedToCart, setAddedToCart] = useState(false)
 
-  // Ref pentru scroll
   const productsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // Tragem produsele ȘI traducerile lor
-        const { data, error } = await supabase
+        const { data, error } = await createClient()
           .from("produse")
           .select("*, product_translations(language_code, description)")
           .eq("brand", "LED Ecran")
@@ -53,12 +46,10 @@ function LedEcranContent() {
         if (!error && data) {
           setProducts(data as Product[])
           
-          // Deschide modalul automat dacă venim de pe prima pagină
           if (initialProductId) {
-            const prod = data.find(p => p.id === initialProductId)
+            const prod = (data as Product[]).find((p: Product) => p.id === initialProductId)
             if (prod) {
               setSelectedProduct(prod as Product)
-              // Facem scroll automat la produse
               setTimeout(() => {
                 productsRef.current?.scrollIntoView({ behavior: 'smooth' })
               }, 500)
@@ -74,54 +65,42 @@ function LedEcranContent() {
     fetchProducts()
   }, [initialProductId])
 
-  // Logica de Filtrare și Sortare
+  const getFinalPrice = (product: Product) => {
+    return product.has_discount 
+      ? product.base_price * (1 - product.discount_percentage / 100) 
+      : product.base_price
+  }
+
   let displayedProducts = [...products]
   if (showDiscountOnly) {
     displayedProducts = displayedProducts.filter(p => p.has_discount)
   }
+  
   if (sortOrder === "asc") {
-    displayedProducts.sort((a, b) => {
-      const priceA = a.has_discount ? a.base_price * (1 - a.discount_percentage / 100) : a.base_price
-      const priceB = b.has_discount ? b.base_price * (1 - b.discount_percentage / 100) : b.base_price
-      return priceA - priceB
-    })
+    displayedProducts.sort((a, b) => getFinalPrice(a) - getFinalPrice(b))
   } else if (sortOrder === "desc") {
-    displayedProducts.sort((a, b) => {
-      const priceA = a.has_discount ? a.base_price * (1 - a.discount_percentage / 100) : a.base_price
-      const priceB = b.has_discount ? b.base_price * (1 - b.discount_percentage / 100) : b.base_price
-      return priceB - priceA
-    })
+    displayedProducts.sort((a, b) => getFinalPrice(b) - getFinalPrice(a))
   }
 
-  // Funcție Scroll
   const scrollToProducts = () => {
     productsRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  // Funcție Adăugare în Coș CORECTATĂ
   const handleAddToCart = (product: Product) => {
-    const finalPrice = product.has_discount 
-      ? product.base_price * (1 - product.discount_percentage / 100) 
-      : product.base_price;
-    
-    // Creăm un obiect produs actualizat cu prețul redus
     const productForCart = {
       ...product,
-      base_price: finalPrice
-    };
+      base_price: getFinalPrice(product)
+    }
 
-    // Apelăm addToCart și folosim 'as any' pentru a suprascrie eroarea de tip strict
-    cart.addToCart(productForCart as any);
-
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
+    cart.addToCart(productForCart as any)
+    setAddedToCart(true)
+    setTimeout(() => setAddedToCart(false), 2000)
   }
 
-  // Găsire descriere corectă pentru limba curentă
   const getDescription = (product: Product) => {
-    if (!product.product_translations) return "";
-    const translation = product.product_translations.find(t => t.language_code === locale);
-    return translation ? translation.description : product.product_translations[0]?.description || "";
+    if (!product.product_translations) return ""
+    const translation = product.product_translations.find(t => t.language_code === locale)
+    return translation ? translation.description : product.product_translations[0]?.description || ""
   }
 
   if (loading) {
@@ -135,11 +114,10 @@ function LedEcranContent() {
   return (
     <div className="bg-[#F5F2EC] min-h-screen pb-20">
       
-      {/* 1. HERO SECTION */}
       <section className="relative w-full max-w-[1280px] h-[560px] mx-auto mt-8 rounded-3xl overflow-hidden shadow-2xl flex items-center">
         <div className="absolute inset-0">
           <img 
-            src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop" 
+            src="/images/Led-Back.png" 
             alt="LED Ecran Hero" 
             className="w-full h-full object-cover"
           />
@@ -171,7 +149,6 @@ function LedEcranContent() {
         </button>
       </section>
 
-      {/* 2. SECȚIUNEA DE PRODUSE */}
       <section ref={productsRef} className="max-w-7xl mx-auto px-6 lg:px-12 pt-24 scroll-mt-10">
         
         <div className="flex flex-col md:flex-row justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-[#7A8CA5]/20 mb-10 gap-4">
@@ -203,7 +180,7 @@ function LedEcranContent() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {displayedProducts.map(product => {
-              const finalPrice = product.has_discount ? product.base_price * (1 - product.discount_percentage / 100) : product.base_price;
+              const finalPrice = getFinalPrice(product)
               
               return (
                 <div 
@@ -240,7 +217,6 @@ function LedEcranContent() {
         )}
       </section>
 
-      {/* 3. MODAL (FEREASTRĂ PLUTITOARE) */}
       {selectedProduct && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-[#0F2A4A]/90 backdrop-blur-md">
           <div className="bg-white rounded-[2rem] w-full max-w-5xl max-h-[95vh] overflow-y-auto flex flex-col md:flex-row relative shadow-2xl animate-in fade-in zoom-in duration-300">
@@ -291,9 +267,7 @@ function LedEcranContent() {
                 <span className="text-sm text-[#7A8CA5] font-bold uppercase">{t('price')}</span>
                 <div className="flex items-end gap-3 mt-1">
                   <span className="text-4xl font-black text-[#F26A1B]">
-                    {selectedProduct.has_discount 
-                      ? (selectedProduct.base_price * (1 - selectedProduct.discount_percentage / 100)).toLocaleString() 
-                      : selectedProduct.base_price.toLocaleString()} MDL
+                    {getFinalPrice(selectedProduct).toLocaleString()} MDL
                   </span>
                   {selectedProduct.has_discount && (
                     <span className="text-xl text-[#7A8CA5] line-through mb-1">
@@ -335,7 +309,6 @@ function LedEcranContent() {
   )
 }
 
-// Învelim în Suspense pentru a preveni erori de build la useSearchParams
 export default function LedEcranPage() {
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#F5F2EC] flex items-center justify-center"><Loader2 className="animate-spin text-[#F26A1B]" size={40} /></div>}>

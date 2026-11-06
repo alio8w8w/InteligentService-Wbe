@@ -1,17 +1,12 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, useMemo } from "react"
 import { Phone, Menu, X, ShoppingCart, Globe } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useTranslations, useLocale } from "next-intl"
 import { useRouter, usePathname } from "next/navigation"
-import { createClient } from "@supabase/supabase-js"
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+import { createClient } from "@/lib/supabase/client"
 
 const LOCALES = ["ro", "ru", "en"] as const
 
@@ -23,19 +18,36 @@ const NAV_LINKS = [
   { key: "contact", route: "/#contact" },
 ] as const
 
+const supabase = createClient()
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [cartCount, setCartCount] = useState(0)
-  
+
   const t = useTranslations("nav")
   const currentLocale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
-  
+
   const homePath = `/${currentLocale}`
   const langLabel = (currentLocale ?? "ro").toUpperCase()
   const cartHref = `/${currentLocale}/cos`
+
+  const normalizedLocale = useMemo(
+    () => (LOCALES.includes(currentLocale as (typeof LOCALES)[number]) ? (currentLocale as (typeof LOCALES)[number]) : "ro"),
+    [currentLocale],
+  )
+
+  const navItems = useMemo(
+    () =>
+      NAV_LINKS.map(({ key, route }) => {
+        const href = `/${currentLocale}${route}`
+        const active = pathname === href || (route !== "/#contact" && pathname.startsWith(href))
+        return { key, href, active }
+      }),
+    [currentLocale, pathname],
+  )
 
   const fetchCartCount = useCallback(async () => {
     const savedOrderId = localStorage.getItem('inteligent_order_id')
@@ -66,7 +78,7 @@ export function Navbar() {
   }, [fetchCartCount])
 
   const toggleLang = () => {
-    const currentIndex = LOCALES.indexOf(currentLocale as (typeof LOCALES)[number])
+    const currentIndex = LOCALES.indexOf(normalizedLocale)
     const newLocale = LOCALES[(currentIndex + 1) % LOCALES.length]
     const segments = pathname.split("/")
     segments[1] = newLocale 
@@ -92,20 +104,17 @@ export function Navbar() {
           </Link>
 
           <div className="hidden lg:flex items-center gap-8 xl:gap-10">
-            {NAV_LINKS.map(({ key, route }) => {
-              const fullRoute = `/${currentLocale}${route}`
-              const isActive = pathname === fullRoute || (route !== "/#contact" && pathname.startsWith(fullRoute))
-
+            {navItems.map(({ key, href, active }) => {
               return (
                 <Link
                   key={key}
-                  href={fullRoute}
+                  href={href}
                   className={`font-semibold text-sm tracking-tight transition-colors relative group
-                    ${isActive ? "text-[#F26A1B]" : "text-[#0F2A4A] hover:text-[#F26A1B]"}`}
+                    ${active ? "text-[#F26A1B]" : "text-[#0F2A4A] hover:text-[#F26A1B]"}`}
                 >
                   {t(key)}
                   <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#F26A1B] transition-all 
-                    ${isActive ? "w-full" : "w-0 group-hover:w-full"}`}>
+                    ${active ? "w-full" : "w-0 group-hover:w-full"}`}>
                   </span>
                 </Link>
               )
@@ -154,18 +163,15 @@ export function Navbar() {
         )}
 
         {isOpen && (
-          <div className="absolute top-[80px] left-4 right-4 z-50 lg:hidden p-5 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-5 animate-fade-in-down">
-            {NAV_LINKS.map(({ key, route }) => {
-              const fullRoute = `/${currentLocale}${route}`
-              const isActive = pathname === fullRoute || (route !== "/#contact" && pathname.startsWith(fullRoute))
-              
+          <div className="absolute top-20 left-4 right-4 z-50 lg:hidden p-5 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-5 animate-fade-in-down">
+            {navItems.map(({ key, href, active }) => {
               return (
                 <Link 
                   key={key} 
-                  href={fullRoute}
+                  href={href}
                   onClick={() => setIsOpen(false)} 
                   className={`text-left py-3 border-b border-gray-50 font-semibold text-lg flex justify-between items-center hover:text-[#F26A1B]
-                    ${isActive ? "text-[#F26A1B]" : "text-[#0F2A4A]"}`}
+                    ${active ? "text-[#F26A1B]" : "text-[#0F2A4A]"}`}
                 >
                   {t(key)}
                   <span className="text-[#F26A1B]">→</span>
@@ -190,7 +196,7 @@ export function Navbar() {
                </button>
             </div>
             
-            <a href="tel:+37368123456" className="bg-[#0F2A4A] text-[#F26A1B] py-4 rounded-full flex justify-center items-center gap-3 shadow-lg active:scale-95 transition-all">
+            <a href="tel:+37369230593" className="bg-[#0F2A4A] text-[#F26A1B] py-4 rounded-full flex justify-center items-center gap-3 shadow-lg active:scale-95 transition-all">
               <Phone className="h-5 w-5 stroke-[2px]" /> <span className="font-bold text-lg">+373 68 123 456</span>
             </a>
           </div>

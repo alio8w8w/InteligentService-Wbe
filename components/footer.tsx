@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Phone, Mail, MapPin, ArrowUpRight } from "lucide-react"
+import { Phone, MapPin, ArrowUpRight } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
 function TikTokIcon({ className }: { className?: string }) {
@@ -28,15 +28,14 @@ export function Footer() {
     { label: t('nav.brands'), href: `/${locale}/branduri` },
     { label: t('nav.products'), href: `/${locale}/produse` },
     { label: t('nav.gallery'), href: `/${locale}/galerie` },
-    { label: t('nav.ledScreens'), href: `/${locale}/led-ecran` },
+    { label: t('nav.ledScreens'), href: `/${locale}/led-ecrane` }, 
     { label: t('nav.contact'), href: `/${locale}#contact` },
   ]
 
-  // AICI A FOST CORECTAT: S-a adăugat segmentul "/branduri" în interiorul URL-urilor
   const serviceLinks = [
     { label: "Dahua", href: `/${locale}/branduri/dahua` },
     { label: "Hikvision", href: `/${locale}/branduri/hikvision` },
-    { label: t('nav.ledScreens'), href: `/${locale}/led-ecran` },
+    { label: t('nav.ledScreens'), href: `/${locale}/led-ecrane` },
   ]
 
   return (
@@ -130,12 +129,6 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:inteligentservice2023@gmail.com" className="flex items-center gap-3 text-sm text-[#7A8CA5] hover:text-[#F26A1B] transition-colors duration-300 font-medium">
-                  <Mail className="h-4 w-4 text-[#F26A1B] shrink-0" />
-                  <span className="break-all">inteligentservice2023@gmail.com</span>
-                </a>
-              </li>
-              <li>
                 <div className="flex items-start gap-3 text-sm text-[#7A8CA5] font-medium leading-relaxed">
                   <MapPin className="h-4 w-4 text-[#F26A1B] shrink-0 mt-0.5" />
                   <span>{t('contactInfo.address')}</span>
@@ -150,12 +143,13 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Inteligent Service. {t('legal.rights')}.
           </p>
           <div className="flex items-center gap-6">
-            <Link href={`/${locale}/termeni`} className="text-xs text-[#7A8CA5] hover:text-[#F5F2EC] transition-colors duration-300 font-medium">
+            {/* AICI S-AU MODIFICAT: din <Link> in <span> */}
+            <span className="text-xs text-[#7A8CA5] font-medium">
               {t('legal.terms')}
-            </Link>
-            <Link href={`/${locale}/confidentialitate`} className="text-xs text-[#7A8CA5] hover:text-[#F5F2EC] transition-colors duration-300 font-medium">
+            </span>
+            <span className="text-xs text-[#7A8CA5] font-medium">
               {t('legal.privacy')}
-            </Link>
+            </span>
           </div>
         </div>
       </div>

@@ -18,21 +18,26 @@ export const metadata: Metadata = {
   title: "Inteligent Service - Soluții de Securitate",
   description:
     "Inteligent Service oferă servicii profesionale de cea mai înaltă calitate în domeniul securității și instalării sistemelor de supraveghere.",
+  icons: {
+    icon: "/images/fav.png",
+  },
 }
 
 export const viewport: Viewport = {
-  themeColor: "#F5F2EC", 
+  themeColor: "#F5F2EC",
 }
 
-export default function RootLayout({ 
+export default function RootLayout({
   children,
-  params: { locale } 
-}: { 
+  params: { locale },
+}: {
   children: ReactNode
   params: { locale: string }
 }) {
+  const htmlLang = locale || "ro"
+
   return (
-    <html lang={locale}>
+    <html lang={htmlLang}>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans antialiased bg-background text-foreground min-h-screen`}>
         <ViewTracker />
         {children}

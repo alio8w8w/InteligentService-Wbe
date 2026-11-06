@@ -2,15 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { createClient } from '@supabase/supabase-js'
-import { ShoppingCart, Loader2, X, CheckCircle, Info, Filter, SlidersHorizontal, ArrowRight } from 'lucide-react'
-import { useTranslations, useLocale } from 'next-intl'
+// 1. Am modificat importul aici:
+import { createClient } from '@/lib/utils'
+import { ShoppingCart, Loader2, X, CheckCircle, Filter, SlidersHorizontal } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import BookingModal from '@/components/booking-modal' 
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
 
 type ProductWithTranslation = {
   id: string
@@ -25,64 +21,57 @@ type ProductWithTranslation = {
 
 export default function ProductsClient({ locale }: { locale: string }) {
   const t = useTranslations('productsPage')
+  // 2. Am inițializat clientul Supabase aici:
+  const supabase = createClient()
 
-  // Stări pentru Produse
   const [products, setProducts] = useState<ProductWithTranslation[]>([])
   const [filteredProducts, setFilteredProducts] = useState<ProductWithTranslation[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Stări pentru Filtre
   const [selectedBrand, setSelectedBrand] = useState<string>('all')
   const [minPrice, setMinPrice] = useState<string>('')
   const [maxPrice, setMaxPrice] = useState<string>('')
   const [onlyDiscounted, setOnlyDiscounted] = useState(false)
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
 
-  // Stări pentru Coș și Modal Produs
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<ProductWithTranslation | null>(null)
   const [addingToCartId, setAddingToCartId] = useState<string | null>(null)
   const [isAddedToCartModal, setIsAddedToCartModal] = useState(false)
 
-  // Extragerea datelor (Inclusiv descrierea din product_translations)
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true)
       const { data, error } = await supabase
         .from('produse')
-        .select(`*, product_translations (language_code, description)`)
+        .select('*, product_translations (language_code, description)')
 
-      if (data) {
+      if (data && !error) {
         const formattedProducts = data.map((product: any) => {
           const translation = product.product_translations?.find((tr: any) => tr.language_code === locale);
           return { ...product, translatedDesc: translation ? translation.description : "" } as ProductWithTranslation;
         })
         
-        // Sortăm by default reducerile primele
-        const sorted = formattedProducts.sort((a, b) => (a.has_discount === b.has_discount ? 0 : a.has_discount ? -1 : 1))
+        const sorted = formattedProducts.sort((a: ProductWithTranslation, b: ProductWithTranslation) => (a.has_discount === b.has_discount ? 0 : a.has_discount ? -1 : 1))
         setProducts(sorted)
         setFilteredProducts(sorted)
       }
       setLoading(false)
     }
     fetchProducts()
-  }, [locale])
+  }, [locale, supabase])
 
-  // Aplicarea Filtrelor
   useEffect(() => {
     let result = [...products]
 
-    // Filtru Brand
     if (selectedBrand !== 'all') {
       result = result.filter(p => p.brand.toLowerCase() === selectedBrand.toLowerCase())
     }
 
-    // Filtru Reducere
     if (onlyDiscounted) {
       result = result.filter(p => p.has_discount)
     }
 
-    // Filtru Preț
     if (minPrice !== '') {
       result = result.filter(p => getFinalPrice(p) >= parseFloat(minPrice))
     }
@@ -93,7 +82,6 @@ export default function ProductsClient({ locale }: { locale: string }) {
     setFilteredProducts(result)
   }, [selectedBrand, minPrice, maxPrice, onlyDiscounted, products])
 
-  // Resetare filtre
   const resetFilters = () => {
     setSelectedBrand('all')
     setMinPrice('')
@@ -101,10 +89,8 @@ export default function ProductsClient({ locale }: { locale: string }) {
     setOnlyDiscounted(false)
   }
 
-  // Calcul Preț
   const getFinalPrice = (p: ProductWithTranslation) => p.has_discount ? p.base_price - (p.base_price * p.discount_percentage / 100) : p.base_price;
 
-  // --- LOGICA COȘ ---
   const handleAddToCart = (e?: React.MouseEvent, productId?: string) => {
     if (e) e.stopPropagation(); 
     const targetId = productId || selectedProduct?.id;
@@ -123,9 +109,32 @@ export default function ProductsClient({ locale }: { locale: string }) {
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    const { error } = await supabase.from('order_items').insert([{
-      order_id: orderId, produse_id: productId, cantitate: 1, pret_unitar: getFinalPrice(product)
-    }]);
+    const { data: existingItem } = await supabase
+      .from('order_items')
+      .select('id, cantitate')
+      .eq('order_id', orderId)
+      .eq('produse_id', productId)
+      .single();
+
+    let error;
+
+    if (existingItem) {
+      const { error: updateError } = await supabase
+        .from('order_items')
+        .update({ cantitate: existingItem.cantitate + 1 })
+        .eq('id', existingItem.id);
+      error = updateError;
+    } else {
+      const { error: insertError } = await supabase
+        .from('order_items')
+        .insert([{
+          order_id: orderId, 
+          produse_id: productId, 
+          cantitate: 1, 
+          pret_unitar: getFinalPrice(product)
+        }]);
+      error = insertError;
+    }
 
     if (!error) {
       if (selectedProduct) setIsAddedToCartModal(true); 
@@ -134,16 +143,16 @@ export default function ProductsClient({ locale }: { locale: string }) {
         setIsAddedToCartModal(false)
         setSelectedProduct(null)
       }, 2000)
+    } else {
+      console.error("Eroare la procesarea coșului:", error);
+      setAddingToCartId(null);
     }
   }
 
-  // Lista unică de branduri pentru filtru
   const uniqueBrands = Array.from(new Set(products.map(p => p.brand.toLowerCase())))
 
   return (
     <div className="w-full bg-[#F5F2EC] text-[#0F2A4A] min-h-screen">
-      
-      {/* 1. HEADER SIMPLU (NAVY) */}
       <div className="bg-[#0F2A4A] pt-12 pb-16 px-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#F26A1B]/5 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto relative z-10 text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-6 mt-4">
@@ -165,8 +174,6 @@ export default function ProductsClient({ locale }: { locale: string }) {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col lg:flex-row gap-8">
-        
-        {/* 2. SIDEBAR FILTRE (Desktop) & MODAL (Mobil) */}
         <aside className={`fixed inset-0 z-[100] lg:static lg:z-auto lg:w-1/4 xl:w-1/5 transition-transform duration-300 ${isMobileFilterOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
           <div className="absolute inset-0 bg-[#0F2A4A]/50 backdrop-blur-sm lg:hidden" onClick={() => setIsMobileFilterOpen(false)} />
           
@@ -181,7 +188,6 @@ export default function ProductsClient({ locale }: { locale: string }) {
             </div>
 
             <div className="space-y-8 bg-white lg:p-6 rounded-3xl lg:shadow-sm lg:border border-[#7A8CA5]/10">
-              {/* Filtru Brand */}
               <div>
                 <h4 className="font-bold mb-3 text-sm text-[#7A8CA5] uppercase tracking-wider">{t('brand')}</h4>
                 <div className="space-y-2">
@@ -198,7 +204,6 @@ export default function ProductsClient({ locale }: { locale: string }) {
                 </div>
               </div>
 
-              {/* Filtru Preț */}
               <div>
                 <h4 className="font-bold mb-3 text-sm text-[#7A8CA5] uppercase tracking-wider">{t('priceRange')}</h4>
                 <div className="flex items-center gap-2">
@@ -208,7 +213,6 @@ export default function ProductsClient({ locale }: { locale: string }) {
                 </div>
               </div>
 
-              {/* Filtru Reducere */}
               <label className="flex items-center gap-3 cursor-pointer group bg-[#F5F2EC]/50 p-3 rounded-xl border border-[#7A8CA5]/10">
                 <input type="checkbox" checked={onlyDiscounted} onChange={(e) => setOnlyDiscounted(e.target.checked)} className="w-4 h-4 accent-[#F26A1B] rounded" />
                 <span className="text-sm font-bold text-[#C24C0F]">{t('onlyDiscounted')}</span>
@@ -221,7 +225,6 @@ export default function ProductsClient({ locale }: { locale: string }) {
           </div>
         </aside>
 
-        {/* 3. GRILĂ PRODUSE (Dreapta) */}
         <div className="flex-grow">
           <div className="mb-6 flex justify-between items-center">
             <span className="text-sm font-bold text-[#7A8CA5]">
@@ -296,7 +299,6 @@ export default function ProductsClient({ locale }: { locale: string }) {
         </div>
       </div>
 
-      {/* 4. MODAL PRODUS PLUTITOR */}
       {selectedProduct && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
           <div className="absolute inset-0 bg-[#0F2A4A]/80 backdrop-blur-md" onClick={() => setSelectedProduct(null)} />
@@ -352,7 +354,6 @@ export default function ProductsClient({ locale }: { locale: string }) {
         </div>
       )}
 
-      {/* 5. MODAL DATE CLIENT */}
       <BookingModal 
         isOpen={isBookingModalOpen} 
         onClose={() => setIsBookingModalOpen(false)}

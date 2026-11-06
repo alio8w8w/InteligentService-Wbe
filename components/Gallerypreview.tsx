@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabase"
+// 1. Am modificat importul pentru a folosi funcția ta din utils
+import { createClient } from "@/lib/utils"
 import Link from "next/link"
 import { Film, Image as ImageIcon, Loader2 } from "lucide-react"
 import { useTranslations, useLocale } from 'next-intl'
@@ -24,6 +25,10 @@ const breakpointColumnsObj = {
 export function GalleryPreview() {
   const t = useTranslations('galleryPreview')
   const locale = useLocale()
+  
+  // 2. Am inițializat clientul Supabase în interiorul componentei
+  const supabase = createClient()
+
   const [items, setItems] = useState<GalleryItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -50,7 +55,8 @@ export function GalleryPreview() {
     }
 
     fetchGallery()
-  }, [])
+  // 3. Am adăugat supabase la array-ul de dependențe
+  }, [supabase])
 
   if (loading) {
     return (

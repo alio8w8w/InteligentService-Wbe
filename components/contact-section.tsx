@@ -1,15 +1,13 @@
 "use client"
 
 import { useMemo } from 'react'
-import { MapPin, Phone, Mail, Clock, ExternalLink } from "lucide-react"
+import { MapPin, Phone, Clock, ExternalLink } from "lucide-react"
 import { useTranslations } from 'next-intl'
 
 export function ContactSection() {
   const t = useTranslations('contactSection')
 
   const PHONE = '+373 69 230 593'
-  const EMAIL = 'inteligentservice2023@gmail.com'
-
   const contactItems = useMemo(() => [
     {
       icon: MapPin,
@@ -30,15 +28,6 @@ export function ContactSection() {
             {PHONE}
           </a>
         </div>
-      ),
-    },
-    {
-      icon: Mail,
-      label: t('info.email.label'),
-      content: (
-        <a href={`mailto:${EMAIL}`} className="text-sm font-bold text-[#0F2A4A] hover:text-[#F26A1B] transition-colors duration-300 mt-1 block break-all">
-          {EMAIL}
-        </a>
       ),
     },
     {

@@ -1,4 +1,5 @@
-import { createClient } from "@supabase/supabase-js";
+// Am modificat importul de aici pentru a folosi pachetul SSR instalat mai devreme
+import { createBrowserClient } from "@supabase/ssr";
 
 // Funcție care forțează URL-ul să fie mereu valid pentru ca Vercel să nu crape la compilare
 const getValidUrl = () => {
@@ -10,7 +11,11 @@ const getValidUrl = () => {
   return url;
 };
 
-const supabaseUrl = getValidUrl();
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Am transformat exportul dintr-o CONSTANTĂ directă într-o FUNCȚIE
+export function createClient() {
+  const supabaseUrl = getValidUrl();
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key';
+  
+  // Această funcție returnează instanța sigură, reutilizabilă în browser
+  return createBrowserClient(supabaseUrl, supabaseAnonKey);
+}

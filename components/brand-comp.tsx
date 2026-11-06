@@ -5,14 +5,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Package, LayoutGrid } from 'lucide-react'
 import { useTranslations, useLocale } from 'next-intl'
-import { createClient } from '@supabase/supabase-js'
+// 1. Am modificat importul aici:
+import { createClient } from '@/lib/utils'
 
 export type Brand = 'hikvision' | 'dahua'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
+// AM ȘTERS INIȚIALIZAREA GLOBALĂ DE AICI
 
 const brands: {
   id: Brand
@@ -118,6 +116,9 @@ export function BrandShowcase() {
   const { ref: headerRef, visible: headerVisible } = useReveal()
   const [productCounts, setProductCounts] = useState<Record<string, number>>({ hikvision: 0, dahua: 0 })
 
+  // 2. Inițializăm clientul aici:
+  const supabase = createClient()
+
   useEffect(() => {
     const fetchCounts = async () => {
       try {
@@ -132,7 +133,7 @@ export function BrandShowcase() {
       }
     }
     fetchCounts()
-  }, [])
+  }, [supabase]) // Am adăugat supabase la dependențe
 
   return (
     <section className="bg-[#0F2A4A]">

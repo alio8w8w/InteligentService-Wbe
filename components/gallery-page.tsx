@@ -1,7 +1,8 @@
 "use client"
 
 import { useEffect, useState, Suspense } from "react"
-import { supabase } from "@/lib/supabase"
+// 1. Am modificat importul pentru a folosi funcția corectă:
+import { createClient } from "@/lib/utils"
 import { Film, Image as ImageIcon, Loader2, X, ChevronLeft, ChevronRight } from "lucide-react"
 import { useTranslations } from 'next-intl'
 import { useSearchParams } from 'next/navigation'
@@ -27,6 +28,9 @@ function GalleryContent() {
   const searchParams = useSearchParams()
   const initialImageId = searchParams.get('imageId')
 
+  // 2. Am inițializat clientul Supabase aici:
+  const supabase = createClient()
+
   const [items, setItems] = useState<GalleryItem[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<"all" | "image" | "video">("all")
@@ -41,14 +45,13 @@ function GalleryContent() {
           .from("gallery")
           .select("*")
           .order("position", { ascending: true })
-          // Nu mai punem .limit() pentru că vrem să le tragem pe toate
 
         if (!error && data) {
           setItems(data)
           
           // Dacă avem un ID în URL (venit de pe prima pagină), deschidem poza automat
           if (initialImageId) {
-            const index = data.findIndex(item => item.id === initialImageId)
+            const index = data.findIndex((item: GalleryItem) => item.id === initialImageId)
             if (index !== -1) setSelectedIndex(index)
           }
         }
@@ -60,7 +63,8 @@ function GalleryContent() {
     }
 
     fetchGallery()
-  }, [initialImageId])
+  // 3. Am adăugat supabase la dependențe:
+  }, [initialImageId, supabase])
 
   // Aplicăm filtrul selectat
   const filteredItems = items.filter(item => filter === "all" ? true : item.type === filter)
